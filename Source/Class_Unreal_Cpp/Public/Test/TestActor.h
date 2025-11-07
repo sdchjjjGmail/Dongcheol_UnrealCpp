@@ -21,6 +21,15 @@
 //  - 다이나믹 델리게이트에 바인딩 할 경우 UFUNCTION 필수
 //  - 블루프린트에서 사용될 경우에 반드시 필요하다
 
+// UPROPERTY()
+//  - UCLASS나 USTRUCT 내의 멤버 변수를 언리얼 엔진의 리플렉션 시스템에 등록
+//  - 주요 기능
+//    - 에디터에서 노출 및 편집을 가능하게 한다.
+//    - 블루프린트 접근
+//    - 가비지 컬렉션이 추적을 가능하게 함
+//    - 직렬화(변수의 값이 레벨이나 에셋에 함께 저장)
+//    - 네트워크 복제(Replicated)
+
 UCLASS()
 class CLASS_UNREAL_CPP_API ATestActor : public AActor
 {
@@ -49,4 +58,33 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+protected:
+	int32 Data1 = 10;
+
+	UPROPERTY(VisibleAnywhere, Category = "Test변수") // 클래스 디폴트나 인스턴스에서 보기 가능
+	int32 Data2 = 20;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Test변수") // 클래스 디폴트 창에서만 보기 가능
+	int32 Data3 = 30;
+
+	UPROPERTY(VisibleInstanceOnly, Category = "Test변수") // 맵에 배치된 상태에서만 디테일 창으로 보기 가능
+	int32 Data4 = 40;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Test변수") // 블루프린트 쪽에서 읽기만 가능
+	int32 Data5 = 50;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Test변수") // 블루프린트 쪽에서 읽고 쓰기 가능
+	int32 Data6 = 60;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Test변수") // 확인은 어디서든 할 수 있고 블루프린트에서 읽고 쓰기 가능
+	int32 Data7 = 70;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Test변수") // 클래스 디폴트 창에서만 편집 가능
+	int32 Data8 = 80;
+
+	UPROPERTY(EditInstanceOnly, Category = "Test변수") // 맵에 배치된 상태에서만 디테일 창에서 편집 가능
+	int32 Data9 = 90;
+
+	UPROPERTY(EditAnywhere, Category = "Test변수") // 클래스 디폴트나 인스턴스에서 편집 가능
+	int32 Data10 = 100;
 };
