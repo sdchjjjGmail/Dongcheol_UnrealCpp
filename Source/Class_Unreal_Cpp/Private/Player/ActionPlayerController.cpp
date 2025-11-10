@@ -37,7 +37,7 @@ void AActionPlayerController::SetupInputComponent()
 void AActionPlayerController::OnLookInput(const FInputActionValue& InValue)
 {
 	FVector2D lookAxis = InValue.Get<FVector2D>();
-	UE_LOG(LogTemp, Log, TEXT("Mouse Input Value : (%s)"), *lookAxis.ToString());
+	//UE_LOG(LogTemp, Log, TEXT("Mouse Input Value : (%s)"), *lookAxis.ToString());
 
 	AddYawInput(lookAxis.X);
 	AddPitchInput(-lookAxis.Y);

@@ -32,7 +32,6 @@ public:
 
 protected:
 	void OnMoveInput(const FInputActionValue& InValue);
-	void OnCaneraMoveInput(const FInputActionValue& InValue);
 
 	//UPROPERTY(VisibleAnywhere)
 	//TObjectPtr<USkeletalMeshComponent> BodyMesh = nullptr;
@@ -43,26 +42,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Camera")
 	TObjectPtr<class UCameraComponent> PlayerCamera = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
-	float TargetArmLength;
-
-	// 카메라 숄더 뷰포인트 위치에 대한 화살표 컴포넌트
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	class UArrowComponent* CameraRShoulderLocation;
-
-	// 카메라 원점 뷰포인트 위치에 대한 화살표 컴포넌트
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	class UArrowComponent* CameraOriginLocation;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	class UCameraComponent* CameraComp;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input");
 	TObjectPtr<UInputAction> IA_Move;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input");
-	TObjectPtr<UInputAction> IA_PlayerView;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input");
-	float MoveSpeed = 90;
+	float MoveSpeed = 10;
 };

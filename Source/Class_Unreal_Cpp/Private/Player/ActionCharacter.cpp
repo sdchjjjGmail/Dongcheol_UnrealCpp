@@ -6,6 +6,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AActionCharacter::AActionCharacter()
@@ -23,7 +24,7 @@ AActionCharacter::AActionCharacter()
 	PlayerCamera->SetupAttachment(SpringArm);
 	PlayerCamera->SetRelativeRotation(FRotator(-20.0f, 0.0f, 0.0f));
 
-	bUseControllerRotationYaw = false; // 컨트롤러의 Yaw 회전을 사용안함
+	bUseControllerRotationYaw = true; // 컨트롤러의 Yaw 회전을 사용안함
 
 	GetCharacterMovement()->bOrientRotationToMovement = true; // 이동 방향을 바라보게 회전
 	GetCharacterMovement()->RotationRate = FRotator(0, 360, 0);
@@ -33,7 +34,7 @@ AActionCharacter::AActionCharacter()
 void AActionCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	GetCharacterMovement()->MaxWalkSpeed = 500;
 }
 
 // Called every frame
@@ -53,7 +54,6 @@ void AActionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	if (enhanced) // 입력 컴포넌트가 향상된 입력 컴포넌트일 때
 	{
 		enhanced->BindAction(IA_Move, ETriggerEvent::Triggered, this, &AActionCharacter::OnMoveInput);
-		enhanced->BindAction(IA_PlayerView, ETriggerEvent::Triggered, this, &AActionCharacter::OnCaneraMoveInput);
 	}
 }
 
@@ -61,17 +61,11 @@ void AActionCharacter::OnMoveInput(const FInputActionValue& InValue)
 {
 	FVector2D InputDirection = InValue.Get<FVector2D>();
 
-	UE_LOG(LogTemp, Log, TEXT("Dir : (%.1f, %.1f)"), InputDirection.X, InputDirection.Y);
-	UE_LOG(LogTemp, Log, TEXT("Dir : (%s)"), *InputDirection.ToString());
+	GetControlRotation();
+	
+	//UE_LOG(LogTemp, Log, TEXT("Dir : (%.1f, %.1f)"), InputDirection.X, InputDirection.Y);
+	//UE_LOG(LogTemp, Log, TEXT("Dir : (%s)"), *InputDirection.ToString());
 
-	AddMovementInput(FVector(InputDirection.Y, InputDirection.X, 0));
-	//AddActorLocalOffset(FVector(InputDirection.Y, InputDirection.X, 0) * MoveSpeed);
+	//AddMovementInput(UKismetMathLibrary::GetRightVector(FRotator(GetControlRotation().Roll, 0, GetControlRotation().Yaw)), InputDirection.X);
+	//AddMovementInput(UKismetMathLibrary::GetRightVector(FRotator(0, 0, GetControlRotation().Yaw)), InputDirection.Y);
 }
-
-void AActionCharacter::OnCaneraMoveInput(const FInputActionValue& InValue)
-{
-
-	FVector2D InputDirection = InValue.Get<FVector2D>();
-	UE_LOG(LogTemp, Log, TEXT("Mouse Input Value : (%s)"), *InputDirection.ToString());
-}
-
