@@ -101,10 +101,13 @@ void AActionCharacter::SetSprintMode()
 {
 	//UE_LOG(LogTemp, Log, TEXT("달리기 모드"));
 
-	IsSprinting = true;
-	IsStaminaRecovering = false;
+	if (Stamina > 0)
+	{
+		IsSprinting = true;
+		IsStaminaRecovering = false;
 
-	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+	}
 }
 
 void AActionCharacter::SetWalkMode()
@@ -163,11 +166,10 @@ void AActionCharacter::ManageStamina()
 					}
 				}
 				UE_LOG(LogTemp, Log, TEXT("Stamina : %f"), Stamina);
+				OnStaminaChanged.Broadcast(Stamina, MaxStamina);
 			}
 		),
 		StaminaManagerSpeed,
 		true
 	);
 }
-
-

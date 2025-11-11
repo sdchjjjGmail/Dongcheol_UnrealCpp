@@ -8,6 +8,8 @@
 #include "InputActionValue.h"
 #include "ActionCharacter.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnStaminaChangedDelegate, float, InStamina, float, InMaxStamina);
+
 class UInputAction;
 /**
  *
@@ -78,7 +80,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Value")
 	float StaminaSpendValue = 0.1f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Value")
-	float StaminaManagerSpeed = 0.1f;
+	float StaminaManagerSpeed = 0.05f;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation|Montage")
@@ -88,4 +90,8 @@ private:
 	UPROPERTY()
 	TWeakObjectPtr<UAnimInstance> AnimInstance = nullptr;
 	FTimerHandle timerHandle;
+
+public:
+	UPROPERTY(BlueprintAssignable, Category = "Player|Event")
+	FOnStaminaChangedDelegate OnStaminaChanged;
 };
