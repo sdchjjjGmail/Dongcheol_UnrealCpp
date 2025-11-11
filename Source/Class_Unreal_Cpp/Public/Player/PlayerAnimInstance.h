@@ -28,8 +28,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Animation")
 	TObjectPtr<class UCharacterMovementComponent> Movement = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Animation")
-	FVector Velocity;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Animation")
+	//FVector Velocity;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character|Animation")
 	float MoveSpeed = 0.0f;

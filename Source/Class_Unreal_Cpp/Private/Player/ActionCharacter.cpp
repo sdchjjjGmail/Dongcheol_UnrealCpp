@@ -24,9 +24,9 @@ AActionCharacter::AActionCharacter()
 	PlayerCamera->SetupAttachment(SpringArm);
 	PlayerCamera->SetRelativeRotation(FRotator(-20.0f, 0.0f, 0.0f));
 
-	bUseControllerRotationYaw = true; // 컨트롤러의 Yaw 회전을 사용안함
+	bUseControllerRotationYaw = true; // 컨트롤러의 Yaw 회전을 사용함 -> 컨트롤러의 Yaw 회전을 캐릭터에 적용
 
-	GetCharacterMovement()->bOrientRotationToMovement = true; // 이동 방향을 바라보게 회전
+	//GetCharacterMovement()->bOrientRotationToMovement = true; // 이동 방향을 바라보게 회전
 	GetCharacterMovement()->RotationRate = FRotator(0, 360, 0);
 }
 
@@ -60,12 +60,14 @@ void AActionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void AActionCharacter::OnMoveInput(const FInputActionValue& InValue)
 {
 	FVector2D InputDirection = InValue.Get<FVector2D>();
-
-	GetControlRotation();
 	
 	//UE_LOG(LogTemp, Log, TEXT("Dir : (%.1f, %.1f)"), InputDirection.X, InputDirection.Y);
 	//UE_LOG(LogTemp, Log, TEXT("Dir : (%s)"), *InputDirection.ToString());
 
-	//AddMovementInput(UKismetMathLibrary::GetRightVector(FRotator(GetControlRotation().Roll, 0, GetControlRotation().Yaw)), InputDirection.X);
-	//AddMovementInput(UKismetMathLibrary::GetRightVector(FRotator(0, 0, GetControlRotation().Yaw)), InputDirection.Y);
+	FVector moveDirection(InputDirection.Y, InputDirection.X, 0.0f);
+
+	FQuat controlYawRotation = FQuat(FRotator(0, GetControlRotation().Yaw, 0)); // 컨트롤러의 Yaw 회전을 따로 뽑아와서
+	moveDirection = controlYawRotation.RotateVector(moveDirection); // 이동 방향에 적용
+	
+	AddMovementInput(moveDirection);
 }

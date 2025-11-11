@@ -12,6 +12,8 @@ UPlayerAnimInstance::UPlayerAnimInstance()
 
 void UPlayerAnimInstance::NativeInitializeAnimation()
 {
+	Super::NativeInitializeAnimation();
+
 	Owner = Cast<AActionCharacter>(GetOwningActor());
 
 	if (Owner)
@@ -22,9 +24,10 @@ void UPlayerAnimInstance::NativeInitializeAnimation()
 
 void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
+	Super::NativeUpdateAnimation(DeltaSeconds);
+
 	if (Movement)
 	{
-		UE_LOG(LogTemp, Log, TEXT("GetLastMovementInputVector : (%s)"), *Owner->GetLastMovementInputVector().ToString());
 		MoveSpeed = Owner->GetLastMovementInputVector().Length() * Movement->MaxWalkSpeed;
 	}
 }
