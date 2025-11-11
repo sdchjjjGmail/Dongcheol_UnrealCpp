@@ -34,14 +34,15 @@ AActionCharacter::AActionCharacter()
 void AActionCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	GetCharacterMovement()->MaxWalkSpeed = 500;
+	AnimInstance = GetMesh()->GetAnimInstance();
+	ManageStamina();
+	Stamina = MaxStamina;
 }
 
 // Called every frame
 void AActionCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -54,6 +55,15 @@ void AActionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	if (enhanced) // 입력 컴포넌트가 향상된 입력 컴포넌트일 때
 	{
 		enhanced->BindAction(IA_Move, ETriggerEvent::Triggered, this, &AActionCharacter::OnMoveInput);
+		enhanced->BindAction(IA_Roll, ETriggerEvent::Triggered, this, &AActionCharacter::OnRollInput);
+		enhanced->BindActionValueLambda(IA_Sprint, ETriggerEvent::Started,
+			[this](const FInputActionValue& _) {
+				SetSprintMode();
+			});
+		enhanced->BindActionValueLambda(IA_Sprint, ETriggerEvent::Completed,
+			[this](const FInputActionValue& _) {
+				SetWalkMode();
+			});
 	}
 }
 
@@ -71,3 +81,93 @@ void AActionCharacter::OnMoveInput(const FInputActionValue& InValue)
 	
 	AddMovementInput(moveDirection);
 }
+
+void AActionCharacter::OnRollInput(const FInputActionValue& InValue)
+{
+	if (AnimInstance.IsValid())
+	{
+		if (!AnimInstance->IsAnyMontagePlaying() && Stamina >= RollStamina)
+		{
+			IsStaminaRecovering = false;
+			//SetActorRotation(GetLastMovementInputVector().Rotation());
+			Stamina -= RollStamina;
+			PlayAnimMontage(RollMontage);
+			DelayStaminaRestore();
+		}
+	}
+}
+
+void AActionCharacter::SetSprintMode()
+{
+	//UE_LOG(LogTemp, Log, TEXT("달리기 모드"));
+
+	IsSprinting = true;
+	IsStaminaRecovering = false;
+
+	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+}
+
+void AActionCharacter::SetWalkMode()
+{
+	//UE_LOG(LogTemp, Log, TEXT("걷기 모드"));
+
+	IsSprinting = false;
+	GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
+	DelayStaminaRestore();
+}
+
+void AActionCharacter::DelayStaminaRestore()
+{
+	auto& TimerManager = GetWorld()->GetTimerManager();
+	TimerManager.ClearTimer(timerHandle);
+	TimerManager.SetTimer(
+		timerHandle,
+		FTimerDelegate::CreateLambda([this]()
+			{
+				if (!IsSprinting) IsStaminaRecovering = true;
+			}
+		),
+		2.0f,
+		false
+	);
+}
+
+void AActionCharacter::ManageStamina()
+{
+	FTimerHandle StaminaManagerTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(
+		StaminaManagerTimerHandle,
+		FTimerDelegate::CreateLambda([this]()
+			{
+				if (IsSprinting)
+				{
+					if (Stamina < 0.0f)
+					{
+						Stamina = 0.0f;
+						SetWalkMode();
+					}
+					else
+					{
+						Stamina -= StaminaSpendValue;
+					}
+				}
+				if (IsStaminaRecovering)
+				{
+					if (Stamina > MaxStamina)
+					{
+						Stamina = MaxStamina;
+					}
+					else
+					{
+						Stamina += (StaminaSpendValue * RestoreMultiplier);
+					}
+				}
+				UE_LOG(LogTemp, Log, TEXT("Stamina : %f"), Stamina);
+			}
+		),
+		StaminaManagerSpeed,
+		true
+	);
+}
+
+
