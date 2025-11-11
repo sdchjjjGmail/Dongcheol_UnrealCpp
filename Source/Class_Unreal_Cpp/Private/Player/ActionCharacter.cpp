@@ -24,9 +24,9 @@ AActionCharacter::AActionCharacter()
 	PlayerCamera->SetupAttachment(SpringArm);
 	PlayerCamera->SetRelativeRotation(FRotator(-20.0f, 0.0f, 0.0f));
 
-	bUseControllerRotationYaw = true; // 컨트롤러의 Yaw 회전을 사용함 -> 컨트롤러의 Yaw 회전을 캐릭터에 적용
+	bUseControllerRotationYaw = false; // 컨트롤러의 Yaw 회전을 사용함 -> 컨트롤러의 Yaw 회전을 캐릭터에 적용
 
-	//GetCharacterMovement()->bOrientRotationToMovement = true; // 이동 방향을 바라보게 회전
+	GetCharacterMovement()->bOrientRotationToMovement = true; // 이동 방향을 바라보게 회전
 	GetCharacterMovement()->RotationRate = FRotator(0, 360, 0);
 }
 
