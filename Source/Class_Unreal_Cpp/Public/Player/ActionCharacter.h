@@ -8,7 +8,7 @@
 #include "InputActionValue.h"
 #include "ActionCharacter.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnStaminaChangedDelegate, float, InStamina, float, InMaxStamina);
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnStaminaChangedDelegate, float, InStamina, float, InMaxStamina);
 
 class UInputAction;
 /**
@@ -94,6 +94,6 @@ private:
 	FTimerHandle StaminaManagerTimerHandle;
 
 public:
-	UPROPERTY(BlueprintAssignable, Category = "Player|Event")
-	FOnStaminaChangedDelegate OnStaminaChanged;
+	//UPROPERTY(BlueprintAssignable, Category = "Player|Event")
+	//FOnStaminaChangedDelegate OnStaminaChanged;
 };

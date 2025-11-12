@@ -20,7 +20,7 @@ void UResourceComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//ManageStamina();
+	Health = MaxHealth;
 	Stamina = MaxStamina;
 	// ...
 	
@@ -39,6 +39,7 @@ void UResourceComponent::AddStamina(float InValue)
 {
 	// 스태미너 변경 처리
 	Stamina += InValue;
+	Health += InValue;
 
 	// 스태미너를 소비하고 일정 시간 뒤에 자동재생되게 타이머 세팅
 	StaminaAutoRegenCoolTimerSet();
@@ -51,6 +52,8 @@ void UResourceComponent::AddStamina(float InValue)
 		OnStaminaEmpty.Broadcast();
 	}
 	UE_LOG(LogTemp, Log, TEXT("CurrentStamina : (%.1f)"), Stamina);
+	OnStaminaChanged.Broadcast(Stamina, MaxStamina);
+	OnHealthChanged.Broadcast(Health, MaxHealth);
 }
 
 void UResourceComponent::StaminaAutoRegenCoolTimerSet()
@@ -83,5 +86,6 @@ void UResourceComponent::StaminaRegenPerTick()
 		GetWorld()->GetTimerManager().ClearTimer(StaminaRegenTickTimer);
 	}
 	UE_LOG(LogTemp, Log, TEXT("CurrentStamina : (%.1f)"), Stamina);
+	OnStaminaChanged.Broadcast(Stamina, MaxStamina);
 }
 
