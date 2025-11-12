@@ -39,6 +39,8 @@ protected:
 	void OnRollInput(const FInputActionValue& InValue);
 
 	void SetSprintMode();
+	// 걷기 모드 설정(다이나믹 델리게이트에 바인드하기 위해 UFUNCTION 추가)
+	UFUNCTION()
 	void SetWalkMode();
 	void ManageStamina();
 	void DelayStaminaRestore();
@@ -52,6 +54,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Camera")
 	TObjectPtr<class UCameraComponent> PlayerCamera = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Resrouce")
+	TObjectPtr <class UResourceComponent> Resource = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputAction> IA_Move = nullptr;
@@ -69,10 +74,6 @@ protected:
 	bool IsSprinting = false;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Value")
 	bool IsStaminaRecovering = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Value")
-	float MaxStamina = 10.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Value")
-	float Stamina = 0.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Value")
 	float RollStamina = 3.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Value")
