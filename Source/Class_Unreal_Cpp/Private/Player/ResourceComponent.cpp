@@ -20,8 +20,6 @@ void UResourceComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Health = MaxHealth;
-	Stamina = MaxStamina;
 	SetCurrentHealth(MaxHealth);
 	SetCurrentStamina(MaxStamina);
 	// ...
