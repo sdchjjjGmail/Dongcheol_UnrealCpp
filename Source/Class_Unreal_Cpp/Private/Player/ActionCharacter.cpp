@@ -34,9 +34,14 @@ AActionCharacter::AActionCharacter()
 void AActionCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+<<<<<<< HEAD
 	AnimInstance = GetMesh()->GetAnimInstance();
 	ManageStamina();
 	Stamina = MaxStamina;
+=======
+	if (GetMesh()) AnimInstance = GetMesh()->GetAnimInstance();
+	if (Resource) Resource->OnStaminaEmpty.AddDynamic(this, &AActionCharacter::SetWalkMode);
+>>>>>>> debug
 }
 
 // Called every frame
@@ -70,7 +75,7 @@ void AActionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void AActionCharacter::OnMoveInput(const FInputActionValue& InValue)
 {
 	FVector2D InputDirection = InValue.Get<FVector2D>();
-	
+
 	//UE_LOG(LogTemp, Log, TEXT("Dir : (%.1f, %.1f)"), InputDirection.X, InputDirection.Y);
 	//UE_LOG(LogTemp, Log, TEXT("Dir : (%s)"), *InputDirection.ToString());
 
@@ -78,7 +83,7 @@ void AActionCharacter::OnMoveInput(const FInputActionValue& InValue)
 
 	FQuat controlYawRotation = FQuat(FRotator(0, GetControlRotation().Yaw, 0)); // 컨트롤러의 Yaw 회전을 따로 뽑아와서
 	moveDirection = controlYawRotation.RotateVector(moveDirection); // 이동 방향에 적용
-	
+
 	AddMovementInput(moveDirection);
 }
 
