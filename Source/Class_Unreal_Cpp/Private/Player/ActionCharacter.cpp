@@ -6,6 +6,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Player/ResourceComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
@@ -28,21 +29,25 @@ AActionCharacter::AActionCharacter()
 
 	GetCharacterMovement()->bOrientRotationToMovement = true; // 이동 방향을 바라보게 회전
 	GetCharacterMovement()->RotationRate = FRotator(0, 360, 0);
+
+	Resource = CreateDefaultSubobject<UResourceComponent>(TEXT("PlayerReource"));
 }
 
 // Called when the game starts or when spawned
 void AActionCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	AnimInstance = GetMesh()->GetAnimInstance();
-	ManageStamina();
-	Stamina = MaxStamina;
+	if (GetMesh()) AnimInstance = GetMesh()->GetAnimInstance();
+	if (Resource) Resource->OnStaminaEmpty.BindDynamic(this, &AActionCharacter::SetWalkMode);
 }
 
 // Called every frame
 void AActionCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (IsSprinting) Resource->AddStamina(-DeltaTime);
+	if (IsStaminaRecovering) Resource->AddStamina(DeltaTime * RestoreMultiplier);
 }
 
 // Called to bind functionality to input
@@ -86,11 +91,11 @@ void AActionCharacter::OnRollInput(const FInputActionValue& InValue)
 {
 	if (AnimInstance.IsValid())
 	{
-		if (!AnimInstance->IsAnyMontagePlaying() && Stamina >= RollStamina)
+		if (!AnimInstance->IsAnyMontagePlaying() && Resource->HasEnoughStamina(RollStamina))
 		{
 			IsStaminaRecovering = false;
 			//SetActorRotation(GetLastMovementInputVector().Rotation());
-			Stamina -= RollStamina;
+			Resource->AddStamina(-RollStamina);
 			PlayAnimMontage(RollMontage);
 			DelayStaminaRestore();
 		}
@@ -101,7 +106,7 @@ void AActionCharacter::SetSprintMode()
 {
 	//UE_LOG(LogTemp, Log, TEXT("달리기 모드"));
 
-	if (Stamina > 0 && !GetVelocity().IsNearlyZero() && !AnimInstance->IsAnyMontagePlaying())
+	if (!GetVelocity().IsNearlyZero() && !AnimInstance->IsAnyMontagePlaying())
 	{
 		IsSprinting = true;
 		IsStaminaRecovering = false;
@@ -121,56 +126,31 @@ void AActionCharacter::SetWalkMode()
 	}
 }
 
-void AActionCharacter::DelayStaminaRestore()
-{
-	auto& TimerManager = GetWorld()->GetTimerManager();
-	TimerManager.ClearTimer(timerHandle);
-	TimerManager.SetTimer(
-		timerHandle,
-		FTimerDelegate::CreateLambda([this]()
-			{
-				if (!IsSprinting) IsStaminaRecovering = true;
-			}
-		),
-		2.0f,
-		false
-	);
-}
+//void AActionCharacter::DelayStaminaRestore()
+//{
+//	auto& TimerManager = GetWorld()->GetTimerManager();
+//	TimerManager.ClearTimer(timerHandle);
+//	TimerManager.SetTimer(
+//		timerHandle,
+//		FTimerDelegate::CreateLambda([this]()
+//			{
+//				if (!IsSprinting) IsStaminaRecovering = true;
+//			}
+//		),
+//		2.0f,
+//		false
+//	);
+//}
 
-void AActionCharacter::ManageStamina()
-{
-	GetWorld()->GetTimerManager().SetTimer(
-		StaminaManagerTimerHandle,
-		FTimerDelegate::CreateLambda([this]()
-			{
-				if (IsSprinting)
-				{
-					if (Stamina < 0.0f)
-					{
-						Stamina = 0.0f;
-						SetWalkMode();
-					}
-					else
-					{
-						Stamina -= StaminaSpendValue;
-					}
-				}
-				if (IsStaminaRecovering)
-				{
-					if (Stamina > MaxStamina)
-					{
-						Stamina = MaxStamina;
-					}
-					else
-					{
-						Stamina += (StaminaSpendValue * RestoreMultiplier);
-					}
-				}
-				UE_LOG(LogTemp, Log, TEXT("Stamina : %f"), Stamina);
-				OnStaminaChanged.Broadcast(Stamina, MaxStamina);
-			}
-		),
-		StaminaManagerSpeed,
-		true
-	);
-}
+//void AActionCharacter::ManageStamina()
+//{
+//	GetWorld()->GetTimerManager().SetTimer(
+//		StaminaManagerTimerHandle,
+//		FTimerDelegate::CreateLambda([this]()
+//			{
+//			}
+//		),
+//		StaminaManagerSpeed,
+//		true
+//	);
+//}
