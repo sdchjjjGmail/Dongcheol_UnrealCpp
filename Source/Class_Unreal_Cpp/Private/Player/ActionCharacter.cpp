@@ -101,7 +101,7 @@ void AActionCharacter::SetSprintMode()
 {
 	//UE_LOG(LogTemp, Log, TEXT("달리기 모드"));
 
-	if (Stamina > 0)
+	if (Stamina > 0 && !GetVelocity().IsNearlyZero())
 	{
 		IsSprinting = true;
 		IsStaminaRecovering = false;
@@ -113,10 +113,12 @@ void AActionCharacter::SetSprintMode()
 void AActionCharacter::SetWalkMode()
 {
 	//UE_LOG(LogTemp, Log, TEXT("걷기 모드"));
-
-	IsSprinting = false;
-	GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
-	DelayStaminaRestore();
+	if (IsSprinting)
+	{
+		IsSprinting = false;
+		GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
+		DelayStaminaRestore();
+	}
 }
 
 void AActionCharacter::DelayStaminaRestore()
