@@ -90,6 +90,7 @@ private:
 	UPROPERTY()
 	TWeakObjectPtr<UAnimInstance> AnimInstance = nullptr;
 	FTimerHandle timerHandle;
+	FTimerHandle StaminaManagerTimerHandle;
 
 public:
 	UPROPERTY(BlueprintAssignable, Category = "Player|Event")

@@ -137,7 +137,6 @@ void AActionCharacter::DelayStaminaRestore()
 
 void AActionCharacter::ManageStamina()
 {
-	FTimerHandle StaminaManagerTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(
 		StaminaManagerTimerHandle,
 		FTimerDelegate::CreateLambda([this]()
