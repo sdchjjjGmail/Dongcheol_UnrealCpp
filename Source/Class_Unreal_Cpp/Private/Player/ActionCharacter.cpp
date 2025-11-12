@@ -101,7 +101,7 @@ void AActionCharacter::SetSprintMode()
 {
 	//UE_LOG(LogTemp, Log, TEXT("달리기 모드"));
 
-	if (Stamina > 0 && !GetVelocity().IsNearlyZero())
+	if (Stamina > 0 && !GetVelocity().IsNearlyZero() && !AnimInstance->IsAnyMontagePlaying())
 	{
 		IsSprinting = true;
 		IsStaminaRecovering = false;
