@@ -37,19 +37,8 @@ AActionCharacter::AActionCharacter()
 void AActionCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-<<<<<<< HEAD
-<<<<<<< HEAD
-	AnimInstance = GetMesh()->GetAnimInstance();
-	ManageStamina();
-	Stamina = MaxStamina;
-=======
 	if (GetMesh()) AnimInstance = GetMesh()->GetAnimInstance();
 	if (Resource) Resource->OnStaminaEmpty.AddDynamic(this, &AActionCharacter::SetWalkMode);
->>>>>>> debug
-=======
-	if (GetMesh()) AnimInstance = GetMesh()->GetAnimInstance();
-	if (Resource) Resource->OnStaminaEmpty.AddDynamic(this, &AActionCharacter::SetWalkMode);
->>>>>>> 9394155 (델리게이트)
 }
 
 // Called every frame

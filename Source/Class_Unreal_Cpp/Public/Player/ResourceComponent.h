@@ -86,6 +86,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data|Stamina")
 	float StaminaTickInterval = 0.05f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data|Health")
+	float MaxHealth = 100.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data|Health")
+	float Health = 0.0f;
+
 private:
 	FTimerHandle StaminaAutoRegenCoolTimer; // 스태미너 자동 회복용 타이머 핸들
 	FTimerHandle StaminaRegenTickTimer; // 스태미너 자동 회복 시 틱별 타이머 핸들
