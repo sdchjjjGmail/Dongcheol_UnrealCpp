@@ -11,6 +11,8 @@
 //DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnStaminaChangedDelegate, float, InStamina, float, InMaxStamina);
 
 class UInputAction;
+class UResourceComponent;
+
 /**
  *
  */
@@ -34,6 +36,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UResourceComponent* GetResourceComponent() { return Resource; }
+
 protected:
 	void OnMoveInput(const FInputActionValue& InValue);
 	void OnRollInput(const FInputActionValue& InValue);
@@ -56,7 +60,7 @@ protected:
 	TObjectPtr<class UCameraComponent> PlayerCamera = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Resrouce")
-	TObjectPtr <class UResourceComponent> Resource = nullptr;
+	TObjectPtr <UResourceComponent> Resource = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputAction> IA_Move = nullptr;

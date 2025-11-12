@@ -9,7 +9,7 @@ UResourceComponent::UResourceComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
 }
@@ -22,6 +22,8 @@ void UResourceComponent::BeginPlay()
 
 	Health = MaxHealth;
 	Stamina = MaxStamina;
+	SetCurrentHealth(MaxHealth);
+	SetCurrentStamina(MaxStamina);
 	// ...
 	
 }
@@ -37,10 +39,6 @@ void UResourceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 
 void UResourceComponent::AddStamina(float InValue)
 {
-	// 스태미너 변경 처리
-	Stamina += InValue;
-	Health += InValue;
-
 	// 스태미너를 소비하고 일정 시간 뒤에 자동재생되게 타이머 세팅
 	StaminaAutoRegenCoolTimerSet();
 
@@ -52,8 +50,16 @@ void UResourceComponent::AddStamina(float InValue)
 		OnStaminaEmpty.Broadcast();
 	}
 	UE_LOG(LogTemp, Log, TEXT("CurrentStamina : (%.1f)"), Stamina);
-	OnStaminaChanged.Broadcast(Stamina, MaxStamina);
-	OnHealthChanged.Broadcast(Health, MaxHealth);
+	SetCurrentStamina(FMath::Clamp(Stamina + InValue, 0, MaxStamina));
+}
+
+void UResourceComponent::AddHealth(float InValue)
+{
+	SetCurrentHealth(FMath::Clamp(Health + InValue, 0, MaxHealth));
+	if (!IsAlive())
+	{
+		OnDie.Broadcast();
+	}
 }
 
 void UResourceComponent::StaminaAutoRegenCoolTimerSet()
@@ -79,13 +85,13 @@ void UResourceComponent::StaminaAutoRegenCoolTimerSet()
 
 void UResourceComponent::StaminaRegenPerTick()
 {
-	Stamina += StaminaRegenAmount;
-	if (Stamina > MaxStamina)
+	float stamina = Stamina + StaminaRegenAmount;
+	if (stamina > MaxStamina)
 	{
 		Stamina = MaxStamina;
 		GetWorld()->GetTimerManager().ClearTimer(StaminaRegenTickTimer);
 	}
 	UE_LOG(LogTemp, Log, TEXT("CurrentStamina : (%.1f)"), Stamina);
-	OnStaminaChanged.Broadcast(Stamina, MaxStamina);
+	SetCurrentStamina(FMath::Clamp(stamina, 0, MaxStamina));
 }
 

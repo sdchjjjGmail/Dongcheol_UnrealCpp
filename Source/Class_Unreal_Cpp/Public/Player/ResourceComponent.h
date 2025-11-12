@@ -34,6 +34,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStaminaEmpty);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnStaminaChanged, float, Stamina, float, MaxStamina);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChanged, float, Health, float, MaxHealth);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDie);
 
 UCLASS( Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class CLASS_UNREAL_CPP_API UResourceComponent : public UActorComponent
@@ -55,10 +56,20 @@ public:
 	// 스태미너 추가/감소용 함수
 	UFUNCTION(BlueprintCallable)
 	void AddStamina(float InValue);
+	UFUNCTION(BlueprintCallable)
+	void AddHealth(float InValue);
+
+	inline float GetCurrentHealth() const { return Health; }
+	inline float GetMaxHealth() const { return MaxHealth; }
+	inline float GetCurrentStamina() const { return Stamina; }
+	inline float GetMaxStamina() const { return MaxStamina; }
 
 	//스태미너가 충분한지 확인하는 함수
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	inline bool HasEnoughStamina(float InValue) { return Stamina >= InValue; }
+	inline bool HasEnoughStamina(float InValue) const { return Stamina >= InValue; }
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	inline bool IsAlive() const { return Health > 0; }
 
 public:
 	// 스테미너가 다 떨어졌음을 알리는 델리게이트
@@ -71,9 +82,21 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Event")
 	FOnHealthChanged OnHealthChanged;
 
+	UPROPERTY(BlueprintAssignable, Category = "Event")
+	FOnDie OnDie;
+
 private:
 	void StaminaAutoRegenCoolTimerSet();
 	void StaminaRegenPerTick();
+
+	inline void SetCurrentHealth(float InValue) {
+		Health = InValue;
+		OnHealthChanged.Broadcast(Health, MaxHealth);
+	}
+	inline void SetCurrentStamina(float InValue) {
+		Stamina = InValue;
+		OnStaminaChanged.Broadcast(Stamina, MaxStamina);
+	}
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data|Stamina")

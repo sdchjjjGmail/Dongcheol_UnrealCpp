@@ -46,7 +46,11 @@ void AActionCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (IsSprinting) Resource->AddStamina(-DeltaTime);
+	if (IsSprinting) 
+	{
+		Resource->AddStamina(-DeltaTime);
+		Resource->AddHealth(-DeltaTime);
+	}
 	if (IsStaminaRecovering) Resource->AddStamina(DeltaTime * RestoreMultiplier);
 }
 
