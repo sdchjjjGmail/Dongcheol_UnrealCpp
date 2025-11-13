@@ -22,4 +22,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Resource", meta = (BindWidget))
 	TWeakObjectPtr<class UResourceBarWidget> StaminaBar;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Resource", meta = (BindWidget))
+	TWeakObjectPtr<class UCooltimeWidget> StaminaCooltimeBar;
 };
