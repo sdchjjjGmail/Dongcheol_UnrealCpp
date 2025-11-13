@@ -158,7 +158,6 @@ void AActionCharacter::SectionJumpForComboPractice()
 {
 	if (ComnoSectionJumpNotify.IsValid() && bComboReady)
 	{
-		UAnimMontage* current = AnimInstance->GetCurrentActiveMontage();
 		AnimInstance->Montage_JumpToSection(ComnoSectionJumpNotify->GetNextSectionName());
 		bComboReady = false;
 		Resource->AddStamina(-AttackStaminaCost);	// 스태미너 감소
