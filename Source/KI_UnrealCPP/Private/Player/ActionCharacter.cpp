@@ -78,6 +78,7 @@ void AActionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 				SetWalkMode();
 			});
 		enhanced->BindAction(IA_Roll, ETriggerEvent::Triggered, this, &AActionCharacter::OnRollInput);
+		enhanced->BindAction(IA_Attack, ETriggerEvent::Triggered, this, &AActionCharacter::OnAttackInput);
 	}
 }
 
@@ -112,6 +113,22 @@ void AActionCharacter::OnRollInput(const FInputActionValue& InValue)
 	}
 }
 
+void AActionCharacter::OnAttackInput(const FInputActionValue& InValue)
+{
+	if (AnimInstance.IsValid() && Resource->HasEnoughStamina(AttackStaminaCost))
+	{
+		if (!AnimInstance->IsAnyMontagePlaying())
+		{
+			PlayAnimMontage(AttackMontage);
+			Resource->AddStamina(-AttackStaminaCost);	// 스태미너 감소
+		}
+		else if (AnimInstance->GetCurrentActiveMontage() == AttackMontage)
+		{
+			SectionJumpForCombo(); // 콤보 공격 시도
+		}
+	}
+}
+
 void AActionCharacter::SetSprintMode()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("달리기 모드"));
@@ -124,4 +141,19 @@ void AActionCharacter::SetWalkMode()
 	//UE_LOG(LogTemp, Warning, TEXT("걷기 모드"));
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	bIsSprint = false;
+}
+
+void AActionCharacter::SectionJumpForCombo()
+{
+	if (SectionJumpNotify.IsValid() && bComboReady)
+	{
+		UAnimMontage* current = AnimInstance->GetCurrentActiveMontage();
+		AnimInstance->Montage_SetNextSection( // 다음 섹션으로 점프하기
+			AnimInstance->Montage_GetCurrentSection(current), // 현재 섹션
+			SectionJumpNotify->GetNextSectionName(), // 다음 섹션의 이름
+			current // 실행될 몽타주
+		);
+		bComboReady = false;
+		Resource->AddStamina(-AttackStaminaCost);	// 스태미너 감소
+	}
 }
