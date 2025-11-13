@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
 #include "AnimNotify/AnimNotifyState_SectionJump.h"
+#include "AnimNotify/AnimNotifyState_ComboPractice.h"
 #include "ActionCharacter.generated.h"
 
 class UInputAction;
@@ -41,6 +42,12 @@ public:
 		bComboReady = InSectionJumpNotify != nullptr;
 	}
 
+	inline void SetComboSectionJumpNotify(UAnimNotifyState_ComboPractice* InComboSectionJumpNotify)
+	{
+		ComnoSectionJumpNotify = InComboSectionJumpNotify;
+		bComboReady = InComboSectionJumpNotify != nullptr;
+	}
+
 protected:
 	// 이동 방향 입력 받기
 	void OnMoveInput(const FInputActionValue& InValue);
@@ -60,6 +67,7 @@ protected:
 
 private:
 	void SectionJumpForCombo();
+	void SectionJumpForComboPractice();
 	void SpendRunStamina(float InDeltaTime);
 
 protected:
@@ -116,6 +124,9 @@ private:
 	// 현재 진행중인 섹션 점프 노티파이 스테이트
 	UPROPERTY()
 	TWeakObjectPtr<UAnimNotifyState_SectionJump> SectionJumpNotify = nullptr;
+
+	UPROPERTY()
+	TWeakObjectPtr<UAnimNotifyState_ComboPractice> ComnoSectionJumpNotify = nullptr;
 	
 	// 콤보가 가능한 상황인지 확인하기 위한 플래그
 	bool bComboReady = false;
