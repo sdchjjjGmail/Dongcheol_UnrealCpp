@@ -128,8 +128,11 @@ void AActionCharacter::OnAttackInput(const FInputActionValue& InValue)
 void AActionCharacter::SetSprintMode()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("달리기 모드"));
-	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
-	bIsSprint = true;
+	if (Resource->GetCurrentStamina() > 1.0f)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+		bIsSprint = true;
+	}
 }
 
 void AActionCharacter::SetWalkMode()
