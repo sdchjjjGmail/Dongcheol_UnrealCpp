@@ -60,6 +60,7 @@ protected:
 
 private:
 	void SectionJumpForCombo();
+	void SpendRunStamina(float InDeltaTime);
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Camera")
