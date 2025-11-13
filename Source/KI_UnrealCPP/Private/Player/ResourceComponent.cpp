@@ -73,8 +73,11 @@ void UResourceComponent::AddStamina(float InValue)
 	// 스태미너 변경 처리
 	SetCurrentStamina(FMath::Clamp(CurrentStamina + InValue, 0, MaxStamina));
 
-	// 스태미너를 소비하고 일정 시간 뒤에 자동재생되게 타이머 세팅
-	StaminaAutoRegenCoolTimerSet();
+	if (InValue < 0)
+	{
+		// 스태미너를 소비하고 일정 시간 뒤에 자동재생되게 타이머 세팅
+		StaminaAutoRegenCoolTimerSet();
+	}
 
 	if (CurrentStamina <= 0)
 	{
@@ -90,6 +93,7 @@ void UResourceComponent::StaminaAutoRegenCoolTimerSet()
 	FTimerManager& timerManager = world->GetTimerManager();
 
 	//GetWorldTimerManager().ClearTimer(StaminaCoolTimer);	// 해서 나쁠 것은 없음(SetTimer할 때 이미 내부적으로 처리하고 있다)
+	timerManager.ClearTimer(StaminaRegenTickTimer);
 	timerManager.SetTimer(
 		StaminaAutoRegenCoolTimer,
 		[this]() {
