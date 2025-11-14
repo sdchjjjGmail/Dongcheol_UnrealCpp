@@ -7,6 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Player/ResourceComponent.h"
+#include "Weapon/WeaponActor.h"
 
 // Sets default values
 AActionCharacter::AActionCharacter()
@@ -81,13 +82,23 @@ void AActionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void AActionCharacter::SetCollisionOn()
 {
 	UE_LOG(LogTemp, Log, TEXT("set Hit On"));
-	OnWeaponCollisionOn.Broadcast();
+	//OnWeaponCollisionOn.Broadcast();
+	
+	if (CurrentWeapon.IsValid())
+	{
+		CurrentWeapon->AttackEnable();
+	}
 }
 
 void AActionCharacter::SetCollisionOff()
 {
 	UE_LOG(LogTemp, Log, TEXT("set Hit Off"));
-	OnWeaponCollisionOff.Broadcast();
+	//OnWeaponCollisionOff.Broadcast();
+
+	if (CurrentWeapon.IsValid())
+	{
+		CurrentWeapon->AttackDisable();
+	}
 }
 
 void AActionCharacter::OnMoveInput(const FInputActionValue& InValue)
@@ -101,7 +112,6 @@ void AActionCharacter::OnMoveInput(const FInputActionValue& InValue)
 	moveDirection = controlYawRotation.RotateVector(moveDirection);	// 이동 방향에 적용
 	
 	AddMovementInput(moveDirection);
-	
 }
 
 void AActionCharacter::OnRollInput(const FInputActionValue& InValue)

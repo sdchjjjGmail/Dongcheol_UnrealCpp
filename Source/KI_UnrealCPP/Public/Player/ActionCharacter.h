@@ -126,6 +126,10 @@ protected:
 	// 플레이어가 뛰고 있는 중인지 표시 해놓은 변수
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Player|State")
 	bool bIsSprint = false;
+
+	// 플레이어가 현재 가지고 있는 무기
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Player|Weapon")
+	TWeakObjectPtr<class AWeaponActor> CurrentWeapon = nullptr;
 	
 private:
 	UPROPERTY()
