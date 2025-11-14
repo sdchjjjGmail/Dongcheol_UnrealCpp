@@ -4,6 +4,7 @@
 #include "Weapon/WeaponActor.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/ActionCharacter.h"
 
 // Sets default values
 AWeaponActor::AWeaponActor()
@@ -29,6 +30,7 @@ void AWeaponActor::BeginPlay()
 {
 	Super::BeginPlay();
 	OnActorBeginOverlap.AddDynamic(this, &AWeaponActor::OnWeaponBeginOverlap);
+	StartOwnerSearch();
 }
 
 void AWeaponActor::OnWeaponBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
@@ -48,16 +50,16 @@ void AWeaponActor::OnWeaponBeginOverlap(AActor* OverlappedActor, AActor* OtherAc
 	UGameplayStatics::ApplyDamage(OtherActor, finalDamage, instigator, this, DamageType);
 }
 
-void AWeaponActor::AttackEnable(bool bEnable)
+void AWeaponActor::AttackEnable()
 {
-	if (bEnable)
-	{
-		WeaponCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	}
-	else
-	{
-		WeaponCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}
+	UE_LOG(LogTemp, Log, TEXT("Hit On"));
+	WeaponCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+}
+
+void AWeaponActor::AttackDisable()
+{
+	UE_LOG(LogTemp, Log, TEXT("Hit Off"));
+	WeaponCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AWeaponActor::PostInitializeComponents()
@@ -65,4 +67,26 @@ void AWeaponActor::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	// CDO(Class Default Object)의 설정대로 초기화 된 이후( = OverlapOnlyPawn 설정 이후)
 	WeaponCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AWeaponActor::StartOwnerSearch()
+{
+	GetWorld()->GetTimerManager().SetTimer(
+		ownerSearchTimer,
+		[this]() {
+			if (WeaponOwner.IsValid())
+			{
+				ownerCharacter = Cast<AActionCharacter>(WeaponOwner.Get());
+				if (ownerCharacter)
+				{
+					UE_LOG(LogTemp, Log, TEXT("ownerCharacter : %s"), *ownerCharacter->GetName());
+					ownerCharacter->OnWeaponCollisionOn.AddDynamic(this, &AWeaponActor::AttackEnable);
+					ownerCharacter->OnWeaponCollisionOff.AddDynamic(this, &AWeaponActor::AttackDisable);
+					GetWorld()->GetTimerManager().ClearTimer(ownerSearchTimer);
+				}
+			}
+		},
+		OwnerSearchFrequency,
+		true
+	);
 }

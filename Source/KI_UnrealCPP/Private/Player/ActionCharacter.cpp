@@ -78,6 +78,18 @@ void AActionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	}
 }
 
+void AActionCharacter::SetCollisionOn()
+{
+	UE_LOG(LogTemp, Log, TEXT("set Hit On"));
+	OnWeaponCollisionOn.Broadcast();
+}
+
+void AActionCharacter::SetCollisionOff()
+{
+	UE_LOG(LogTemp, Log, TEXT("set Hit Off"));
+	OnWeaponCollisionOff.Broadcast();
+}
+
 void AActionCharacter::OnMoveInput(const FInputActionValue& InValue)
 {
 	FVector2D inputDirection = InValue.Get<FVector2D>();

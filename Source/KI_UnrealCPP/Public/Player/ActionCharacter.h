@@ -9,6 +9,9 @@
 #include "AnimNotify/AnimNotifyState_ComboPractice.h"
 #include "ActionCharacter.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponCollisionOn);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponCollisionOff);
+
 class UInputAction;
 //class USpringArmComponent;
 class UResourceComponent;
@@ -35,6 +38,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UResourceComponent* GetResourceComponent() { return Resource; }
+
+	void SetCollisionOn();
+	void SetCollisionOff();
 
 	inline void SetSectionJumpNotify(UAnimNotifyState_SectionJump* InSectionJumpNotify)
 	{
@@ -69,6 +75,10 @@ private:
 	void SectionJumpForCombo();
 	void SectionJumpForComboPractice();
 	void SpendRunStamina(float InDeltaTime);
+
+public:
+	FOnWeaponCollisionOn OnWeaponCollisionOn;
+	FOnWeaponCollisionOff OnWeaponCollisionOff;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Camera")

@@ -25,12 +25,17 @@ protected:
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void AttackEnable(bool bEnable);
+	void AttackEnable();
+	UFUNCTION(BlueprintCallable)
+	void AttackDisable();
 
 	virtual void PostInitializeComponents() override;
 
 	UFUNCTION(BlueprintCallable)
 	inline void SetWeaponOwner(ACharacter* InOwner) { WeaponOwner = InOwner; }
+
+private:
+	void StartOwnerSearch();
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -47,5 +52,7 @@ protected:
 
 private:
 	TWeakObjectPtr<ACharacter> WeaponOwner = nullptr;
-
+	class AActionCharacter* ownerCharacter = nullptr;
+	FTimerHandle ownerSearchTimer;
+	float OwnerSearchFrequency = 0.1f;
 };
