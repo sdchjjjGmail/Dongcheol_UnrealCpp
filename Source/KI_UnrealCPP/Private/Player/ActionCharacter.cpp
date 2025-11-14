@@ -7,7 +7,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Player/ResourceComponent.h"
+#include "Player/StatusComponent.h"
 #include "Weapon/WeaponActor.h"
+#include "Weapon/ReinforcedWeaponActor.h"
 
 // Sets default values
 AActionCharacter::AActionCharacter()
@@ -44,6 +46,11 @@ void AActionCharacter::BeginPlay()
 	}
 	if (Resource)
 	{
+		if (Status)
+		{
+			Resource->SetMaxHealth((Status->GetAgility() + Status->GetVitalilty()) * 10);
+			Resource->SetMaxStamina(Status->GetVitalilty() * 10);
+		}
 		Resource->OnStaminaEmpty.AddDynamic(this, &AActionCharacter::SetWalkMode);
 	}
 
@@ -83,23 +90,23 @@ void AActionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void AActionCharacter::SetCollisionOn()
 {
 	UE_LOG(LogTemp, Log, TEXT("set Hit On"));
-	//OnWeaponCollisionOn.Broadcast();
+	OnWeaponCollisionOn.Broadcast();
 	
-	if (CurrentWeapon.IsValid())
-	{
-		CurrentWeapon->AttackEnable();
-	}
+	//if (CurrentWeapon.IsValid())
+	//{
+	//	CurrentWeapon->AttackEnable();
+	//}
 }
 
 void AActionCharacter::SetCollisionOff()
 {
 	UE_LOG(LogTemp, Log, TEXT("set Hit Off"));
-	//OnWeaponCollisionOff.Broadcast();
+	OnWeaponCollisionOff.Broadcast();
 
-	if (CurrentWeapon.IsValid())
-	{
-		CurrentWeapon->AttackDisable();
-	}
+	//if (CurrentWeapon.IsValid())
+	//{
+	//	CurrentWeapon->AttackDisable();
+	//}
 }
 
 void AActionCharacter::OnMoveInput(const FInputActionValue& InValue)
@@ -196,5 +203,22 @@ void AActionCharacter::SpendRunStamina(float InDeltaTime)
 		&& AnimInstance.IsValid() && !AnimInstance->IsAnyMontagePlaying())	// 달리기 모드인 상태에서 움직이면 스태미너를 소비한다.
 	{
 		Resource->AddStamina(-SprintStaminaCost * InDeltaTime);	// 스태미너 감소
+	}
+}
+
+void AActionCharacter::EquipReinforcedWeapon()
+{
+	if (CurrentReinforcedWeapon.IsValid())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Weapon Equip!"));
+		CurrentReinforcedWeapon->OnWeaponDeprecated.AddDynamic(this, &AActionCharacter::UnequipReinforcedWeapon);
+	}
+}
+
+void AActionCharacter::UnequipReinforcedWeapon()
+{
+	if (CurrentReinforcedWeapon.IsValid())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Weapon Unequip!"));
 	}
 }

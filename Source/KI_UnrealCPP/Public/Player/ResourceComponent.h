@@ -72,6 +72,15 @@ public:
 	inline float GetCurrentStamina() const { return CurrentStamina; }
 	inline float GetMaxStamina() const { return MaxStamina; }
 
+	inline void SetMaxHealth(float InHealth) {
+		MaxHealth = InHealth;
+		SetCurrentHealth(MaxHealth);
+	}
+	inline void SetMaxStamina(float InStamina) {
+		MaxStamina = InStamina; 
+		SetCurrentStamina(MaxStamina);
+	}
+
 	// 사망을 알리는 델리게이트
 	UPROPERTY(BlueprintAssignable, Category = "Event")
 	FOnDie OnDie;

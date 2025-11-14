@@ -21,6 +21,8 @@ protected:
 public:
 	// 스테이터스와 모디파이어를 기반으로 공격력 계산해서 리턴하는 함수
 	float GetAttackPower();
+	inline float GetAgility() const { return Agility; }
+	inline float GetVitalilty() const { return Vitalilty; }
 
 protected:
 	// 힘
@@ -29,7 +31,7 @@ protected:
 	
 	// 민첩
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Status", meta = (ClampMin = "0", ClampMax = "20"))
-	int32 Agility = 10;
+	int32 Agility = 15;
 
 	// 생명력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Status", meta = (ClampMin = "0", ClampMax = "20"))

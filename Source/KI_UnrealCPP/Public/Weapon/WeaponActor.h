@@ -21,7 +21,9 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
-	void OnWeaponBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
+	virtual void OnWeaponBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
+
+	virtual void StartOwnerSearch();
 
 public:
 	UFUNCTION(BlueprintCallable)
@@ -35,7 +37,7 @@ public:
 	inline void SetWeaponOwner(ACharacter* InOwner) { WeaponOwner = InOwner; }
 
 private:
-	void StartOwnerSearch();
+	
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -50,9 +52,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data")
 	TSubclassOf<UDamageType> DamageType = nullptr;
 
-private:
-	TWeakObjectPtr<ACharacter> WeaponOwner = nullptr;
-	class AActionCharacter* ownerCharacter = nullptr;
 	FTimerHandle ownerSearchTimer;
+
+	TWeakObjectPtr<ACharacter> WeaponOwner = nullptr;
+
+	class AActionCharacter* ownerCharacter = nullptr;
+
 	float OwnerSearchFrequency = 0.1f;
+
+private:
+
 };

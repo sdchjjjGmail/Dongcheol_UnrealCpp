@@ -56,6 +56,8 @@ public:
 		bComboReady = InComboSectionJumpNotify != nullptr;
 	}
 
+	inline void SetCurrentWeapon(class AReinforcedWeaponActor* InWeapon) { CurrentReinforcedWeapon = InWeapon; }
+
 protected:
 	// 이동 방향 입력 받기
 	void OnMoveInput(const FInputActionValue& InValue);
@@ -77,6 +79,8 @@ private:
 	void SectionJumpForCombo();
 	void SectionJumpForComboPractice();
 	void SpendRunStamina(float InDeltaTime);
+	void EquipReinforcedWeapon();
+	void UnequipReinforcedWeapon();
 
 public:
 	FOnWeaponCollisionOn OnWeaponCollisionOn;
@@ -135,8 +139,12 @@ protected:
 	bool bIsSprint = false;
 
 	// 플레이어가 현재 가지고 있는 무기
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Player|Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Weapon")
 	TWeakObjectPtr<class AWeaponActor> CurrentWeapon = nullptr;
+
+	// 플레이어가 현재 가지고 있는 무기
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Weapon")
+	TWeakObjectPtr<class AReinforcedWeaponActor> CurrentReinforcedWeapon = nullptr;
 	
 private:
 	UPROPERTY()
