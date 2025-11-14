@@ -15,6 +15,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponCollisionOff);
 class UInputAction;
 //class USpringArmComponent;
 class UResourceComponent;
+class UStatusComponent;
 //class UAnimNotifyState_SectionJump;
 
 UCLASS()
@@ -38,6 +39,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UResourceComponent* GetResourceComponent() { return Resource; }
+	UStatusComponent* GetStatusComponent() { return Status; }
 
 	void SetCollisionOn();
 	void SetCollisionOff();
@@ -83,10 +85,15 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Camera")
 	TObjectPtr<class USpringArmComponent> SpringArm = nullptr;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Camera")
 	TObjectPtr<class UCameraComponent> PlayerCamera = nullptr;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Resource")
 	TObjectPtr<class UResourceComponent> Resource = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Status")
+	TObjectPtr<UStatusComponent> Status = nullptr;
 
 	// 인풋 액션들
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")

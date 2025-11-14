@@ -5,6 +5,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/ActionCharacter.h"
+#include "Player/StatusComponent.h"
 
 // Sets default values
 AWeaponActor::AWeaponActor()
@@ -37,14 +38,17 @@ void AWeaponActor::OnWeaponBeginOverlap(AActor* OverlappedActor, AActor* OtherAc
 {
 	float finalDamage = Damage;
 	AController* instigator = nullptr;
-	if (WeaponOwner.IsValid())
+	if (ownerCharacter)
 	{
-		if (WeaponOwner == OtherActor)
+		if (ownerCharacter == OtherActor)
 		{
 			return;
 		}
-		//finalDamage += WeaponOwner->GetAttackPower();
-		instigator = WeaponOwner->GetController();
+		if (ownerCharacter->GetStatusComponent() != nullptr)
+		{
+			finalDamage += ownerCharacter->GetStatusComponent()->GetAttackPower();
+		}
+		instigator = ownerCharacter->GetController();
 	}
 	UE_LOG(LogTemp, Log, TEXT("ApplyDamage : %s"), *OtherActor->GetName());
 	UGameplayStatics::ApplyDamage(OtherActor, finalDamage, instigator, this, DamageType);
