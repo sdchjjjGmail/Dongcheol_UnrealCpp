@@ -57,6 +57,7 @@ public:
 	}
 
 	inline void SetCurrentWeapon(class AReinforcedWeaponActor* InWeapon) { CurrentReinforcedWeapon = InWeapon; }
+	void EquipThisWeapon(AReinforcedWeaponActor* InWeapon);
 
 protected:
 	// 이동 방향 입력 받기
@@ -144,7 +145,7 @@ protected:
 
 	// 플레이어가 현재 가지고 있는 무기
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Weapon")
-	TWeakObjectPtr<class AReinforcedWeaponActor> CurrentReinforcedWeapon = nullptr;
+	TObjectPtr<class AReinforcedWeaponActor> CurrentReinforcedWeapon = nullptr;
 	
 private:
 	UPROPERTY()

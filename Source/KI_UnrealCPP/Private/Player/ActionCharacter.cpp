@@ -109,6 +109,26 @@ void AActionCharacter::SetCollisionOff()
 	//}
 }
 
+void AActionCharacter::EquipThisWeapon(AReinforcedWeaponActor* InWeapon)
+{
+	if (!InWeapon) return;
+
+	FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, true);
+
+	if (CurrentWeapon.IsValid() && CurrentWeapon != InWeapon)
+	{
+		CurrentWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		CurrentWeapon->SetOwner(nullptr);
+		CurrentWeapon->SetActorEnableCollision(true);
+	}
+	InWeapon->AttachToComponent(
+		GetMesh(),
+		Rules,
+		TEXT("hand_rSocket")
+	);
+	CurrentWeapon = InWeapon;
+}
+
 void AActionCharacter::OnMoveInput(const FInputActionValue& InValue)
 {
 	FVector2D inputDirection = InValue.Get<FVector2D>();
@@ -208,7 +228,7 @@ void AActionCharacter::SpendRunStamina(float InDeltaTime)
 
 void AActionCharacter::EquipReinforcedWeapon()
 {
-	if (CurrentReinforcedWeapon.IsValid())
+	if (CurrentReinforcedWeapon)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Weapon Equip!"));
 		CurrentReinforcedWeapon->OnWeaponDeprecated.AddDynamic(this, &AActionCharacter::UnequipReinforcedWeapon);
@@ -217,7 +237,7 @@ void AActionCharacter::EquipReinforcedWeapon()
 
 void AActionCharacter::UnequipReinforcedWeapon()
 {
-	if (CurrentReinforcedWeapon.IsValid())
+	if (CurrentReinforcedWeapon)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Weapon Unequip!"));
 	}

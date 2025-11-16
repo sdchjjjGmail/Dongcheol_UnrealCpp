@@ -3,27 +3,54 @@
 
 #include "Weapon/ReinforcedWeaponActor.h"
 #include "Player/ActionCharacter.h"
+#include "Components/CapsuleComponent.h"
+
+AReinforcedWeaponActor::AReinforcedWeaponActor()
+{
+	PrimaryActorTick.bCanEverTick = false;
+
+	WeaponEquipCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("EquipCollision"));
+	WeaponEquipCollision->SetupAttachment(WeaponMesh);
+	WeaponEquipCollision->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
+}
 
 void AReinforcedWeaponActor::BeginPlay()
 {
 	Super::BeginPlay();
 	UsageCount = 3;
+	WeaponEquipCollision->OnComponentBeginOverlap.AddDynamic(this, &AReinforcedWeaponActor::EquipWeapon);
 }
 
-void AReinforcedWeaponActor::OnWeaponBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
+void AReinforcedWeaponActor::OnWeaponBeginOverlap(UPrimitiveComponent* OverlappedComponent,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex,
+	bool bFromSweep,
+	const FHitResult& SweepResult)
 {
-	Super::OnWeaponBeginOverlap(OverlappedActor, OtherActor);
+	Super::OnWeaponBeginOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 	ConsumeUsageCount();
 }
 
-void AReinforcedWeaponActor::StartOwnerSearch()
+void AReinforcedWeaponActor::EquipWeapon(
+	UPrimitiveComponent* OverlappedComponent,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex,
+	bool bFromSweep,
+	const FHitResult& SweepResult)
 {
-	Super::StartOwnerSearch();
+	UE_LOG(LogTemp, Warning, TEXT("Weapon Equip!"));
+	ownerCharacter = Cast<AActionCharacter>(OtherActor);
+	
 	if (ownerCharacter)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Weapon Equip success!"));
 		ownerCharacter->SetCurrentWeapon(this);
+		ownerCharacter->EquipThisWeapon(this);
 	}
+	WeaponEquipCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	OnWeaponEquipCollision.Broadcast();
+	UE_LOG(LogTemp, Warning, TEXT("owner : %s"), *ownerCharacter->GetName());
 }
 
 void AReinforcedWeaponActor::ConsumeUsageCount()
