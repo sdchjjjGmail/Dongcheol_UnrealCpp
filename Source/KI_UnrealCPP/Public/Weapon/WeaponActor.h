@@ -32,7 +32,7 @@ protected:
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void AttackEnable();
+	virtual void AttackEnable();
 	UFUNCTION(BlueprintCallable)
 	void AttackDisable();
 

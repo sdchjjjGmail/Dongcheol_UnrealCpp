@@ -58,6 +58,7 @@ public:
 
 	inline void SetCurrentWeapon(class AReinforcedWeaponActor* InWeapon) { CurrentReinforcedWeapon = InWeapon; }
 	void EquipThisWeapon(AReinforcedWeaponActor* InWeapon);
+	void DismissThisWeapon(bool Destroy);
 
 protected:
 	// 이동 방향 입력 받기
@@ -81,7 +82,6 @@ private:
 	void SectionJumpForComboPractice();
 	void SpendRunStamina(float InDeltaTime);
 	void EquipReinforcedWeapon();
-	void UnequipReinforcedWeapon();
 
 public:
 	FOnWeaponCollisionOn OnWeaponCollisionOn;
@@ -142,6 +142,9 @@ protected:
 	// 플레이어가 현재 가지고 있는 무기
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Weapon")
 	TWeakObjectPtr<class AWeaponActor> CurrentWeapon = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Weapon")
+	TWeakObjectPtr<class AWeaponActor> OriginalWeapon = nullptr;
 
 	// 플레이어가 현재 가지고 있는 무기
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Weapon")

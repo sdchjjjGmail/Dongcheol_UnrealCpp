@@ -17,4 +17,3 @@ float UStatusComponent::GetAttackPower()
 {
 	return Strengh * AttackModifier;
 }
-

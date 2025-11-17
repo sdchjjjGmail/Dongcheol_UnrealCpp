@@ -29,7 +29,7 @@ void AReinforcedWeaponActor::OnWeaponBeginOverlap(UPrimitiveComponent* Overlappe
 	const FHitResult& SweepResult)
 {
 	Super::OnWeaponBeginOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
-	ConsumeUsageCount();
+	//ConsumeUsageCount();
 }
 
 void AReinforcedWeaponActor::EquipWeapon(
@@ -47,9 +47,8 @@ void AReinforcedWeaponActor::EquipWeapon(
 	{
 		ownerCharacter->SetCurrentWeapon(this);
 		ownerCharacter->EquipThisWeapon(this);
+		WeaponEquipCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
-	WeaponEquipCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	OnWeaponEquipCollision.Broadcast();
 	UE_LOG(LogTemp, Warning, TEXT("owner : %s"), *ownerCharacter->GetName());
 }
 
@@ -57,8 +56,15 @@ void AReinforcedWeaponActor::ConsumeUsageCount()
 {
 	UsageCount -= 1;
 	UE_LOG(LogTemp, Warning, TEXT("Count : %d"), UsageCount);
-	if (UsageCount <= 0)
+	if (UsageCount <= 0 && ownerCharacter)
 	{
-		OnWeaponDeprecated.Broadcast();
+		//OnWeaponDeprecated.Broadcast();
+		ownerCharacter->DismissThisWeapon(true);
 	}
+}
+
+void AReinforcedWeaponActor::WeaponThrown()
+{
+	UE_LOG(LogTemp, Warning, TEXT("WeaponThrown"));
+	WeaponEquipCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 }

@@ -56,6 +56,8 @@ void AActionCharacter::BeginPlay()
 
 	// 게임 진행 중에 자주 변경되는 값은 시작 시점에서 리셋을 해주는 것이 좋다.
 	bIsSprint = false;	
+
+	OriginalWeapon = CurrentWeapon;
 }
 
 // Called every frame
@@ -91,6 +93,7 @@ void AActionCharacter::SetCollisionOn()
 {
 	UE_LOG(LogTemp, Log, TEXT("set Hit On"));
 	OnWeaponCollisionOn.Broadcast();
+	if (CurrentReinforcedWeapon) CurrentReinforcedWeapon->ConsumeUsageCount();
 	
 	//if (CurrentWeapon.IsValid())
 	//{
@@ -113,7 +116,12 @@ void AActionCharacter::EquipThisWeapon(AReinforcedWeaponActor* InWeapon)
 {
 	if (!InWeapon) return;
 
-	FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, true);
+	if (InWeapon == CurrentWeapon)
+	{
+		InWeapon->Destroy();
+		CurrentReinforcedWeapon->ChargeUsageCount();
+		return;
+	}
 
 	if (CurrentWeapon.IsValid() && CurrentWeapon != InWeapon)
 	{
@@ -121,12 +129,41 @@ void AActionCharacter::EquipThisWeapon(AReinforcedWeaponActor* InWeapon)
 		CurrentWeapon->SetOwner(nullptr);
 		CurrentWeapon->SetActorEnableCollision(true);
 	}
+
+	if (CurrentReinforcedWeapon) CurrentReinforcedWeapon->WeaponThrown();
+	FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, true);
 	InWeapon->AttachToComponent(
 		GetMesh(),
 		Rules,
 		TEXT("hand_rSocket")
 	);
 	CurrentWeapon = InWeapon;
+}
+
+void AActionCharacter::DismissThisWeapon(bool Destroy)
+{
+	if (Destroy)
+	{
+		CurrentReinforcedWeapon->Destroy();
+		CurrentWeapon = OriginalWeapon;
+	}
+
+	if (CurrentReinforcedWeapon)
+	{
+		CurrentReinforcedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		CurrentReinforcedWeapon->SetOwner(nullptr);
+		CurrentReinforcedWeapon->SetActorEnableCollision(true);
+	}
+
+	FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, true);
+
+	if (!CurrentWeapon.IsValid()) return;
+
+	CurrentWeapon->AttachToComponent(
+		GetMesh(),
+		Rules,
+		TEXT("hand_rSocket")
+	);
 }
 
 void AActionCharacter::OnMoveInput(const FInputActionValue& InValue)
@@ -231,14 +268,6 @@ void AActionCharacter::EquipReinforcedWeapon()
 	if (CurrentReinforcedWeapon)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Weapon Equip!"));
-		CurrentReinforcedWeapon->OnWeaponDeprecated.AddDynamic(this, &AActionCharacter::UnequipReinforcedWeapon);
-	}
-}
-
-void AActionCharacter::UnequipReinforcedWeapon()
-{
-	if (CurrentReinforcedWeapon)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Weapon Unequip!"));
+		//CurrentReinforcedWeapon->OnWeaponDeprecated.AddDynamic(this, &AActionCharacter::UnequipReinforcedWeapon);
 	}
 }

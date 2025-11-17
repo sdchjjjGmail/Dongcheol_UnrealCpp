@@ -7,7 +7,6 @@
 #include "ReinforcedWeaponActor.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponDeprecated);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponEquipCollision);
 
 /**
  * 
@@ -20,12 +19,13 @@ class KI_UNREALCPP_API AReinforcedWeaponActor : public AWeaponActor
 public:
 	AReinforcedWeaponActor();
 	virtual void BeginPlay() override;
+	void ConsumeUsageCount();
+	void WeaponThrown();
+
+	inline void ChargeUsageCount() { UsageCount = 3; }
 
 	UPROPERTY(VisibleAnywhere, BlueprintAssignable)
 	FOnWeaponDeprecated OnWeaponDeprecated;
-
-	UPROPERTY(VisibleAnywhere, BlueprintAssignable)
-	FOnWeaponEquipCollision OnWeaponEquipCollision;
 
 protected:
 	virtual void OnWeaponBeginOverlap(UPrimitiveComponent* OverlappedComponent,
@@ -45,7 +45,6 @@ protected:
 		const FHitResult& SweepResult);
 
 private:
-	void ConsumeUsageCount();
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
