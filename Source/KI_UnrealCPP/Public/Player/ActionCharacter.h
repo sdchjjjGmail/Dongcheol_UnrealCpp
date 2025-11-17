@@ -7,6 +7,7 @@
 #include "InputActionValue.h"
 #include "AnimNotify/AnimNotifyState_SectionJump.h"
 #include "AnimNotify/AnimNotifyState_ComboPractice.h"
+#include "Interface/InventoryOwner.h"
 #include "ActionCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponCollisionOn);
@@ -19,7 +20,7 @@ class UStatusComponent;
 //class UAnimNotifyState_SectionJump;
 
 UCLASS()
-class KI_UNREALCPP_API AActionCharacter : public ACharacter
+class KI_UNREALCPP_API AActionCharacter : public ACharacter, public IInventoryOwner
 {
 	GENERATED_BODY()
 
@@ -37,6 +38,9 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	// 아이템 추가 인터페이스 함수 구현
+	virtual void AddItem_Implementation(EItemCode Code) override;
 
 	UResourceComponent* GetResourceComponent() { return Resource; }
 	UStatusComponent* GetStatusComponent() { return Status; }
@@ -74,6 +78,9 @@ protected:
 	// 걷기 모드 설정(다이나믹 델리게이트에 바인드하기 위해 UFUNCTION 추가)
 	UFUNCTION()
 	void SetWalkMode();
+
+	UFUNCTION()
+	void OnCharacterOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
 private:
 	void SectionJumpForCombo();
