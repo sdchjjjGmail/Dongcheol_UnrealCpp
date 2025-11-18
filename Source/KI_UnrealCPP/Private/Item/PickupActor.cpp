@@ -53,35 +53,20 @@ void APickupActor::BeginPlay()
 
 	if (PickupTimeline)
 	{
-		if (ScaleCurve)
+		if (DistanceCurve)
 		{
-			FOnTimelineFloat ScaleUpdateDelegate;
-			ScaleUpdateDelegate.BindUFunction(this, FName("OnScaleUpdate"));
-			PickupTimeline->AddInterpFloat(ScaleCurve, ScaleUpdateDelegate);
+			FOnTimelineFloat UpdateDelegate;
+			UpdateDelegate.BindUFunction(this, FName("OnTimelineUpdate"));
+			PickupTimeline->AddInterpFloat(DistanceCurve, UpdateDelegate);
 
-			FOnTimelineEvent ScaleFinishDelegate;
-			ScaleFinishDelegate.BindUFunction(this, FName("OnScaleFinish"));
-			PickupTimeline->SetTimelineFinishedFunc(ScaleFinishDelegate);
+			FOnTimelineEvent FinishDelegate;
+			FinishDelegate.BindUFunction(this, FName("OnTimelineFinish"));
+			PickupTimeline->SetTimelineFinishedFunc(FinishDelegate);
 		}
 
-		PickupTimeline->SetPlayRate(1/Duration);
+		PickupTimeline->SetPlayRate(1 / Duration);
 	}
 
-	//if (PickupMoveTimeline)
-	//{
-	//	if (MoveScaleCurve)
-	//	{
-	//		FOnTimelineFloat MoveUpdateDelegate;
-	//		MoveUpdateDelegate.BindUFunction(this, FName("OnMoveToOwner"));
-	//		PickupMoveTimeline->AddInterpFloat(MoveScaleCurve, MoveUpdateDelegate);
-
-	//		FOnTimelineEvent MoveFinishDelegate;
-	//		MoveFinishDelegate.BindUFunction(this, FName("OnMoveFinish"));
-	//		PickupMoveTimeline->SetTimelineFinishedFunc(MoveFinishDelegate);
-	//	}
-
-	//	PickupMoveTimeline->SetPlayRate(1 / Duration);
-	//}
 	bPickedup = false;
 }
 // Called every frame
@@ -96,13 +81,13 @@ void APickupActor::OnPickup_Implementation(AActor* Target)
 	if (!bPickedup)
 	{
 		PickupOwner = Target;
-		UE_LOG(LogTemp, Log, TEXT("Pickup Interface Overlap"));
-		// 자신을 먹은 대상에게 자기가 가지고 있는 무기를 알려줘야 함
+		PickupStartLocation = Mesh->GetRelativeLocation() + GetActorLocation(); // Mesh의 월드 위치
 
 		PickupTimeline->PlayFromStart();
 
 		bPickedup = true;
 		this->SetActorEnableCollision(ECollisionEnabled::NoCollision);
+		BaseRoot->SetSimulatePhysics(false);
 	}
 }
 
@@ -116,16 +101,30 @@ void APickupActor::OnPickupBeginOverlap(
 	UE_LOG(LogTemp, Log, TEXT("Pickup Overlap"));
 }
 
-void APickupActor::OnScaleUpdate(float Value)
+void APickupActor::OnTimelineUpdate(float Value)
 {
-	FVector newScale = FVector::One() * Value;
-	SetActorScale3D(newScale);
+	// 타임라인의 정규화 된 진행 시간(0~1)
+	float currentTime = PickupTimeline->GetPlaybackPosition();
+	UE_LOG(LogTemp, Log, TEXT("currentTime : %.2f"), currentTime);
 
-	FVector NewLocation = FMath::Lerp(PickupOwner->GetActorLocation(), GetActorLocation(), Value);
-	this->SetActorRelativeLocation(NewLocation);
+	// 커브의 현재 값 받아오기
+	float distanceValue = Value;
+	float heightValue = HeightCurve ? HeightCurve->GetFloatValue(currentTime) : 0.0f;
+	float scaleCurve = ScaleCurve ? ScaleCurve->GetFloatValue(currentTime) : 1.0f;
+
+	// 커브값을 기준으로 새 위치와 스케일 계산
+	FVector NewLocation = FMath::Lerp(
+		PickupStartLocation, PickupOwner.Get()->GetActorLocation(), distanceValue);
+	NewLocation += heightValue * PickupHeight * FVector::UpVector;
+
+	Mesh->SetWorldLocation(NewLocation);
+
+	FVector NewScale = FVector::One() * scaleCurve;
+	Mesh->SetRelativeScale3D(NewScale);
+
 }
 
-void APickupActor::OnScaleFinish()
+void APickupActor::OnTimelineFinish()
 {
 	if (PickupOwner.IsValid() && PickupOwner->Implements<UInventoryOwner>())
 	{
