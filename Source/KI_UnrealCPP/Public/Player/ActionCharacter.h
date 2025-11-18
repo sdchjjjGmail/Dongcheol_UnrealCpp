@@ -62,6 +62,14 @@ public:
 
 	inline void SetCurrentWeapon(class AReinforcedWeaponActor* InWeapon) { CurrentReinforcedWeapon = InWeapon; }
 
+	// 테스트용 함수
+	UFUNCTION(BlueprintCallable)
+	void TestDropUsedWeapon();
+
+	// 테스트용 함수
+	UFUNCTION(BlueprintCallable)
+	void TestDropCurrentWeapon();
+
 protected:
 	// 이동 방향 입력 받기
 	void OnMoveInput(const FInputActionValue& InValue);
@@ -92,6 +100,12 @@ private:
 	void EquipReinforcedWeapon();
 	void UnequipReinforcedWeapon();
 
+	// 사용이 끝난 무기를 버리는 함수
+	void DropUsedWeapon();
+
+	// 사용중이던 무기를 버리는 함수
+	void DropCurrentWeapon();
+
 public:
 	FOnWeaponCollisionOn OnWeaponCollisionOn;
 	FOnWeaponCollisionOff OnWeaponCollisionOff;
@@ -108,6 +122,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Status")
 	TObjectPtr<UStatusComponent> Status = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Weapon")
+	TObjectPtr<USceneComponent> DropLocation = nullptr;
 
 	// 인풋 액션들
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
@@ -156,8 +173,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Weapon")
 	TWeakObjectPtr<class AReinforcedWeaponActor> CurrentReinforcedWeapon = nullptr;
 
+	// 사용 다한 무기 액터(순수 장식)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Weapon")
-	TMap<EItemCode, TSubclassOf<AActor>> UsedWeapon;
+	TMap < EItemCode, TSubclassOf <class AUsedWeapon>> UsedWeapons;
+
+	// Pickup할 수 있는 무기 액터
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Weapon")
+	TMap < EItemCode, TSubclassOf <class APickupActor>> PickupWeapons;
 	
 private:
 	UPROPERTY()
