@@ -83,6 +83,9 @@ protected:
 	void OnCharacterOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
 private:
+	UFUNCTION()
+	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
 	void SectionJumpForCombo();
 	void SectionJumpForComboPractice();
 	void SpendRunStamina(float InDeltaTime);
@@ -152,6 +155,9 @@ protected:
 	// 플레이어가 현재 가지고 있는 무기
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Weapon")
 	TWeakObjectPtr<class AReinforcedWeaponActor> CurrentReinforcedWeapon = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Weapon")
+	TMap<EItemCode, TSubclassOf<AActor>> UsedWeapon;
 	
 private:
 	UPROPERTY()
@@ -164,6 +170,9 @@ private:
 	UPROPERTY()
 	TWeakObjectPtr<UAnimNotifyState_ComboPractice> ComnoSectionJumpNotify = nullptr;
 	
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Weapon", meta = (AllowPrivateAccess = "true"))
+	//bool bWeaponUseEnded = false;
+
 	// 콤보가 가능한 상황인지 확인하기 위한 플래그
 	bool bComboReady = false;
 };

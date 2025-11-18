@@ -1,0 +1,32 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "UsedWeapon.generated.h"
+
+UCLASS()
+class KI_UNREALCPP_API AUsedWeapon : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	AUsedWeapon();
+
+protected:
+	virtual void BeginPlay() override;
+
+public:
+
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
+	TObjectPtr<UStaticMeshComponent> Mesh = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
+	TObjectPtr<USceneComponent> ForceLocation = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	float Force = 300.0f;
+};

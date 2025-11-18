@@ -55,6 +55,12 @@ void AActionCharacter::BeginPlay()
 		Resource->OnStaminaEmpty.AddDynamic(this, &AActionCharacter::SetWalkMode);
 	}
 
+	if (GetMesh())
+	{
+		AnimInstance = GetMesh()->GetAnimInstance();
+
+	}
+
 	// 게임 진행 중에 자주 변경되는 값은 시작 시점에서 리셋을 해주는 것이 좋다.
 	bIsSprint = false;
 	OnActorBeginOverlap.AddDynamic(this, &AActionCharacter::OnCharacterOverlap);
@@ -150,12 +156,23 @@ void AActionCharacter::OnRollInput(const FInputActionValue& InValue)
 
 void AActionCharacter::OnAttackInput(const FInputActionValue& InValue)
 {
-	if (AnimInstance.IsValid() && Resource->HasEnoughStamina(AttackStaminaCost))
+	// 애님 인스턴스가 있고, 스태미너 충분하고, 현재 무기가 공격을 할 수 있어야 한다.
+	if (AnimInstance.IsValid() && Resource->HasEnoughStamina(AttackStaminaCost)
+		&& (CurrentWeapon.IsValid() && CurrentWeapon->CanAttack()))
 	{
 		if (!AnimInstance->IsAnyMontagePlaying())
 		{
-			PlayAnimMontage(AttackMontage);
+			PlayAnimMontage(AttackMontage); // 몽타주 재생
+
+			FOnMontageEnded onMontageEnded;
+			onMontageEnded.BindUObject(this, &AActionCharacter::OnAttackMontageEnded);
+			AnimInstance->Montage_SetEndDelegate(onMontageEnded); // 몽타주가 끝났을 때 델리게이트 발송(플레이 이후에 등록해야 함)
+
 			Resource->AddStamina(-AttackStaminaCost);	// 스태미너 감소
+			if (CurrentWeapon.IsValid())
+			{
+				CurrentWeapon->OnAttack(); // 무기 공격 시 처리(횟수 차감)
+			}
 		}
 		else if (AnimInstance->GetCurrentActiveMontage() == AttackMontage)
 		{
@@ -200,6 +217,24 @@ void AActionCharacter::OnCharacterOverlap(AActor* OverlappedActor, AActor* Other
 	}
 }
 
+void AActionCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	UE_LOG(LogTemp, Log, TEXT("공격 몽타주가 끝남"));
+	
+	if (CurrentWeapon.IsValid() && !CurrentWeapon->CanAttack()) // CurrentWeapon이 공격할수 없으면(=사용 횟수가 안남았다)
+	{
+		UE_LOG(LogTemp, Log, TEXT("다쓴 무기 버림"));
+		TSubclassOf<AActor>* usedClass = UsedWeapon.Find(CurrentWeapon->GetWeaponID());
+		GetWorld()->SpawnActor<AActor>(
+			*usedClass,
+			GetActorLocation() + GetActorForwardVector() * 100.0f, GetActorRotation());
+		// FRotator를 캐릭터의 forward 방향을 바라보는 회전으로 대체하기
+
+		//UPrimitiveComponent* primitive = used->FindComponentByClass<UPrimitiveComponent>();
+		//primitive->AddImpulse((GetActorForwardVector() + GetActorUpVector()) * 200.0f, NAME_None, true);
+	}
+}
+
 void AActionCharacter::SectionJumpForCombo()
 {
 	if (SectionJumpNotify.IsValid() && bComboReady)
@@ -222,6 +257,10 @@ void AActionCharacter::SectionJumpForComboPractice()
 		AnimInstance->Montage_JumpToSection(ComnoSectionJumpNotify->GetNextSectionName());
 		bComboReady = false;
 		Resource->AddStamina(-AttackStaminaCost);	// 스태미너 감소
+		if (CurrentWeapon.IsValid())
+		{
+			CurrentWeapon->OnAttack();
+		}
 	}
 }
 

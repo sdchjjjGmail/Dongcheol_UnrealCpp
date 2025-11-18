@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/Character.h"
+#include "Common/CommonEnums.h"
 #include "WeaponActor.generated.h"
 
 UCLASS()
@@ -34,12 +35,18 @@ public:
 
 	// 공격을 했을 때 실행되어야 할 함수
 	UFUNCTION(BlueprintCallable)
-	virtual void OnAttack() {};
+	virtual void OnAttack() {}
+
+	// 이 무기로 공격할 수 있는지 확인하는 함수
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	virtual bool CanAttack() { return true; }
 
 	UFUNCTION(BlueprintCallable)
 	virtual void OnWeaponPickedup(ACharacter* InOwner);
 
 	virtual void PostInitializeComponents() override;
+
+	inline EItemCode GetWeaponID() const { return WeaponID; }
 
 private:
 	
@@ -56,6 +63,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data")
 	TSubclassOf<UDamageType> DamageType = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data")
+	EItemCode WeaponID = EItemCode::Axe;
 
 	FTimerHandle ownerSearchTimer;
 
