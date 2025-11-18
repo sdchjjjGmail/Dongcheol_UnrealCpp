@@ -26,15 +26,20 @@ protected:
 	virtual void StartOwnerSearch();
 
 public:
+	// 공격 활성화/비활성화 하는 함수(컬리전 켜고 끄기)
 	UFUNCTION(BlueprintCallable)
 	void AttackEnable();
 	UFUNCTION(BlueprintCallable)
 	void AttackDisable();
 
-	virtual void PostInitializeComponents() override;
+	// 공격을 했을 때 실행되어야 할 함수
+	UFUNCTION(BlueprintCallable)
+	virtual void OnAttack() {};
 
 	UFUNCTION(BlueprintCallable)
-	inline void SetWeaponOwner(ACharacter* InOwner) { WeaponOwner = InOwner; }
+	virtual void OnWeaponPickedup(ACharacter* InOwner);
+
+	virtual void PostInitializeComponents() override;
 
 private:
 	

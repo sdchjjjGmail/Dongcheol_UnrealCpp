@@ -53,8 +53,8 @@ protected:
 	TObjectPtr<USkeletalMeshComponent> Mesh = nullptr;
 
 	// 아이템 획득 처리용 overlap collision
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	TObjectPtr<class USphereComponent> PickupOverlap = nullptr;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	//TObjectPtr<class USphereComponent> PickupOverlap = nullptr;
 
 	// 아이템 이펙트
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")

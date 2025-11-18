@@ -66,6 +66,11 @@ void AWeaponActor::AttackDisable()
 	WeaponCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
+void AWeaponActor::OnWeaponPickedup(ACharacter* InOwner)
+{
+	WeaponOwner = InOwner;
+}
+
 void AWeaponActor::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();

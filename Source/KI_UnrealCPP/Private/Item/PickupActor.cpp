@@ -31,10 +31,10 @@ APickupActor::APickupActor()
 	Mesh->SetCollisionProfileName(TEXT("NoCollision"));
 	Mesh->AddRelativeRotation(FRotator(0, 0, -10.0f));
 
-	PickupOverlap = CreateDefaultSubobject<USphereComponent>(TEXT("Overlap"));
-	PickupOverlap->SetupAttachment(BaseRoot);
-	PickupOverlap->SetSphereRadius(100.0f);
-	PickupOverlap->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
+	//PickupOverlap = CreateDefaultSubobject<USphereComponent>(TEXT("Overlap"));
+	//PickupOverlap->SetupAttachment(BaseRoot);
+	//PickupOverlap->SetSphereRadius(100.0f);
+	//PickupOverlap->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
 
 	Effect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Effect"));
 	Effect->SetupAttachment(BaseRoot);
@@ -46,10 +46,10 @@ APickupActor::APickupActor()
 void APickupActor::BeginPlay()
 {
 	Super::BeginPlay();
-	if (PickupOverlap)
-	{
-		PickupOverlap->OnComponentBeginOverlap.AddDynamic(this, &APickupActor::OnPickupBeginOverlap);
-	}
+	//if (PickupOverlap)
+	//{
+	//	PickupOverlap->OnComponentBeginOverlap.AddDynamic(this, &APickupActor::OnPickupBeginOverlap);
+	//}
 
 	if (PickupTimeline)
 	{
@@ -121,7 +121,6 @@ void APickupActor::OnTimelineUpdate(float Value)
 
 	FVector NewScale = FVector::One() * scaleCurve;
 	Mesh->SetRelativeScale3D(NewScale);
-
 }
 
 void APickupActor::OnTimelineFinish()
@@ -130,4 +129,5 @@ void APickupActor::OnTimelineFinish()
 	{
 		IInventoryOwner::Execute_AddItem(PickupOwner.Get(), PickupItem);
 	}
+	Destroy();
 }
