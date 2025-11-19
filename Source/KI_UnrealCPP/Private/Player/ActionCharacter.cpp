@@ -104,9 +104,10 @@ void AActionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void AActionCharacter::AddItem_Implementation(EItemCode Code)
 {
-	const UEnum* EnumPtr = StaticEnum<EItemCode>();
-	UE_LOG(LogTemp, Log, TEXT("아이템 추가 : %s"),
-		*EnumPtr->GetDisplayNameTextByValue(static_cast<int8>(Code)).ToString());
+	//const UEnum* EnumPtr = StaticEnum<EItemCode>();
+	//UE_LOG(LogTemp, Log, TEXT("아이템 추가 : %s"),
+	//	*EnumPtr->GetDisplayNameTextByValue(static_cast<int8>(Code)).ToString());
+	EquipWeapon(Code);
 }
 
 void AActionCharacter::SetCollisionOn()
@@ -133,12 +134,36 @@ void AActionCharacter::SetCollisionOff()
 
 void AActionCharacter::TestDropUsedWeapon()
 {
-	DropUsedWeapon();
+	DropWeapon(CurrentWeapon->GetWeaponID());
 }
 
 void AActionCharacter::TestDropCurrentWeapon()
 {
 	DropCurrentWeapon();
+}
+
+void AActionCharacter::EquipWeapon(EItemCode WeaponCode)
+{
+	if (CurrentWeapon.IsValid())
+	{
+		// 장비하고 있던 무기 해제
+		CurrentWeapon->WeaponActivate(false);
+	}
+	CurrentWeapon = WeaponManager->GetEquippedWeapon(WeaponCode);
+	CurrentWeapon->WeaponActivate(true);
+	// WeaponCode에 해당하는 무기 장비
+}
+
+void AActionCharacter::DropWeapon(EItemCode WeaponCode)
+{
+	UE_LOG(LogTemp, Log, TEXT("다쓴 무기 버림"));
+	if (TSubclassOf<AUsedWeapon> usedClass = WeaponManager->GetUsedWeaponClass(WeaponCode))
+	{
+		GetWorld()->SpawnActor<AActor>(
+			usedClass,
+			DropLocation->GetComponentLocation(),
+			GetActorRotation());
+	}
 }
 
 void AActionCharacter::OnMoveInput(const FInputActionValue& InValue)
@@ -239,7 +264,7 @@ void AActionCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterru
 	UE_LOG(LogTemp, Log, TEXT("공격 몽타주가 끝남"));
 	if (CurrentWeapon.IsValid() && !CurrentWeapon->CanAttack()) // CurrentWeapon이 공격할수 없으면(=사용 횟수가 안남았다)
 	{
-		DropUsedWeapon();
+		DropWeapon(CurrentWeapon->GetWeaponID());
 	}
 }
 
@@ -295,21 +320,6 @@ void AActionCharacter::UnequipReinforcedWeapon()
 	if (CurrentReinforcedWeapon.IsValid())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Weapon Unequip!"));
-	}
-}
-
-void AActionCharacter::DropUsedWeapon()
-{
-	UE_LOG(LogTemp, Log, TEXT("다쓴 무기 버림"));
-	if (CurrentWeapon.IsValid())
-	{
-		if (TSubclassOf<AUsedWeapon>* usedClass = UsedWeapons.Find(CurrentWeapon->GetWeaponID()))
-		{
-			GetWorld()->SpawnActor<AActor>(
-				*usedClass,
-				DropLocation->GetComponentLocation(),
-				GetActorRotation());
-		}
 	}
 }
 

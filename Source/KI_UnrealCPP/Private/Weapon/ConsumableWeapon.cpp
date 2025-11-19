@@ -13,9 +13,9 @@ void AConsumableWeapon::OnAttack()
 }
 
 // 무기를 획득했을 때 실행되는 함수
-void AConsumableWeapon::OnWeaponPickedup(ACharacter* InOwner)
+void AConsumableWeapon::OnWeaponPickedup()
 {
-	Super::OnWeaponPickedup(InOwner);
+	Super::OnWeaponPickedup();
 
 	RemainingUseCount = MaxUseCount;
 }

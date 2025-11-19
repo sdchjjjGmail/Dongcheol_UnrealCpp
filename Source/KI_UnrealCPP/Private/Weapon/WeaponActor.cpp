@@ -54,6 +54,54 @@ void AWeaponActor::OnWeaponBeginOverlap(AActor* OverlappedActor, AActor* OtherAc
 	UGameplayStatics::ApplyDamage(OtherActor, finalDamage, instigator, this, DamageType);
 }
 
+void AWeaponActor::WeaponActivate(bool bActivate)
+{
+	//SetActorHiddenInGame(!bActivate); // 무기는 visibility만 수정하면 된다.
+	if (bActivate)
+	{
+		// 무기 활성화
+		AttachToComponent(
+			WeaponOwner->GetMesh(),
+			FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+			TEXT("hand_rSocket")); // 플레이어의 손에 붙이가
+		SetActorHiddenInGame(false);
+
+		//SetActorHiddenInGame(false);
+		//SetActorHiddenInGame(false);
+		//SetActorEnableCollision(true);
+		//SetActorTickEnabled(true);
+	}
+	else
+	{
+		// 무기 비활성화
+		SetActorHiddenInGame(true);
+		AttachToComponent(
+			WeaponOwner->GetMesh(),
+			FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+			TEXT("root"));
+		SetActorRelativeLocation(FVector(0.0f, 0.0f, -10000.0f));
+
+		//SetActorHiddenInGame(true);
+	}
+
+	// Visibility - O
+	// 충돌 - X
+	// 액터의 틱 - X
+	// 액터의 컴포넌트들의 틱 - X
+	// 물리 - X
+	// 타이머 - X
+	// 오디오 - X
+	// 파티클 - X
+	// 애니메이션 - X
+	// Movement 컴포넌트 - X
+
+	//TSet<UActorComponent*> components = GetComponents();
+	//for (auto comp : components)
+	//{
+	//	// 자식 컴포넌트들 전부 끄기
+	//}
+}
+
 void AWeaponActor::AttackEnable()
 {
 	UE_LOG(LogTemp, Log, TEXT("Hit On"));
@@ -66,9 +114,8 @@ void AWeaponActor::AttackDisable()
 	WeaponCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-void AWeaponActor::OnWeaponPickedup(ACharacter* InOwner)
+void AWeaponActor::OnWeaponPickedup()
 {
-	WeaponOwner = InOwner;
 }
 
 void AWeaponActor::PostInitializeComponents()

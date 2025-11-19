@@ -70,6 +70,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TestDropCurrentWeapon();
 
+	// 무기를 장비하는 함수
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void EquipWeapon(EItemCode WeaponCode);
+
+	// 다쓴 무기를 버리는 함수
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void DropWeapon(EItemCode WeaponCode);
+
 protected:
 	// 이동 방향 입력 받기
 	void OnMoveInput(const FInputActionValue& InValue);
@@ -99,9 +107,6 @@ private:
 	void SpendRunStamina(float InDeltaTime);
 	void EquipReinforcedWeapon();
 	void UnequipReinforcedWeapon();
-
-	// 사용이 끝난 무기를 버리는 함수
-	void DropUsedWeapon();
 
 	// 사용중이던 무기를 버리는 함수
 	void DropCurrentWeapon();

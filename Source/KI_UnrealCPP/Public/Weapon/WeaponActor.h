@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "GameFramework/Character.h"
 #include "Common/CommonEnums.h"
+#include "Player/ActionCharacter.h"
 #include "WeaponActor.generated.h"
 
 UCLASS()
@@ -27,6 +28,10 @@ protected:
 	virtual void StartOwnerSearch();
 
 public:
+	// 무기 자체를 활성화/비활성화 하는 함수(visibility, collisioin, etc..)
+	UFUNCTION(BlueprintCallable)
+	void WeaponActivate(bool bActivate);
+
 	// 공격 활성화/비활성화 하는 함수(컬리전 켜고 끄기)
 	UFUNCTION(BlueprintCallable)
 	void AttackEnable();
@@ -42,12 +47,13 @@ public:
 	virtual bool CanAttack() { return true; }
 
 	UFUNCTION(BlueprintCallable)
-	virtual void OnWeaponPickedup(ACharacter* InOwner);
+	virtual void OnWeaponPickedup();
 
 	virtual void PostInitializeComponents() override;
 
 	inline EItemCode GetWeaponID() const { return WeaponID; }
 
+	inline void SetWeaponOwner(AActionCharacter* InOwner) { WeaponOwner = InOwner;}
 private:
 	
 
