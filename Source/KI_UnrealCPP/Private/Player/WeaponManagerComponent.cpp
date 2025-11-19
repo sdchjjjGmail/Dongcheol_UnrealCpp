@@ -25,6 +25,12 @@ TSubclassOf<AUsedWeapon> UWeaponManagerComponent::GetUsedWeaponClass(EItemCode I
     return dataAsset->UsedWeaponClass;
 }
 
+TSubclassOf<APickupActor> UWeaponManagerComponent::GetPickupWeaponClass(EItemCode InType) const
+{
+	const UWeaponDataAsset* dataAsset = *WeaponDatabase.Find(InType);
+	return dataAsset->PickupWeaponClass;
+}
+
 // Called when the game starts
 void UWeaponManagerComponent::BeginPlay()
 {
@@ -35,7 +41,7 @@ void UWeaponManagerComponent::BeginPlay()
 	ValidateWeaponDatabase();
 	SpawnWeaponInstances();
 
-	OwnerPlayer->EquipWeapon(EItemCode::Saw);
+	OwnerPlayer->EquipWeapon(EItemCode::BasicWeapon); // 시작무기 설정
 }
 
 void UWeaponManagerComponent::ValidateWeaponDatabase()
@@ -90,15 +96,7 @@ void UWeaponManagerComponent::SpawnWeaponInstances()
 			weapon->SetWeaponOwner(OwnerPlayer.Get()); // 무기의 오너 설정
 			weapon->WeaponActivate(false); // 무기 비활성화
 
-			
-			//if (IConsumable* consumableWeapon = Cast<IConsumable>(weapon))
-			//{
-				//consumableWeapon->GetOnConsumeDelegate().AddDynamic(OwnerPlayer.Get(), &AActionCharacter::DropWeapon);
-				//FScriptDelegate delegate;
-				//delegate.BindUFunction(OwnerPlayer)
-			//}
 			WeaponInstances.Add(pair.Key, weapon); // 인스턴스 맵에 추가
-			//WeaponInstances[pair.Key] = weapon; 
 		}
 	}
 }

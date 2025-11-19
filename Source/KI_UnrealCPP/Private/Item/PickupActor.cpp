@@ -79,6 +79,7 @@ void APickupActor::BeginPlay()
 		false);
 
 	bPickedup = false;
+	PickupCount = 5;
 }
 // Called every frame
 void APickupActor::Tick(float DeltaTime)
@@ -143,7 +144,7 @@ void APickupActor::OnTimelineFinish()
 {
 	if (PickupOwner.IsValid() && PickupOwner->Implements<UInventoryOwner>())
 	{
-		IInventoryOwner::Execute_AddItem(PickupOwner.Get(), PickupItem);
+		IInventoryOwner::Execute_AddItem(PickupOwner.Get(), PickupItem, PickupCount);
 	}
 	Destroy();
 }

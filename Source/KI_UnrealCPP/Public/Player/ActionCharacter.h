@@ -40,7 +40,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	// 아이템 추가 인터페이스 함수 구현
-	virtual void AddItem_Implementation(EItemCode Code) override;
+	virtual void AddItem_Implementation(EItemCode Code, int32 Count) override;
 
 	UResourceComponent* GetResourceComponent() { return Resource; }
 	UStatusComponent* GetStatusComponent() { return Status; }
@@ -60,7 +60,7 @@ public:
 		bComboReady = InComboSectionJumpNotify != nullptr;
 	}
 
-	inline void SetCurrentWeapon(class AReinforcedWeaponActor* InWeapon) { CurrentReinforcedWeapon = InWeapon; }
+	//inline void SetCurrentWeapon(class AReinforcedWeaponActor* InWeapon) { CurrentReinforcedWeapon = InWeapon; }
 
 	// 테스트용 함수
 	UFUNCTION(BlueprintCallable)
@@ -74,9 +74,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void EquipWeapon(EItemCode WeaponCode);
 
-	// 다쓴 무기를 버리는 함수
-	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	void DropWeapon(EItemCode WeaponCode);
+
 
 protected:
 	// 이동 방향 입력 받기
@@ -105,11 +103,14 @@ private:
 	void SectionJumpForCombo();
 	void SectionJumpForComboPractice();
 	void SpendRunStamina(float InDeltaTime);
-	void EquipReinforcedWeapon();
 	void UnequipReinforcedWeapon();
 
+	// 다쓴 무기를 버리는 함수
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void DropWeapon(EItemCode WeaponCode);
+
 	// 사용중이던 무기를 버리는 함수
-	void DropCurrentWeapon();
+	void DropCurrentWeapon(EItemCode WeaponCode);
 
 public:
 	FOnWeaponCollisionOn OnWeaponCollisionOn;
@@ -180,14 +181,6 @@ protected:
 	// 플레이어가 현재 가지고 있는 무기
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Weapon")
 	TWeakObjectPtr<class AReinforcedWeaponActor> CurrentReinforcedWeapon = nullptr;
-
-	// 사용 다한 무기 액터(순수 장식)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Weapon")
-	TMap < EItemCode, TSubclassOf <class AUsedWeapon>> UsedWeapons;
-
-	// Pickup할 수 있는 무기 액터
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Weapon")
-	TMap < EItemCode, TSubclassOf <class APickupActor>> PickupWeapons;
 	
 private:
 	UPROPERTY()

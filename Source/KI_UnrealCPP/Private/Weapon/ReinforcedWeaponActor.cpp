@@ -22,7 +22,7 @@ void AReinforcedWeaponActor::StartOwnerSearch()
 	if (ownerCharacter)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Weapon Equip success!"));
-		ownerCharacter->SetCurrentWeapon(this);
+		//ownerCharacter->SetCurrentWeapon(this);
 	}
 }
 

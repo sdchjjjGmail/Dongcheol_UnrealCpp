@@ -27,6 +27,8 @@ protected:
 
 	virtual void StartOwnerSearch();
 
+	virtual void OnWeaponActivate() {};
+	virtual void OnWeaponDeActivate() {};
 public:
 	// 무기 자체를 활성화/비활성화 하는 함수(visibility, collisioin, etc..)
 	UFUNCTION(BlueprintCallable)
@@ -47,7 +49,7 @@ public:
 	virtual bool CanAttack() { return true; }
 
 	UFUNCTION(BlueprintCallable)
-	virtual void OnWeaponPickedup();
+	virtual void OnWeaponPickedup(int32 InCount);
 
 	virtual void PostInitializeComponents() override;
 

@@ -31,7 +31,7 @@ void AWeaponActor::BeginPlay()
 {
 	Super::BeginPlay();
 	OnActorBeginOverlap.AddDynamic(this, &AWeaponActor::OnWeaponBeginOverlap);
-	StartOwnerSearch();
+	//StartOwnerSearch();
 }
 
 void AWeaponActor::OnWeaponBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
@@ -70,6 +70,8 @@ void AWeaponActor::WeaponActivate(bool bActivate)
 		//SetActorHiddenInGame(false);
 		//SetActorEnableCollision(true);
 		//SetActorTickEnabled(true);
+
+		OnWeaponActivate();
 	}
 	else
 	{
@@ -82,6 +84,8 @@ void AWeaponActor::WeaponActivate(bool bActivate)
 		SetActorRelativeLocation(FVector(0.0f, 0.0f, -10000.0f));
 
 		//SetActorHiddenInGame(true);
+
+		OnWeaponDeActivate();
 	}
 
 	// Visibility - O
@@ -114,7 +118,7 @@ void AWeaponActor::AttackDisable()
 	WeaponCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-void AWeaponActor::OnWeaponPickedup()
+void AWeaponActor::OnWeaponPickedup(int32 InCount)
 {
 }
 
