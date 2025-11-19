@@ -115,23 +115,23 @@ void AActionCharacter::AddItem_Implementation(EItemCode Code, int32 Count)
 void AActionCharacter::SetCollisionOn()
 {
 	UE_LOG(LogTemp, Log, TEXT("set Hit On"));
-	OnWeaponCollisionOn.Broadcast();
+	//OnWeaponCollisionOn.Broadcast();
 	
-	//if (CurrentWeapon.IsValid())
-	//{
-	//	CurrentWeapon->AttackEnable();
-	//}
+	if (CurrentWeapon.IsValid())
+	{
+		CurrentWeapon->AttackEnable();
+	}
 }
 
 void AActionCharacter::SetCollisionOff()
 {
 	UE_LOG(LogTemp, Log, TEXT("set Hit Off"));
-	OnWeaponCollisionOff.Broadcast();
+	//OnWeaponCollisionOff.Broadcast();
 
-	//if (CurrentWeapon.IsValid())
-	//{
-	//	CurrentWeapon->AttackDisable();
-	//}
+	if (CurrentWeapon.IsValid())
+	{
+		CurrentWeapon->AttackDisable();
+	}
 }
 
 void AActionCharacter::TestDropUsedWeapon()
