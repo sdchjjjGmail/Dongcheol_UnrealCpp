@@ -8,6 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "Player/ResourceComponent.h"
 #include "Player/StatusComponent.h"
+#include "Player/WeaponManagerComponent.h"
 #include "Weapon/WeaponActor.h"
 #include "Weapon/ReinforcedWeaponActor.h"
 #include "Weapon/UsedWeapon.h"
@@ -35,6 +36,7 @@ AActionCharacter::AActionCharacter()
 
 	Resource = CreateDefaultSubobject<UResourceComponent>(TEXT("PlayerResource"));
 	Status = CreateDefaultSubobject<UStatusComponent>(TEXT("PlayerStatus"));
+	WeaponManager = CreateDefaultSubobject<UWeaponManagerComponent>(TEXT("WeaponManager"));
 
 	bUseControllerRotationYaw = false;	// 컨트롤러의 Yaw 회전 사용 안함
 	GetCharacterMovement()->bOrientRotationToMovement = true;	// 이동 방향으로 캐릭터 회전
