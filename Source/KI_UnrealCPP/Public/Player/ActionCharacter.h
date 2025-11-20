@@ -74,7 +74,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void EquipWeapon(EItemCode WeaponCode);
 
-
+	void SetTrailState(bool TrailOn);
 
 protected:
 	// 이동 방향 입력 받기
@@ -103,7 +103,6 @@ private:
 	void SectionJumpForCombo();
 	void SectionJumpForComboPractice();
 	void SpendRunStamina(float InDeltaTime);
-	void UnequipReinforcedWeapon();
 
 	// 다쓴 무기를 버리는 함수
 	UFUNCTION(BlueprintCallable, Category = "Weapon")

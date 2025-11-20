@@ -316,11 +316,18 @@ void AActionCharacter::SpendRunStamina(float InDeltaTime)
 	}
 }
 
-void AActionCharacter::UnequipReinforcedWeapon()
+void AActionCharacter::SetTrailState(bool TrailOn)
 {
-	if (CurrentReinforcedWeapon.IsValid())
+	if (CurrentWeapon.IsValid())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Weapon Unequip!"));
+		if (TrailOn)
+		{
+			CurrentWeapon->TrailEnable();
+		}
+		else
+		{
+			CurrentWeapon->TrailDisable();
+		}
 	}
 }
 

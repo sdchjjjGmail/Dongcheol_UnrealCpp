@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Player/ActionCharacter.h"
 #include "Player/StatusComponent.h"
+#include "NiagaraComponent.h"
 
 // Sets default values
 AWeaponActor::AWeaponActor()
@@ -24,6 +25,9 @@ AWeaponActor::AWeaponActor()
 	WeaponCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Collision"));
 	WeaponCollision->SetupAttachment(WeaponMesh);
 	WeaponCollision->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
+
+	WeaponSlashEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Effect"));
+	WeaponSlashEffect->SetupAttachment(WeaponMesh);
 }
 
 // Called when the game starts or when spawned
@@ -32,6 +36,7 @@ void AWeaponActor::BeginPlay()
 	Super::BeginPlay();
 	OnActorBeginOverlap.AddDynamic(this, &AWeaponActor::OnWeaponBeginOverlap);
 	//StartOwnerSearch();
+	WeaponSlashEffect->SetVisibility(false);
 }
 
 void AWeaponActor::OnWeaponBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
@@ -116,6 +121,16 @@ void AWeaponActor::AttackDisable()
 {
 	UE_LOG(LogTemp, Log, TEXT("Hit Off"));
 	WeaponCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AWeaponActor::TrailEnable()
+{
+	WeaponSlashEffect->SetVisibility(true);
+}
+
+void AWeaponActor::TrailDisable()
+{
+	WeaponSlashEffect->SetVisibility(false);
 }
 
 void AWeaponActor::OnWeaponPickedup(int32 InCount)

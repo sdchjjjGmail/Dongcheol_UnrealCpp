@@ -40,6 +40,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AttackDisable();
 
+	void TrailEnable();
+	void TrailDisable();
+
 	// 공격을 했을 때 실행되어야 할 함수
 	UFUNCTION(BlueprintCallable)
 	virtual void OnAttack() {}
@@ -65,6 +68,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<class UCapsuleComponent> WeaponCollision = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<class UNiagaraComponent> WeaponSlashEffect = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data")
 	float Damage = 10.0f;
