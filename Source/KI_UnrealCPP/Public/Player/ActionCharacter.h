@@ -12,6 +12,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponCollisionOn);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponCollisionOff);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCameraShake);
 
 class UInputAction;
 //class USpringArmComponent;
@@ -76,6 +77,9 @@ public:
 
 	void SetTrailState(bool TrailOn);
 
+	UFUNCTION(BlueprintCallable, Category = "Effects")
+	void ShakeCamera();
+
 protected:
 	// 이동 방향 입력 받기
 	void OnMoveInput(const FInputActionValue& InValue);
@@ -114,6 +118,9 @@ private:
 public:
 	FOnWeaponCollisionOn OnWeaponCollisionOn;
 	FOnWeaponCollisionOff OnWeaponCollisionOff;
+	
+	UPROPERTY(BlueprintAssignable, Category = "Event|Effect")
+	FOnCameraShake OnCameraShake;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Camera")

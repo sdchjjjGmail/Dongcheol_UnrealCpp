@@ -15,6 +15,8 @@
 #include "Weapon/UsedWeapon.h"
 #include "Interface/Pickupable.h"
 #include "Item/PickupActor.h"
+#include "Kismet/GameplayStatics.h"
+#include "Data/CameraShakeAttackEffect.h"
 
 // Sets default values
 AActionCharacter::AActionCharacter()
@@ -301,6 +303,9 @@ void AActionCharacter::SectionJumpForComboPractice()
 		if (ComnoSectionJumpNotify->GetNextSectionName() == FName("Combo3"))
 		{
 			bIsAreaAttack = true;
+			OnCameraShake.Broadcast();
+
+			//ShakeCamera();
 		}
 		else
 		{
@@ -339,6 +344,24 @@ void AActionCharacter::SetTrailState(bool TrailOn)
 			CurrentWeapon->TrailDisable();
 		}
 	}
+}
+
+void AActionCharacter::ShakeCamera()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Shake!"));
+	//OnCameraShake.Broadcast();
+
+	/*APlayerController* pc = UGameplayStatics::GetPlayerController(this, 0);
+	if (pc)
+	{
+		if (pc->PlayerCameraManager)
+		{
+			pc->PlayerCameraManager->StartCameraShake(
+				UCameraShakeAttackEffect::StaticClass(),
+				1.0f
+			);
+		}
+	}*/
 }
 
 void AActionCharacter::DropCurrentWeapon(EItemCode WeaponCode)

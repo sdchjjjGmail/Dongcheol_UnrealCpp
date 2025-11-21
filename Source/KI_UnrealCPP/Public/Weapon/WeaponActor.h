@@ -60,7 +60,6 @@ public:
 
 	inline void SetWeaponOwner(AActionCharacter* InOwner) { WeaponOwner = InOwner;}
 private:
-	
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -83,6 +82,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	EItemCode WeaponID = EItemCode::Axe;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data|Area")
+	TObjectPtr<class UNiagaraSystem> AreaAttackEffect = nullptr;
 
 	FTimerHandle ownerSearchTimer;
 

@@ -7,6 +7,8 @@
 #include "Player/ActionCharacter.h"
 #include "Player/StatusComponent.h"
 #include "NiagaraComponent.h"
+#include "NiagaraSystem.h"
+#include "NiagaraFunctionLibrary.h"
 
 // Sets default values
 AWeaponActor::AWeaponActor()
@@ -72,7 +74,7 @@ void AWeaponActor::WeaponActivate(bool bActivate)
 		AttachToComponent(
 			WeaponOwner->GetMesh(),
 			FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-			TEXT("hand_rSocket")); // 플레이어의 손에 붙이가
+			TEXT("hand_rSocket")); // 플레이어의 손에 붙이기
 		SetActorHiddenInGame(false);
 
 		//SetActorHiddenInGame(false);
@@ -122,6 +124,26 @@ void AWeaponActor::AttackEnable(bool bAreaAttack)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Area Attack!"));
 		AreaAttackCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		if (AreaAttackEffect)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+				GetWorld(),
+				AreaAttackEffect,
+				GetActorLocation(),
+				WeaponOwner->GetActorRotation());
+		}
+
+		//DrawDebugSphere(
+		//	GetWorld(),
+		//	GetActorLocation(),
+		//	300.0f,
+		//	12,
+		//	FColor::Red,
+		//	false,
+		//	3.0f,
+		//	0,
+		//	1.0f
+		//);
 	}
 	else
 	{
