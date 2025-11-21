@@ -26,6 +26,10 @@ AWeaponActor::AWeaponActor()
 	WeaponCollision->SetupAttachment(WeaponMesh);
 	WeaponCollision->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
 
+	AreaAttackCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("AreaCollision"));
+	AreaAttackCollision->SetupAttachment(WeaponMesh);
+	AreaAttackCollision->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
+
 	WeaponSlashEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Effect"));
 	WeaponSlashEffect->SetupAttachment(WeaponMesh);
 }
@@ -111,17 +115,28 @@ void AWeaponActor::WeaponActivate(bool bActivate)
 	//}
 }
 
-void AWeaponActor::AttackEnable()
+void AWeaponActor::AttackEnable(bool bAreaAttack)
 {
 	UE_LOG(LogTemp, Log, TEXT("Hit On"));
-	WeaponCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	if (bAreaAttack)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Area Attack!"));
+		AreaAttackCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	}
+	else
+	{
+		WeaponCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	}
 }
 
 void AWeaponActor::AttackDisable()
 {
 	UE_LOG(LogTemp, Log, TEXT("Hit Off"));
 	WeaponCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	AreaAttackCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
+
+
 
 void AWeaponActor::TrailEnable()
 {
@@ -142,6 +157,7 @@ void AWeaponActor::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	// CDO(Class Default Object)의 설정대로 초기화 된 이후( = OverlapOnlyPawn 설정 이후)
 	WeaponCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	AreaAttackCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AWeaponActor::StartOwnerSearch()
@@ -155,8 +171,8 @@ void AWeaponActor::StartOwnerSearch()
 				if (ownerCharacter)
 				{
 					UE_LOG(LogTemp, Log, TEXT("ownerCharacter : %s"), *ownerCharacter->GetName());
-					ownerCharacter->OnWeaponCollisionOn.AddDynamic(this, &AWeaponActor::AttackEnable);
-					ownerCharacter->OnWeaponCollisionOff.AddDynamic(this, &AWeaponActor::AttackDisable);
+					//ownerCharacter->OnWeaponCollisionOn.AddDynamic(this, &AWeaponActor::AttackEnable);
+					//ownerCharacter->OnWeaponCollisionOff.AddDynamic(this, &AWeaponActor::AttackDisable);
 					GetWorld()->GetTimerManager().ClearTimer(ownerSearchTimer);
 				}
 			}

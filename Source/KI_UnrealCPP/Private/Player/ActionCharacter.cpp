@@ -119,7 +119,7 @@ void AActionCharacter::SetCollisionOn()
 	
 	if (CurrentWeapon.IsValid())
 	{
-		CurrentWeapon->AttackEnable();
+		CurrentWeapon->AttackEnable(bIsAreaAttack);
 	}
 }
 
@@ -213,6 +213,7 @@ void AActionCharacter::OnAttackInput(const FInputActionValue& InValue)
 	{
 		if (!AnimInstance->IsAnyMontagePlaying())
 		{
+			bIsAreaAttack = false;
 			PlayAnimMontage(AttackMontage); // 몽타주 재생
 
 			FOnMontageEnded onMontageEnded;
@@ -297,6 +298,15 @@ void AActionCharacter::SectionJumpForComboPractice()
 {
 	if (ComnoSectionJumpNotify.IsValid() && bComboReady)
 	{
+		if (ComnoSectionJumpNotify->GetNextSectionName() == FName("Combo3"))
+		{
+			bIsAreaAttack = true;
+		}
+		else
+		{
+			bIsAreaAttack = false;
+		}
+
 		AnimInstance->Montage_JumpToSection(ComnoSectionJumpNotify->GetNextSectionName());
 		bComboReady = false;
 		Resource->AddStamina(-AttackStaminaCost);	// 스태미너 감소

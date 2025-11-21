@@ -36,7 +36,7 @@ public:
 
 	// 공격 활성화/비활성화 하는 함수(컬리전 켜고 끄기)
 	UFUNCTION(BlueprintCallable)
-	void AttackEnable();
+	void AttackEnable(bool bAreaAttack);
 	UFUNCTION(BlueprintCallable)
 	void AttackDisable();
 
@@ -68,6 +68,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<class UCapsuleComponent> WeaponCollision = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<class UCapsuleComponent> AreaAttackCollision = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<class UNiagaraComponent> WeaponSlashEffect = nullptr;
