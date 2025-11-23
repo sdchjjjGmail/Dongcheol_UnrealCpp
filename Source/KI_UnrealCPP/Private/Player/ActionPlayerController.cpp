@@ -5,6 +5,12 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubSystems.h"
 #include "InputMappingContext.h"
+#include "UI/DamagePopupPoolComponent.h"
+
+AActionPlayerController::AActionPlayerController()
+{
+	DamagePopupPool = CreateDefaultSubobject<UDamagePopupPoolComponent>(TEXT("DamagePopupPool"));
+}
 
 void AActionPlayerController::BeginPlay()
 {

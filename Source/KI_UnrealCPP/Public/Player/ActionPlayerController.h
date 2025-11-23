@@ -24,6 +24,8 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	AActionPlayerController();
+
 	virtual void SetupInputComponent() override;
 
 private:
@@ -41,6 +43,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera|Pitch")
 	float VewPitchMax = 30;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
+	class UDamagePopupPoolComponent* DamagePopupPool;
 
 private:
 	int32 GameInputPriority = 1;
