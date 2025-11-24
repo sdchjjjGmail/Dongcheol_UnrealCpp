@@ -61,7 +61,7 @@ void UDamagePopupSubsystem::ReturnToPool(ADamagePopupActor* ReturnActor)
 	if (IsValid(ReturnActor))
 	{
 		//ReturnActor->SetActorHiddenInGame(true);
-		ReturnActor->SetActorLocation(FVector::UpVector * -10000.0f);
+		//ReturnActor->SetActorLocation(FVector::UpVector * -10000.0f);
 		Pool.Add(ReturnActor);
 	}
 }
