@@ -36,7 +36,8 @@ float AEnemyPawn::TakeDamage(
 {
 	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
-	UE_LOG(LogTemp, Warning, TEXT("Got Damage : %.2f"), Damage);
+	UE_LOG(LogTemp, Log, TEXT("Got Damage : %.2f"), Damage);
+	//GEngine->AddOnScreenDebugMessage();
 
 	ADamagePopupActor* damagePopupActor = GetWorld()->SpawnActor<ADamagePopupActor>(
 		DamageDisplayActor.Get(),
