@@ -3,6 +3,7 @@
 
 #include "Enemy/EnemyPawn.h"
 #include "Enemy/DamagePopupActor.h"
+#include "Framework/DamagePopupSubsystem.h"
 
 // Sets default values
 AEnemyPawn::AEnemyPawn()
@@ -25,29 +26,32 @@ AEnemyPawn::AEnemyPawn()
 void AEnemyPawn::BeginPlay()
 {
 	Super::BeginPlay();
+	OnTakeAnyDamage.AddDynamic(this, &AEnemyPawn::OnTakeDamage);
 }
 
-float AEnemyPawn::TakeDamage(
-	float Damage,
-	FDamageEvent const& DamageEvent,
-	AController* EventInstigator,
-	AActor* DamageCauser)
-{
-	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-
-	UE_LOG(LogTemp, Log, TEXT("Got Damage : %.2f"), Damage);
+//float AEnemyPawn::TakeDamage(
+//	float Damage,
+//	FDamageEvent const& DamageEvent,
+//	AController* EventInstigator,
+//	AActor* DamageCauser)
+//{
+//	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+//
+//	UE_LOG(LogTemp, Log, TEXT("Got Damage : %.2f"), Damage);
 	//GEngine->AddOnScreenDebugMessage();
 
-	ADamagePopupActor* damagePopupActor = GetWorld()->SpawnActor<ADamagePopupActor>(
-		DamageDisplayActor.Get(),
-		DamageDisplayPoint->GetComponentLocation(),
-		FRotator());
-	if (damagePopupActor)
-	{
-		damagePopupActor->PopupActivate(Damage);
-	}
-	return Damage;
-}
+	//ADamagePopupActor* damagePopupActor = GetWorld()->SpawnActor<ADamagePopupActor>(
+	//	DamageDisplayActor.Get(),
+	//	DamageDisplayPoint->GetComponentLocation(),
+	//	FRotator());
+	//if (damagePopupActor)
+	//{
+	//	damagePopupActor->PopupActivate(Damage);
+	//}
+	//UDamagePopupSubsystem* popupSystem = GetWorld()->GetSubsystem<UDamagePopupSubsystem>();
+	//popupSystem->ShowDamagePopup(Damage, DamageDisplayPoint->GetComponentLocation());
+//	return Damage;
+//}
 
 // Called every frame
 void AEnemyPawn::Tick(float DeltaTime)
@@ -60,5 +64,21 @@ void AEnemyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void AEnemyPawn::OnTakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
+{
+	//GEngine->AddOnScreenDebugMessage()
+	UE_LOG(LogTemp, Log, TEXT("Got Damage : %.1f"), Damage);
+
+	//ADamagePopupActor* actor = GetWorld()->SpawnActor<ADamagePopupActor>(
+	//	DamageDisplayClass, DamageDisplayPoint->GetComponentToWorld());
+	//if (actor)
+	//{
+	//	actor->PopupActivate(Damage);
+	//}
+
+	UDamagePopupSubsystem* popupSystem = GetWorld()->GetSubsystem<UDamagePopupSubsystem>();
+	popupSystem->ShowDamagePopup(Damage, DamageDisplayPoint->GetComponentLocation());
 }
 

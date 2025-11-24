@@ -17,12 +17,12 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	virtual float TakeDamage(
-		float Damage,
-		FDamageEvent const& DamageEvent, 
-		AController* EventInstigator,
-		AActor* DamageCauser
-	) override;
+	//virtual float TakeDamage(
+	//	float Damage,
+	//	FDamageEvent const& DamageEvent, 
+	//	AController* EventInstigator,
+	//	AActor* DamageCauser
+	//) override;
 
 public:	
 	// Called every frame
@@ -30,6 +30,11 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+private:
+	UFUNCTION()
+	void OnTakeDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType,
+		class AController* InstigatedBy, AActor* DamageCauser);
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
@@ -42,7 +47,7 @@ protected:
 	TObjectPtr<USceneComponent> DamageDisplayPoint = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy|UI")
-	TSubclassOf<class ADamagePopupActor> DamageDisplayActor = nullptr;
+	TSubclassOf<class ADamagePopupActor> DamageDisplayClass = nullptr;
 
 private:
 

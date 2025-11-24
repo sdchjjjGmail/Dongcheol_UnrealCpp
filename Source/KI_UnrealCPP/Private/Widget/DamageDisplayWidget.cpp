@@ -16,6 +16,6 @@ void UDamageDisplayWidget::PlayPopupAnimation()
 {
 	if (PopupAnimation)
 	{
-		PlayAnimation(PopupAnimation);
+		PlayAnimation(PopupAnimation, 0.0f, 1, EUMGSequencePlayMode::Forward, 1.0f, false);
 	}
 }

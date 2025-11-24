@@ -63,6 +63,7 @@ void AWeaponActor::OnWeaponBeginOverlap(AActor* OverlappedActor, AActor* OtherAc
 	}
 	UE_LOG(LogTemp, Log, TEXT("ApplyDamage : %s"), *OtherActor->GetName());
 	UGameplayStatics::ApplyDamage(OtherActor, finalDamage, instigator, this, DamageType);
+	Damage += 1;
 }
 
 void AWeaponActor::WeaponActivate(bool bActivate)
