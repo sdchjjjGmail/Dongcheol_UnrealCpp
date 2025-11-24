@@ -25,7 +25,6 @@ AEnemyPawn::AEnemyPawn()
 void AEnemyPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 float AEnemyPawn::TakeDamage(
