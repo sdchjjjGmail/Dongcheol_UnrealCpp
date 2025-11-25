@@ -16,6 +16,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	//virtual float TakeDamage(
 	//	float Damage,
@@ -36,6 +37,8 @@ private:
 	void OnTakeDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType,
 		class AController* InstigatedBy, AActor* DamageCauser);
 
+	UFUNCTION()
+	void OnDie();
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
 	TObjectPtr<UStaticMeshComponent> RootMesh = nullptr;
@@ -45,6 +48,9 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
 	TObjectPtr<USceneComponent> DamageDisplayPoint = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
+	TObjectPtr<class UResourceComponent> Resource = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy|UI")
 	TSubclassOf<class ADamagePopupActor> DamageDisplayClass = nullptr;

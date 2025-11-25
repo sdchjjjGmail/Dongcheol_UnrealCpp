@@ -4,6 +4,8 @@
 #include "Enemy/EnemyPawn.h"
 #include "Enemy/DamagePopupActor.h"
 #include "Framework/DamagePopupSubsystem.h"
+#include "Framework/EnemyTrackingSubsystem.h"
+#include "Player/ResourceComponent.h"
 
 // Sets default values
 AEnemyPawn::AEnemyPawn()
@@ -20,6 +22,7 @@ AEnemyPawn::AEnemyPawn()
 	DamageDisplayPoint = CreateDefaultSubobject<USceneComponent>(TEXT("DamageDisplayPoint"));
 	DamageDisplayPoint->SetupAttachment(RootMesh);
 
+	Resource = CreateDefaultSubobject<UResourceComponent>(TEXT("Resource"));
 }
 
 // Called when the game starts or when spawned
@@ -27,6 +30,27 @@ void AEnemyPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	OnTakeAnyDamage.AddDynamic(this, &AEnemyPawn::OnTakeDamage);
+
+	if (UWorld* world = GetWorld())
+	{
+		if (UEnemyTrackingSubsystem* enemyTracker = world->GetSubsystem<UEnemyTrackingSubsystem>())
+		{
+			enemyTracker->RegistEnemy();
+		}
+	}
+}
+
+void AEnemyPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (UWorld* world = GetWorld())
+	{
+		if (UEnemyTrackingSubsystem* enemyTracker = world->GetSubsystem<UEnemyTrackingSubsystem>())
+		{
+			enemyTracker->UnregistEnemy();
+		}
+	}
+
+	Super::EndPlay(EndPlayReason);
 }
 
 //float AEnemyPawn::TakeDamage(
@@ -70,9 +94,14 @@ void AEnemyPawn::OnTakeDamage(AActor* DamagedActor, float Damage, const UDamageT
 {
 	//GEngine->AddOnScreenDebugMessage()
 
+	UE_LOG(LogTemp, Log, TEXT("Current Health : %.2f"), Resource->GetCurrentHealth());
+
 	if (!bInvincible || !FMath::IsNearlyEqual(LastDamage, Damage))
 	{
 		UE_LOG(LogTemp, Log, TEXT("Got Damage : %.1f"), Damage);
+
+		Resource->AddHealth(-Damage);
+
 		//ADamagePopupActor* actor = GetWorld()->SpawnActor<ADamagePopupActor>(
 		//	DamageDisplayClass, DamageDisplayPoint->GetComponentToWorld());
 		//if (actor)
@@ -83,25 +112,40 @@ void AEnemyPawn::OnTakeDamage(AActor* DamagedActor, float Damage, const UDamageT
 		UDamagePopupSubsystem* popupSystem = GetWorld()->GetSubsystem<UDamagePopupSubsystem>();
 		popupSystem->ShowDamagePopup(Damage, DamageDisplayPoint->GetComponentLocation());
 
-		bInvincible = true;
-		LastDamage = Damage;
+		if (Resource->IsAlive())
+		{
+			bInvincible = true;
+			LastDamage = Damage;
 
-		// this가 파괴되면 람다는 더 이상 실행되지 않는다.
-		FTimerDelegate resetdelegate = FTimerDelegate::CreateWeakLambda(
-			this,
-			[this]()
-			{
-				bInvincible = false;
+			// this가 파괴되면 람다는 더 이상 실행되지 않는다.
+			FTimerDelegate resetdelegate = FTimerDelegate::CreateWeakLambda(
+				this,
+				[this]()
+				{
+					bInvincible = false;
 
-			});
+				});
 
-		GetWorldTimerManager().ClearTimer(InvincibleTimer);
-		GetWorldTimerManager().SetTimer(
-			InvincibleTimer,
-			resetdelegate,
-			0.1f,
-			false
-		);
+			GetWorldTimerManager().ClearTimer(InvincibleTimer);
+			GetWorldTimerManager().SetTimer(
+				InvincibleTimer,
+				resetdelegate,
+				0.1f,
+				false
+			);
+		}
+		else
+		{
+			OnDie();
+		}
 	}
+
 }
+
+void AEnemyPawn::OnDie()
+{
+	UE_LOG(LogTemp, Log, TEXT("이미 적은 죽었다."));
+	Destroy();
+}
+
 
