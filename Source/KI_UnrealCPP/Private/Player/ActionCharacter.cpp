@@ -17,6 +17,7 @@
 #include "Item/PickupActor.h"
 #include "Kismet/GameplayStatics.h"
 #include "Data/CameraShakeAttackEffect.h"
+#include <Framework/PickupFactorySubsystem.h>
 
 // Sets default values
 AActionCharacter::AActionCharacter()
@@ -166,6 +167,9 @@ void AActionCharacter::EquipWeapon(EItemCode WeaponCode)
 void AActionCharacter::DropWeapon(EItemCode WeaponCode)
 {
 	UE_LOG(LogTemp, Log, TEXT("다쓴 무기 버림"));
+
+	//UPickupFactorySubsystem* factorySystem = GetWorld()->GetSubsystem<UPickupFactorySubsystem>();
+
 	if (TSubclassOf<AUsedWeapon> usedClass = WeaponManager->GetUsedWeaponClass(WeaponCode))
 	{
 		GetWorld()->SpawnActor<AActor>(
@@ -367,17 +371,31 @@ void AActionCharacter::DropCurrentWeapon(EItemCode WeaponCode)
 	{
 		if (TSubclassOf<APickupActor> pickupClass = WeaponManager->GetPickupWeaponClass(WeaponCode))
 		{
-			APickupActor* pickup = GetWorld()->SpawnActor<APickupActor>(
-				*pickupClass,
-				DropLocation->GetComponentLocation(),
-				GetActorRotation());
-			
-			// 새로 생긴 픽업에 남은 횟수 넣기
+			UPickupFactorySubsystem* factorySystem = GetWorld()->GetSubsystem<UPickupFactorySubsystem>();
+			if (!factorySystem)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("invalid factorySystem"));
+				return;
+			}
 			AConsumableWeapon* conWeapon = Cast<AConsumableWeapon>(CurrentWeapon);
-			pickup->SetPickupCount(conWeapon->GetRemainingUseCount());
+			factorySystem->DropValidWeapon(
+				pickupClass,
+				conWeapon->GetRemainingUseCount(),
+				DropLocation->GetComponentLocation(),
+				GetActorRotation(),
+				(GetActorForwardVector() + GetActorUpVector()) * 300.0f);
 
-			FVector velocity = (GetActorForwardVector() + GetActorUpVector()) * 300.0f;
-			pickup->AddImpulse(velocity);
+			//APickupActor* pickup = GetWorld()->SpawnActor<APickupActor>(
+			//	*pickupClass,
+			//	DropLocation->GetComponentLocation(),
+			//	GetActorRotation());
+			//
+			//// 새로 생긴 픽업에 남은 횟수 넣기
+			//AConsumableWeapon* conWeapon = Cast<AConsumableWeapon>(CurrentWeapon);
+			//pickup->SetPickupCount(conWeapon->GetRemainingUseCount());
+
+			//FVector velocity = (GetActorForwardVector() + GetActorUpVector()) * 300.0f;
+			//pickup->AddImpulse(velocity);
 		}
 	}
 }

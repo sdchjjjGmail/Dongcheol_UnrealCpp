@@ -115,4 +115,5 @@ private:
 
 	// 스폰 직후 먹지 못하는 시간동안 처리하는 타이머 핸들
 	FTimerHandle PickupableTimerHandle;
+
 };
