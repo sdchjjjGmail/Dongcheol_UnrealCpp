@@ -116,7 +116,6 @@ void AActionCharacter::AddItem_Implementation(EItemCode Code, int32 Count)
 
 void AActionCharacter::SetCollisionOn()
 {
-	UE_LOG(LogTemp, Log, TEXT("set Hit On"));
 	//OnWeaponCollisionOn.Broadcast();
 	
 	if (CurrentWeapon.IsValid())
@@ -127,7 +126,6 @@ void AActionCharacter::SetCollisionOn()
 
 void AActionCharacter::SetCollisionOff()
 {
-	UE_LOG(LogTemp, Log, TEXT("set Hit Off"));
 	//OnWeaponCollisionOff.Broadcast();
 
 	if (CurrentWeapon.IsValid())
@@ -273,7 +271,6 @@ void AActionCharacter::OnCharacterOverlap(AActor* OverlappedActor, AActor* Other
 
 void AActionCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	UE_LOG(LogTemp, Log, TEXT("공격 몽타주가 끝남"));
 	if (CurrentWeapon.IsValid() && !CurrentWeapon->CanAttack()) // CurrentWeapon이 공격할수 없으면(=사용 횟수가 안남았다)
 	{
 		DropWeapon(CurrentWeapon->GetWeaponID());

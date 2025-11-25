@@ -13,9 +13,6 @@ void UANS_WeaponCollisionTrigger::NotifyBegin(USkeletalMeshComponent* MeshComp, 
 	}
 	if (OwnerCharacter.IsValid())
 	{
-		// OwnerCharacter에 자기 자신을 설정
-		UE_LOG(LogTemp, Log, TEXT("Notify Hit On"));
-
 		OwnerCharacter->SetCollisionOn();
 	}
 }
@@ -24,7 +21,6 @@ void UANS_WeaponCollisionTrigger::NotifyEnd(USkeletalMeshComponent* MeshComp, UA
 {
 	if (OwnerCharacter.IsValid())
 	{
-		UE_LOG(LogTemp, Log, TEXT("Notify Hit Off"));
 		OwnerCharacter->SetCollisionOff();
 	}
 	Super::NotifyEnd(MeshComp, Animation, EventReference);

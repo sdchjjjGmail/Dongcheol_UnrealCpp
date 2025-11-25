@@ -94,7 +94,6 @@ void AEnemyPawn::OnTakeDamage(AActor* DamagedActor, float Damage, const UDamageT
 {
 	//GEngine->AddOnScreenDebugMessage()
 
-	UE_LOG(LogTemp, Log, TEXT("Current Health : %.2f"), Resource->GetCurrentHealth());
 
 	if (!bInvincible || !FMath::IsNearlyEqual(LastDamage, Damage))
 	{
@@ -111,6 +110,8 @@ void AEnemyPawn::OnTakeDamage(AActor* DamagedActor, float Damage, const UDamageT
 
 		UDamagePopupSubsystem* popupSystem = GetWorld()->GetSubsystem<UDamagePopupSubsystem>();
 		popupSystem->ShowDamagePopup(Damage, DamageDisplayPoint->GetComponentLocation());
+
+		UE_LOG(LogTemp, Log, TEXT("Current Health : %.2f"), Resource->GetCurrentHealth());
 
 		if (Resource->IsAlive())
 		{
