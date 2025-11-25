@@ -69,16 +69,39 @@ void AEnemyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 void AEnemyPawn::OnTakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
 	//GEngine->AddOnScreenDebugMessage()
-	UE_LOG(LogTemp, Log, TEXT("Got Damage : %.1f"), Damage);
 
-	//ADamagePopupActor* actor = GetWorld()->SpawnActor<ADamagePopupActor>(
-	//	DamageDisplayClass, DamageDisplayPoint->GetComponentToWorld());
-	//if (actor)
-	//{
-	//	actor->PopupActivate(Damage);
-	//}
+	if (!bInvincible || !FMath::IsNearlyEqual(LastDamage, Damage))
+	{
+		UE_LOG(LogTemp, Log, TEXT("Got Damage : %.1f"), Damage);
+		//ADamagePopupActor* actor = GetWorld()->SpawnActor<ADamagePopupActor>(
+		//	DamageDisplayClass, DamageDisplayPoint->GetComponentToWorld());
+		//if (actor)
+		//{
+		//	actor->PopupActivate(Damage);
+		//}
 
-	UDamagePopupSubsystem* popupSystem = GetWorld()->GetSubsystem<UDamagePopupSubsystem>();
-	popupSystem->ShowDamagePopup(Damage, DamageDisplayPoint->GetComponentLocation());
+		UDamagePopupSubsystem* popupSystem = GetWorld()->GetSubsystem<UDamagePopupSubsystem>();
+		popupSystem->ShowDamagePopup(Damage, DamageDisplayPoint->GetComponentLocation());
+
+		bInvincible = true;
+		LastDamage = Damage;
+
+		// this가 파괴되면 람다는 더 이상 실행되지 않는다.
+		FTimerDelegate resetdelegate = FTimerDelegate::CreateWeakLambda(
+			this,
+			[this]()
+			{
+				bInvincible = false;
+
+			});
+
+		GetWorldTimerManager().ClearTimer(InvincibleTimer);
+		GetWorldTimerManager().SetTimer(
+			InvincibleTimer,
+			resetdelegate,
+			0.1f,
+			false
+		);
+	}
 }
 

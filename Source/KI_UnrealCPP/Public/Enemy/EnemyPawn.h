@@ -50,5 +50,7 @@ protected:
 	TSubclassOf<class ADamagePopupActor> DamageDisplayClass = nullptr;
 
 private:
-
+	bool bInvincible = false;
+	FTimerHandle InvincibleTimer;
+	float LastDamage = 0.0f;
 };
