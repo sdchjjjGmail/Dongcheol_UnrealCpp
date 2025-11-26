@@ -6,8 +6,9 @@
 #include "Framework/DamagePopupSubsystem.h"
 #include "Framework/EnemyTrackingSubsystem.h"
 #include "Framework/PickupFactorySubsystem.h"
+#include "Framework/PickupFactory.h"
 #include "Player/ResourceComponent.h"
-#include "Data/DropItemData_TableRow.h"
+#include "Data/DataTableRows.h"
 #include "Item/PickupActor.h"
 
 // Sets default values
@@ -155,34 +156,41 @@ void AEnemyPawn::DropItems()
 
 	if (DropItemTable)
 	{
-		UPickupFactorySubsystem* factorySystem = GetWorld()->GetSubsystem<UPickupFactorySubsystem>();
-		if (!factorySystem)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("invalid factorySystem"));
-			return;
-		}
-		factorySystem->DropEnemyItem(DropItemTable, GetActorLocation(), GetActorRotation());
+		//UPickupFactorySubsystem* factorySystem = GetWorld()->GetSubsystem<UPickupFactorySubsystem>();
+		//if (!factorySystem)
+		//{
+		//	UE_LOG(LogTemp, Warning, TEXT("invalid factorySystem"));
+		//	return;
+		//}
+		//factorySystem->DropEnemyItem(DropItemTable, GetActorLocation(), GetActorRotation());
+
 
 		//TArray<FDropItemData_TableRow> AllRows;
 		//DropItemTable->GetAllRows<FDropItemData_TableRow>(TEXT("Rows"), AllRows);
 
-		//APickupActor* pickup = nullptr;
+		APickupActor* pickup = nullptr;
 
-		//TMap<FName, uint8*> RowMap = DropItemTable->GetRowMap();
+		TMap<FName, uint8*> RowMap = DropItemTable->GetRowMap();
 
-		// 중복으로 당첨 가능
-		//for (const auto& element : RowMap)
-		//{
-		//	FDropItemData_TableRow* row = (FDropItemData_TableRow*)element.Value;
-		//	if (FMath::FRand() <= row->DropRate)
-		//	{
-		//		GetWorld()->SpawnActor<APickupActor>(
-		//			row->DropItemClass,
-		//			GetActorLocation() + FVector::UpVector * 100.0f,
-		//			GetActorRotation()
-		//		);
-		//	}
-		//}
+		 //중복으로 당첨 가능
+		for (const auto& element : RowMap)
+		{
+			FDropItemData_v2_TableRow* row = (FDropItemData_v2_TableRow*)element.Value;
+
+			if (FMath::FRand() <= row->DropRate)
+			{
+				//GetWorld()->SpawnActor<APickupActor>(
+				//	row->DropItemClass,
+				//	GetActorLocation() + FVector::UpVector * 100.0f,
+				//	GetActorRotation()
+				//);
+
+
+				pickup = GetWorld()->GetSubsystem<UPickupFactory>()->SpawnPickup(
+					row->PickupCode, GetActorLocation() + FVector::UpVector * 200.0f, GetActorRotation()
+				);
+			}
+		}
 
 		// 전체 가중치 사용하는 방식(한개만 뽑기)
 		//float totalWeight = 0.0f;

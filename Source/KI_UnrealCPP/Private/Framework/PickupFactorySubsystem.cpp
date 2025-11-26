@@ -3,7 +3,7 @@
 
 #include "Framework/PickupFactorySubsystem.h"
 #include "Settings/DropItemSettings.h"
-#include "Data/DropItemData_TableRow.h"
+#include "Data/DataTableRows.h"
 #include "Item/PickupActor.h"
 #include <Weapon/UsedWeapon.h>
 
@@ -40,7 +40,7 @@ void UPickupFactorySubsystem::DropEnemyItem(
 		// 중복으로 당첨 가능
 		for (const auto& element : RowMap)
 		{
-			FDropItemData_TableRow* row = (FDropItemData_TableRow*)element.Value;
+			FDropItemData_v1_TableRow* row = (FDropItemData_v1_TableRow*)element.Value;
 			if (!row)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("invalid FDropItemData_TableRow"));

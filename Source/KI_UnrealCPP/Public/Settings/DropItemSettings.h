@@ -9,12 +9,12 @@
 /**
  * 
  */
-UCLASS(Config = Game, DefaultConfig, meta = (DisplayName = "Drop Item Data Settings"))
+UCLASS()
 class KI_UNREALCPP_API UDropItemSettings : public UDeveloperSettings
 {
 	GENERATED_BODY()
 	
-public:
-	UPROPERTY(Config, EditAnywhere, Category = "Drop Item")
-	TSoftClassPtr<UDataTable> DropItemTable = nullptr;
+//public:
+//	UPROPERTY(Config, EditAnywhere, Category = "Drop Item")
+//	TSoftClassPtr<UDataTable> DropItemTable = nullptr;
 };
