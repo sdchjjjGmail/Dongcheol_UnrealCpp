@@ -38,7 +38,7 @@ APickupActor::APickupActor()
 	PickupOverlap->SetCollisionProfileName(TEXT("NoCollision"));
 
 	Effect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Effect"));
-	Effect->SetupAttachment(BaseRoot);
+	Effect->SetupAttachment(Mesh);
 
 	PickupTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("PickupTimeline"));
 }
@@ -90,10 +90,12 @@ void APickupActor::Tick(float DeltaTime)
 
 void APickupActor::OnPickup_Implementation(AActor* Target)
 {
+	UE_LOG(LogTemp, Log, TEXT("OnPickup_Implementation"));
 	if (!bPickedup)
 	{
 		PickupOwner = Target;
 		PickupStartLocation = Mesh->GetRelativeLocation() + GetActorLocation(); // Mesh의 월드 위치
+		UE_LOG(LogTemp, Log, TEXT("PickupOwner : %s"), *PickupOwner->GetName());
 
 		PickupTimeline->PlayFromStart();
 
@@ -122,7 +124,7 @@ void APickupActor::OnTimelineUpdate(float Value)
 {
 	// 타임라인의 정규화 된 진행 시간(0~1)
 	float currentTime = PickupTimeline->GetPlaybackPosition();
-	UE_LOG(LogTemp, Log, TEXT("currentTime : %.2f"), currentTime);
+	//UE_LOG(LogTemp, Log, TEXT("currentTime : %.2f"), currentTime);
 
 	// 커브의 현재 값 받아오기
 	float distanceValue = Value;
