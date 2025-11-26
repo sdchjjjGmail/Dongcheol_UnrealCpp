@@ -15,17 +15,25 @@ UWeaponManagerComponent::UWeaponManagerComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
 
-	// ...
+	WeaponCodeToItemCode.Empty();
+	WeaponCodeToItemCode.Add(EWeaponCode::BasicWeapon, EItemCode::BasicWeapon);
+	WeaponCodeToItemCode.Add(EWeaponCode::Axe, EItemCode::Axe);
+	WeaponCodeToItemCode.Add(EWeaponCode::Saw, EItemCode::Saw);
+
+	ItemCodeToWeaponCode.Empty();
+	ItemCodeToWeaponCode.Add(EItemCode::BasicWeapon, EWeaponCode::BasicWeapon);
+	ItemCodeToWeaponCode.Add(EItemCode::Axe, EWeaponCode::Axe);
+	ItemCodeToWeaponCode.Add(EItemCode::Saw, EWeaponCode::Saw);
 }
 
 
-TSubclassOf<AUsedWeapon> UWeaponManagerComponent::GetUsedWeaponClass(EItemCode InType) const
+TSubclassOf<AUsedWeapon> UWeaponManagerComponent::GetUsedWeaponClass(EWeaponCode InType) const
 {
 	const UWeaponDataAsset* dataAsset = *WeaponDatabase.Find(InType);
     return dataAsset->UsedWeaponClass;
 }
 
-TSubclassOf<APickupActor> UWeaponManagerComponent::GetPickupWeaponClass(EItemCode InType) const
+TSubclassOf<APickupActor> UWeaponManagerComponent::GetPickupWeaponClass(EWeaponCode InType) const
 {
 	const UWeaponDataAsset* dataAsset = *WeaponDatabase.Find(InType);
 	return dataAsset->PickupWeaponClass;
@@ -41,7 +49,7 @@ void UWeaponManagerComponent::BeginPlay()
 	ValidateWeaponDatabase();
 	SpawnWeaponInstances();
 
-	OwnerPlayer->EquipWeapon(EItemCode::BasicWeapon); // 시작무기 설정
+	OwnerPlayer->EquipWeapon(EWeaponCode::BasicWeapon); // 시작무기 설정
 }
 
 void UWeaponManagerComponent::ValidateWeaponDatabase()

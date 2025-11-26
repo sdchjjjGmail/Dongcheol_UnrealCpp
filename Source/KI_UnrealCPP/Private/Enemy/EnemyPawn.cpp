@@ -164,7 +164,6 @@ void AEnemyPawn::DropItems()
 		//}
 		//factorySystem->DropEnemyItem(DropItemTable, GetActorLocation(), GetActorRotation());
 
-
 		//TArray<FDropItemData_TableRow> AllRows;
 		//DropItemTable->GetAllRows<FDropItemData_TableRow>(TEXT("Rows"), AllRows);
 

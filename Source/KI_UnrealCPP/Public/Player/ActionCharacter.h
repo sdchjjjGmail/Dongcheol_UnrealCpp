@@ -73,7 +73,7 @@ public:
 
 	// 무기를 장비하는 함수
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	void EquipWeapon(EItemCode WeaponCode);
+	void EquipWeapon(EWeaponCode WeaponCode);
 
 	void SetTrailState(bool TrailOn);
 
@@ -110,10 +110,10 @@ private:
 
 	// 다쓴 무기를 버리는 함수
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	void DropWeapon(EItemCode WeaponCode);
+	void DropWeapon(EWeaponCode WeaponCode);
 
 	// 사용중이던 무기를 버리는 함수
-	void DropCurrentWeapon(EItemCode WeaponCode);
+	void DropCurrentWeapon(EWeaponCode WeaponCode);
 
 public:
 	FOnWeaponCollisionOn OnWeaponCollisionOn;

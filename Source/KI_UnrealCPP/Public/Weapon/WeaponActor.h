@@ -56,7 +56,7 @@ public:
 
 	virtual void PostInitializeComponents() override;
 
-	inline EItemCode GetWeaponID() const { return WeaponID; }
+	inline EWeaponCode GetWeaponID() const { return WeaponID; }
 
 	inline void SetWeaponOwner(AActionCharacter* InOwner) { WeaponOwner = InOwner;}
 private:
@@ -81,7 +81,7 @@ protected:
 	TSubclassOf<UDamageType> DamageType = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	EItemCode WeaponID = EItemCode::Axe;
+	EWeaponCode WeaponID = EWeaponCode::BasicWeapon;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data|Area")
 	TObjectPtr<class UNiagaraSystem> AreaAttackEffect = nullptr;

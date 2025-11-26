@@ -111,7 +111,8 @@ void AActionCharacter::AddItem_Implementation(EItemCode Code, int32 Count)
 	//const UEnum* EnumPtr = StaticEnum<EItemCode>();
 	//UE_LOG(LogTemp, Log, TEXT("아이템 추가 : %s"),
 	//	*EnumPtr->GetDisplayNameTextByValue(static_cast<int8>(Code)).ToString());
-	EquipWeapon(Code);
+	EWeaponCode weaponCode = WeaponManager->GetWeaponCode(Code);
+	EquipWeapon(weaponCode);
 	CurrentWeapon->OnWeaponPickedup(Count);
 }
 
@@ -145,11 +146,11 @@ void AActionCharacter::TestDropCurrentWeapon()
 	DropCurrentWeapon(CurrentWeapon->GetWeaponID());
 }
 
-void AActionCharacter::EquipWeapon(EItemCode WeaponCode)
+void AActionCharacter::EquipWeapon(EWeaponCode WeaponCode)
 {
 	if (CurrentWeapon.IsValid())
 	{
-		if (CurrentWeapon->GetWeaponID() != EItemCode::BasicWeapon 
+		if (CurrentWeapon->GetWeaponID() != EWeaponCode::BasicWeapon
 			&& WeaponCode != CurrentWeapon->GetWeaponID()
 			&& CurrentWeapon->CanAttack())
 		{
@@ -164,7 +165,7 @@ void AActionCharacter::EquipWeapon(EItemCode WeaponCode)
 	CurrentWeapon->WeaponActivate(true);
 }
 
-void AActionCharacter::DropWeapon(EItemCode WeaponCode)
+void AActionCharacter::DropWeapon(EWeaponCode WeaponCode)
 {
 	UE_LOG(LogTemp, Log, TEXT("다쓴 무기 버림"));
 
@@ -278,7 +279,7 @@ void AActionCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterru
 	if (CurrentWeapon.IsValid() && !CurrentWeapon->CanAttack()) // CurrentWeapon이 공격할수 없으면(=사용 횟수가 안남았다)
 	{
 		DropWeapon(CurrentWeapon->GetWeaponID());
-		EquipWeapon(EItemCode::BasicWeapon);
+		EquipWeapon(EWeaponCode::BasicWeapon);
 	}
 }
 
@@ -365,37 +366,37 @@ void AActionCharacter::ShakeCamera()
 	}*/
 }
 
-void AActionCharacter::DropCurrentWeapon(EItemCode WeaponCode)
+void AActionCharacter::DropCurrentWeapon(EWeaponCode WeaponCode)
 {
-	if (CurrentWeapon.IsValid() && CurrentWeapon->GetWeaponID() != EItemCode::BasicWeapon)
+	if (CurrentWeapon.IsValid() && CurrentWeapon->GetWeaponID() != EWeaponCode::BasicWeapon)
 	{
 		if (TSubclassOf<APickupActor> pickupClass = WeaponManager->GetPickupWeaponClass(WeaponCode))
 		{
-			UPickupFactorySubsystem* factorySystem = GetWorld()->GetSubsystem<UPickupFactorySubsystem>();
-			if (!factorySystem)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("invalid factorySystem"));
-				return;
-			}
-			AConsumableWeapon* conWeapon = Cast<AConsumableWeapon>(CurrentWeapon);
-			factorySystem->DropValidWeapon(
-				pickupClass,
-				conWeapon->GetRemainingUseCount(),
-				DropLocation->GetComponentLocation(),
-				GetActorRotation(),
-				(GetActorForwardVector() + GetActorUpVector()) * 300.0f);
-
-			//APickupActor* pickup = GetWorld()->SpawnActor<APickupActor>(
-			//	*pickupClass,
+			//UPickupFactorySubsystem* factorySystem = GetWorld()->GetSubsystem<UPickupFactorySubsystem>();
+			//if (!factorySystem)
+			//{
+			//	UE_LOG(LogTemp, Warning, TEXT("invalid factorySystem"));
+			//	return;
+			//}
+			//AConsumableWeapon* conWeapon = Cast<AConsumableWeapon>(CurrentWeapon);
+			//factorySystem->DropValidWeapon(
+			//	pickupClass,
+			//	conWeapon->GetRemainingUseCount(),
 			//	DropLocation->GetComponentLocation(),
-			//	GetActorRotation());
+			//	GetActorRotation(),
+			//	(GetActorForwardVector() + GetActorUpVector()) * 300.0f);
+
+			APickupActor* pickup = GetWorld()->SpawnActor<APickupActor>(
+				*pickupClass,
+				DropLocation->GetComponentLocation(),
+				GetActorRotation());
 			//
 			//// 새로 생긴 픽업에 남은 횟수 넣기
-			//AConsumableWeapon* conWeapon = Cast<AConsumableWeapon>(CurrentWeapon);
-			//pickup->SetPickupCount(conWeapon->GetRemainingUseCount());
+			AConsumableWeapon* conWeapon = Cast<AConsumableWeapon>(CurrentWeapon);
+			pickup->SetPickupCount(conWeapon->GetRemainingUseCount());
 
-			//FVector velocity = (GetActorForwardVector() + GetActorUpVector()) * 300.0f;
-			//pickup->AddImpulse(velocity);
+			FVector velocity = (GetActorForwardVector() + GetActorUpVector()) * 300.0f;
+			pickup->AddImpulse(velocity);
 		}
 	}
 }
