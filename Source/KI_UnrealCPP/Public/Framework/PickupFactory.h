@@ -22,11 +22,16 @@ public:
 	APickupActor* SpawnPickup(
 		EItemCode InCode, 
 		FVector InLocation = FVector::ZeroVector,
-		FRotator InRotator = FRotator::ZeroRotator);
+		FRotator InRotator = FRotator::ZeroRotator,
+		FVector Velocity = FVector::ZeroVector);
 
 protected:
 	void LoadPickupClassesMap();
 
 	UPROPERTY()
 	TMap<EItemCode, TSubclassOf<APickupActor>> PickupClasses;
+
+private:
+	int32 TryCount = 0;
+	TMap<EItemCode, int32> DropRateTestCount;
 };

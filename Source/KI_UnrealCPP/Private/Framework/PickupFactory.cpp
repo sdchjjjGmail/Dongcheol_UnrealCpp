@@ -13,13 +13,18 @@ void UPickupFactory::Initialize(FSubsystemCollectionBase& Collection)
 	LoadPickupClassesMap();
 }
 
-APickupActor* UPickupFactory::SpawnPickup(EItemCode InCode, FVector InLocation, FRotator InRotator)
+APickupActor* UPickupFactory::SpawnPickup(
+	EItemCode InCode,
+	FVector InLocation,
+	FRotator InRotator,
+	FVector Velocity)
 {
 	APickupActor* spawnedPickup = nullptr;
 	if (PickupClasses.Contains(InCode))
 	{
 		UWorld* world = GetWorld();
 		spawnedPickup = world->SpawnActor<APickupActor>(PickupClasses[InCode], InLocation, InRotator);
+		spawnedPickup->AddImpulse(Velocity);
 	}
 	else
 	{

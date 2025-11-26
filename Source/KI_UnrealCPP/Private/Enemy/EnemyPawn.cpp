@@ -94,6 +94,59 @@ void AEnemyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 }
 
+void AEnemyPawn::TestDropItem()
+{
+	APickupActor* pickup = nullptr;
+	TMap<FName, uint8*> RowMap = DropItemTable->GetRowMap();
+
+	//중복으로 당첨 가능
+	for (const auto& element : RowMap)
+	{
+		FDropItemData_v2_TableRow* row = (FDropItemData_v2_TableRow*)element.Value;
+
+		if (FMath::FRand() <= row->DropRate)
+		{
+			FVector velocity = FVector::UpVector * 500.0f;
+			velocity = velocity.RotateAngleAxis(FMath::FRandRange(-15.0f, 15.0f), FVector::RightVector);
+			velocity = velocity.RotateAngleAxis(FMath::FRandRange(0.0f, 360.0f), FVector::UpVector);
+			pickup = GetWorld()->GetSubsystem<UPickupFactory>()->SpawnPickup(
+				row->PickupCode,
+				GetActorLocation(),
+				GetActorRotation(),
+				velocity
+			);
+		}
+	}
+}
+
+void AEnemyPawn::TestDropItemCount()
+{
+	TMap<FName, uint8*> RowMap = DropItemTable->GetRowMap();
+	TArray<int32> counter = { 0,0,0 };
+	//counter.Empty(3);
+
+	for (int i = 0; i < 1000000; i++)
+	{
+		// 중복으로 당첨 가능(아무것도 안나올 수도 있음)
+		int index = 0;
+		for (const auto& element : RowMap)
+		{
+			FDropItemData_v2_TableRow* row = (FDropItemData_v2_TableRow*)element.Value;
+			if (FMath::FRand() <= row->DropRate)
+			{
+				counter[index]++;
+			}
+
+			index++;
+		}
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("Test count : 100만"));
+	UE_LOG(LogTemp, Log, TEXT("index 0 : %d"), counter[0]);
+	UE_LOG(LogTemp, Log, TEXT("index 1 : %d"), counter[1]);
+	UE_LOG(LogTemp, Log, TEXT("index 2 : %d"), counter[2]);
+}
+
 void AEnemyPawn::OnTakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
 	//GEngine->AddOnScreenDebugMessage()
@@ -146,7 +199,7 @@ void AEnemyPawn::OnTakeDamage(AActor* DamagedActor, float Damage, const UDamageT
 	}
 }
 
-void AEnemyPawn::DropItems()
+void AEnemyPawn::DropItems(float BonusChange)
 {
 	//for (const auto& item : DropItemInfo)
 	//{
@@ -168,7 +221,6 @@ void AEnemyPawn::DropItems()
 		//DropItemTable->GetAllRows<FDropItemData_TableRow>(TEXT("Rows"), AllRows);
 
 		APickupActor* pickup = nullptr;
-
 		TMap<FName, uint8*> RowMap = DropItemTable->GetRowMap();
 
 		 //중복으로 당첨 가능
@@ -178,15 +230,14 @@ void AEnemyPawn::DropItems()
 
 			if (FMath::FRand() <= row->DropRate)
 			{
-				//GetWorld()->SpawnActor<APickupActor>(
-				//	row->DropItemClass,
-				//	GetActorLocation() + FVector::UpVector * 100.0f,
-				//	GetActorRotation()
-				//);
-
-
+				FVector velocity = FVector::UpVector * 500.0f;
+				velocity = velocity.RotateAngleAxis(FMath::FRandRange(-15.0f, 15.0f), FVector::RightVector);
+				velocity = velocity.RotateAngleAxis(FMath::FRandRange(0.0f, 360.0f), FVector::UpVector);
 				pickup = GetWorld()->GetSubsystem<UPickupFactory>()->SpawnPickup(
-					row->PickupCode, GetActorLocation() + FVector::UpVector * 200.0f, GetActorRotation()
+					row->PickupCode, 
+					GetActorLocation(),
+					GetActorRotation(),
+					velocity
 				);
 			}
 		}

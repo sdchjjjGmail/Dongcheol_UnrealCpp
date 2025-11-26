@@ -10,11 +10,6 @@
 void UPickupFactorySubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	//const UDropItemSettings* settings = GetDefault<UDropItemSettings>();
-	//if (settings && !settings->DropItemTable.IsNull()) // settings->DamagePopupClass에 세팅된 클래스가 있으면
-	//{
-	//	EnemyDropItemTable = settings->DropItemTable.LoadSynchronous(); // 이제 불러와라
-	//}
 }
 
 void UPickupFactorySubsystem::DropEnemyItem(
@@ -41,28 +36,16 @@ void UPickupFactorySubsystem::DropEnemyItem(
 		for (const auto& element : RowMap)
 		{
 			FDropItemData_v1_TableRow* row = (FDropItemData_v1_TableRow*)element.Value;
-			if (!row)
+			if (row && row->DropRate && row->DropItemClass)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("invalid FDropItemData_TableRow"));
-				break;
-			}
-			if (!row->DropRate)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("invalid row->DropRate"));
-				break;
-			}
-			if (!row->DropItemClass.Get())
-			{
-				UE_LOG(LogTemp, Warning, TEXT("invalid row->DropItemClass"));
-				break;
-			}
-			if (FMath::FRand() <= row->DropRate)
-			{
-				GetWorld()->SpawnActor<APickupActor>(
-					row->DropItemClass,
-					DropLocation + FVector::UpVector * 100.0f,
-					DropRtation
-				);
+				if (FMath::FRand() <= row->DropRate)
+				{
+					GetWorld()->SpawnActor<APickupActor>(
+						row->DropItemClass,
+						DropLocation + FVector::UpVector * 100.0f,
+						DropRtation
+					);
+				}
 			}
 		}
 	}
@@ -86,13 +69,3 @@ void UPickupFactorySubsystem::DropValidWeapon(
 	pickup->AddImpulse(velocity);
 }
 
-void UPickupFactorySubsystem::DropExpiredWeapon(EItemCode WeaponCode, FVector DropLocation, FRotator DropRotation)
-{
-	//if (TSubclassOf<AUsedWeapon> usedClass = WeaponManager->GetUsedWeaponClass(WeaponCode))
-	//{
-	//	GetWorld()->SpawnActor<AActor>(
-	//		usedClass,
-	//		DropLocation,
-	//		DropRotation);
-	//}
-}

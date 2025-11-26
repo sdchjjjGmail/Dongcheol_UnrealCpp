@@ -34,7 +34,11 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION(BlueprintCallable)
-	void TestDropItem() { DropItems(); };
+	void TestDropItemCount();
+
+	UFUNCTION(BlueprintCallable)
+	void TestDropItem();
+
 
 private:
 	UFUNCTION()
@@ -42,10 +46,12 @@ private:
 		class AController* InstigatedBy, AActor* DamageCauser);
 
 	UFUNCTION()
-	void DropItems();
+	void DropItems(float BonusChange = 0.0f);
 
 	UFUNCTION()
 	void OnDie();
+
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
 	TObjectPtr<UStaticMeshComponent> RootMesh = nullptr;
@@ -66,6 +72,11 @@ private:
 	bool bInvincible = false;
 	FTimerHandle InvincibleTimer;
 	float LastDamage = 0.0f;
+
+	int32 DropTestCount = 0;
+	int32 TestTryCount = 0;
+	TMap<EItemCode, int32> DropRateTestResult;
+	FTimerHandle DropRateTestTimerHandle;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drop Items")
