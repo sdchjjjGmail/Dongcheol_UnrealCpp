@@ -19,5 +19,8 @@ void APickupConsumable::OnPickupComplete_Implementation()
 
 void APickupConsumable::OnConsume()
 {
-
+	if (DataAsset)
+	{
+		DataAsset->Execute(PickupOwner.Get());
+	}
 }

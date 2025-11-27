@@ -24,11 +24,26 @@ APickupActor* UPickupFactory::SpawnPickup(
 	{
 		UWorld* world = GetWorld();
 		spawnedPickup = world->SpawnActor<APickupActor>(PickupClasses[InCode], InLocation, InRotator);
-		spawnedPickup->AddImpulse(Velocity);
+		if (spawnedPickup)
+		{
+			spawnedPickup->AddImpulse(Velocity);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("UPickupFactory : 생성 실패. %d"), InCode);
+			if (PickupClasses[InCode])
+			{
+				UE_LOG(LogTemp, Error, TEXT("UPickupFactory : 생성 실패. %s"), *PickupClasses[InCode]->GetName());
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("UPickupFactory : 코드가 존재하지 않습니다."), InCode);
+			}
+		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("UPickupFactory : 설정되지 않은 아이템을 생성하려고 합니다."));
+		UE_LOG(LogTemp, Error, TEXT("UPickupFactory : 설정되지 않은 아이템을 생성하려고 합니다. %d"), InCode);
 	}
 	return spawnedPickup;
 }
@@ -50,6 +65,7 @@ void UPickupFactory::LoadPickupClassesMap()
 				{
 					UE_LOG(LogTemp, Warning, TEXT("UPickupFactory : 키 값이 중복입니다. 이전 값은 덮어써집니다."));
 				}
+				UE_LOG(LogTemp, Log, TEXT("Add : %d"), row->PickupCode);
 				PickupClasses.Add(row->PickupCode, row->PickupClass);
 			}
 			UE_LOG(LogTemp, Log, TEXT("UPickupFactory : 로딩 완료"));

@@ -7,7 +7,7 @@
 #include "ConsumableGold.generated.h"
 
 /**
- * 
+ *  파생 클래스 예시
  */
 UCLASS()
 class KI_UNREALCPP_API AConsumableGold : public APickupConsumable

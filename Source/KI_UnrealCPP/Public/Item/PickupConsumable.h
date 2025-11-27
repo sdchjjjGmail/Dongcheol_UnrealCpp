@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Item/PickupActor.h"
+#include <Data/ConsumableDataAsset.h>
 #include "PickupConsumable.generated.h"
 
 /**
@@ -20,9 +21,13 @@ public:
 protected:
 	virtual void OnConsume();
 
+protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pickup|Consumable")
 	EItemCode PickupItem = EItemCode::PotionHealth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pickup|Consumable")
 	int32 Quantity = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data")
+	TObjectPtr<UConsumableDataAsset> DataAsset = nullptr;
 };
