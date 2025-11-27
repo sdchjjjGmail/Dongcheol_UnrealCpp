@@ -25,4 +25,8 @@ public:
 	// 아이템을 주웠을 때 처리
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Pickup")
 	void OnPickup(AActor* Target);
+
+	// 아이템 줍기가 끝났을 때 처리
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Pickup")
+	void OnPickupComplete();
 };

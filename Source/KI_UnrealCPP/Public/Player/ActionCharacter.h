@@ -8,6 +8,7 @@
 #include "AnimNotify/AnimNotifyState_SectionJump.h"
 #include "AnimNotify/AnimNotifyState_ComboPractice.h"
 #include "Interface/InventoryOwner.h"
+#include "Interface/HasHealth.h"
 #include "ActionCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponCollisionOn);
@@ -21,7 +22,7 @@ class UStatusComponent;
 //class UAnimNotifyState_SectionJump;
 
 UCLASS()
-class KI_UNREALCPP_API AActionCharacter : public ACharacter, public IInventoryOwner
+class KI_UNREALCPP_API AActionCharacter : public ACharacter, public IInventoryOwner, public IHasHealth
 {
 	GENERATED_BODY()
 
@@ -42,9 +43,16 @@ public:
 
 	// 아이템 추가 인터페이스 함수 구현
 	virtual void AddItem_Implementation(EItemCode Code, int32 Count) override;
+	virtual void AddWeapon_Implementation(EWeaponCode Code, int32 UseCount) override;
 
 	UResourceComponent* GetResourceComponent() { return Resource; }
 	UStatusComponent* GetStatusComponent() { return Status; }
+
+	virtual void HealHealth_Implementation(float InHeal) override;
+	virtual void DamageHealth_Implementation(float InDamage) override;
+
+	virtual void AddGold_Implementation(int32 Income) override;
+	virtual void RemoveGold_Implementation(int32 Expense) override;
 
 	void SetCollisionOn();
 	void SetCollisionOff();
@@ -79,6 +87,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Effects")
 	void ShakeCamera();
+
+	UFUNCTION(BlueprintCallable, Category = "Consumable")
+	void SetCurrentGold(int32 inGold) { CurrentGold = inGold; }
+
+	UFUNCTION(BlueprintCallable, Category = "Consumable")
+	int32 GetCurrentGold() { return CurrentGold; }
 
 protected:
 	// 이동 방향 입력 받기
@@ -187,6 +201,9 @@ protected:
 	// 플레이어가 현재 가지고 있는 무기
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Weapon")
 	TWeakObjectPtr<class AReinforcedWeaponActor> CurrentReinforcedWeapon = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Consumable")
+	int32 CurrentGold = 0;
 	
 private:
 	UPROPERTY()

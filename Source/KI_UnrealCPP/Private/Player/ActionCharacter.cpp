@@ -18,6 +18,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Data/CameraShakeAttackEffect.h"
 #include <Framework/PickupFactorySubsystem.h>
+#include <Item/PickupWeapon.h>
 
 // Sets default values
 AActionCharacter::AActionCharacter()
@@ -109,13 +110,51 @@ void AActionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void AActionCharacter::AddItem_Implementation(EItemCode Code, int32 Count)
 {
 	//const UEnum* EnumPtr = StaticEnum<EItemCode>();
-	
-	//	*EnumPtr->GetDisplayNameTextByValue(static_cast<int8>(Code)).ToString());
+	UE_LOG(LogTemp, Log, TEXT("아이템 추가 : %d"), Code);
 
-	EWeaponCode weaponCode = WeaponManager->GetWeaponCode(Code);
-	EquipWeapon(weaponCode);
-	UE_LOG(LogTemp, Log, TEXT("아이템 추가 : %d"), weaponCode);
-	CurrentWeapon->OnWeaponPickedup(Count);
+	switch (Code)
+	{
+	case EItemCode::Gold:
+		SetCurrentGold(GetCurrentGold() + Count);
+		UE_LOG(LogTemp, Log, TEXT("현재 골드 : %d"), GetCurrentGold());
+		break;
+	case EItemCode::Gem:
+		UE_LOG(LogTemp, Log, TEXT("보석"));
+		break;
+	default: break;
+	}
+}
+
+void AActionCharacter::AddWeapon_Implementation(EWeaponCode Code, int32 UseCount)
+{
+	EquipWeapon(Code);
+	CurrentWeapon->OnWeaponPickedup(UseCount);
+}
+
+void AActionCharacter::HealHealth_Implementation(float InHeal)
+{
+	if (Resource)
+	{
+		Resource->AddHealth(InHeal);
+	}
+}
+
+void AActionCharacter::DamageHealth_Implementation(float InDamage)
+{
+	if (Resource)
+	{
+		Resource->AddHealth(-InDamage);
+	}
+}
+
+void AActionCharacter::AddGold_Implementation(int32 Income)
+{
+	UE_LOG(LogTemp, Warning, TEXT("AddGold_Implementation %d"), Income);
+}
+
+void AActionCharacter::RemoveGold_Implementation(int32 Expense)
+{
+	UE_LOG(LogTemp, Warning, TEXT("RemoveGold_Implementation %d"), Expense);
 }
 
 void AActionCharacter::SetCollisionOn()
@@ -372,7 +411,7 @@ void AActionCharacter::DropCurrentWeapon(EWeaponCode WeaponCode)
 {
 	if (CurrentWeapon.IsValid() && CurrentWeapon->GetWeaponID() != EWeaponCode::BasicWeapon)
 	{
-		if (TSubclassOf<APickupActor> pickupClass = WeaponManager->GetPickupWeaponClass(WeaponCode))
+		if (TSubclassOf<APickupWeapon> pickupClass = WeaponManager->GetPickupWeaponClass(WeaponCode))
 		{
 			//UPickupFactorySubsystem* factorySystem = GetWorld()->GetSubsystem<UPickupFactorySubsystem>();
 			//if (!factorySystem)
@@ -388,14 +427,14 @@ void AActionCharacter::DropCurrentWeapon(EWeaponCode WeaponCode)
 			//	GetActorRotation(),
 			//	(GetActorForwardVector() + GetActorUpVector()) * 300.0f);
 
-			APickupActor* pickup = GetWorld()->SpawnActor<APickupActor>(
+			APickupWeapon* pickup = GetWorld()->SpawnActor<APickupWeapon>(
 				*pickupClass,
 				DropLocation->GetComponentLocation(),
 				GetActorRotation());
 			//
 			//// 새로 생긴 픽업에 남은 횟수 넣기
 			AConsumableWeapon* conWeapon = Cast<AConsumableWeapon>(CurrentWeapon);
-			pickup->SetPickupCount(conWeapon->GetRemainingUseCount());
+			pickup->SetWeaponUseCount(conWeapon->GetRemainingUseCount());
 
 			FVector velocity = (GetActorForwardVector() + GetActorUpVector()) * 300.0f;
 			pickup->AddImpulse(velocity);

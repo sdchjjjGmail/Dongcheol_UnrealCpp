@@ -2,4 +2,10 @@
 
 
 #include "Data/WeaponDataAsset.h"
+#include "Item/PickupWeapon.h"
+#include "Weapon/WeaponActor.h"
+#include "Weapon/UsedWeapon.h"
 
+void UWeaponDataAsset::findCpp()
+{
+}

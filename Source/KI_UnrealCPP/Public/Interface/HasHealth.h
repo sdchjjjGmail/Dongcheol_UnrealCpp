@@ -4,14 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "Common/CommonEnums.h"
-#include "Consumable.generated.h"
-
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnConsume, EItemCode*, Consumed);
+#include "HasHealth.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UConsumable : public UInterface
+class UHasHealth : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -19,11 +16,16 @@ class UConsumable : public UInterface
 /**
  * 
  */
-class KI_UNREALCPP_API IConsumable
+class KI_UNREALCPP_API IHasHealth
 {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	//virtual FOnConsume& GetOnConsumeDelegate();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Health")
+	void HealHealth(float Heal);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Health")
+	void DamageHealth(float Damage);
+
 };

@@ -79,7 +79,7 @@ void APickupActor::BeginPlay()
 		false);
 
 	bPickedup = false;
-	PickupCount = 5;
+	//PickupCount = 5;
 }
 // Called every frame
 void APickupActor::Tick(float DeltaTime)
@@ -103,6 +103,11 @@ void APickupActor::OnPickup_Implementation(AActor* Target)
 		this->SetActorEnableCollision(ECollisionEnabled::NoCollision);
 		BaseRoot->SetSimulatePhysics(false);
 	}
+}
+
+void APickupActor::OnPickupComplete_Implementation()
+{
+	Destroy();
 }
 
 void APickupActor::AddImpulse(FVector& Velocity)
@@ -144,9 +149,6 @@ void APickupActor::OnTimelineUpdate(float Value)
 
 void APickupActor::OnTimelineFinish()
 {
-	if (PickupOwner.IsValid() && PickupOwner->Implements<UInventoryOwner>())
-	{
-		IInventoryOwner::Execute_AddItem(PickupOwner.Get(), PickupItem, PickupCount);
-	}
-	Destroy();
+	UE_LOG(LogTemp, Log, TEXT("OnTimelineFinish"));
+	Execute_OnPickupComplete(this);
 }

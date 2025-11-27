@@ -10,7 +10,7 @@
 
 class AWeaponActor;
 class AUsedWeapon;
-class APickupActor;
+//class APickupActor;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class KI_UNREALCPP_API UWeaponManagerComponent : public UActorComponent
@@ -31,7 +31,7 @@ public:
 		return weapon;
 	}
 	TSubclassOf<AUsedWeapon> GetUsedWeaponClass(EWeaponCode InType) const;
-	TSubclassOf<APickupActor> GetPickupWeaponClass(EWeaponCode InType) const;
+	TSubclassOf<class APickupWeapon> GetPickupWeaponClass(EWeaponCode InType) const;
 
 	inline EItemCode GetItemCode(EWeaponCode Code) const
 	{

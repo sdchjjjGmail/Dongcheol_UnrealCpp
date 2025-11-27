@@ -58,14 +58,14 @@ void UPickupFactorySubsystem::DropValidWeapon(
 	FRotator DropRtation,
 	FVector velocity)
 {
-	APickupActor* pickup = GetWorld()->SpawnActor<APickupActor>(
-		PickupClass,
-		DropLocation,
-		DropRtation);
+	//APickupActor* pickup = GetWorld()->SpawnActor<APickupActor>(
+	//	PickupClass,
+	//	DropLocation,
+	//	DropRtation);
 
-	// 새로 생긴 픽업에 남은 횟수 넣기
-	pickup->SetPickupCount(RemainingUseCount);
+	//// 새로 생긴 픽업에 남은 횟수 넣기
+	//pickup->SetPickupCount(RemainingUseCount);
 
-	pickup->AddImpulse(velocity);
+	//pickup->AddImpulse(velocity);
 }
 

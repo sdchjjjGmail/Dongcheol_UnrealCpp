@@ -30,11 +30,14 @@ public:
 
 	// 픽업 가능한 액터(바닥에 버리는 용도, 무기 획득용)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Actor Classes")
-	TSubclassOf<class APickupActor> PickupWeaponClass;
+	TSubclassOf<class APickupWeapon> PickupWeaponClass;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Weapon")
 	bool IsValid() const
 	{
 		return EquippedWeaponClass != nullptr && UsedWeaponClass != nullptr && PickupWeaponClass != nullptr;
 	}
+
+private:
+	void findCpp();
 };
