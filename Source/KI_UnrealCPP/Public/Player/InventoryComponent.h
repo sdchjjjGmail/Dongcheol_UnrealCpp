@@ -34,9 +34,9 @@ public:
 	}
 	
 	void SetCount(int32 NewCount) { 
-		if (NewCount > 0)
+		if (ItemData && NewCount > 0)
 		{
-			Count = NewCount;
+			Count = FMath::Clamp(NewCount, 0, ItemData->ItemMaxStackCount);
 		}
 		else
 		{
@@ -78,11 +78,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	int32 AddItem(UItemDataAsset* InItemData, int32 InQuantity);
 
-	// 아이템을 특정칸에 추가하는 함수(초기화, 로딩 등에 사용)
-	// SlotIndex: 아이템의 추가될 슬롯, InItemData: 추가되는 아이템의 종류, InCount: 추가되는 아이템의 개수
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	void SetItemAtIndex(int InSlotIndex, UItemDataAsset* InItemData, int32 InQuantity);
-
 	// 특정 칸에 있는 아이템의 갯수를 조절하는 함수(증가/감소)
 	// InSlotIndex: 변경할 슬롯, InDeltaCount: 변화량
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
@@ -109,7 +104,13 @@ protected:
 	TArray<FInvenSlot> Slots;
 
 private:
-	int32 FindSlotWithItem(UItemDataAsset* InItemData, int32 InStartIndex = 0);
+	// 아이템을 특정칸에 추가하는 함수(초기화, 로딩 등에 사용)
+	// SlotIndex: 아이템의 추가될 슬롯, InItemData: 추가되는 아이템의 종류, InCount: 추가되는 아이템의 개수
+	void SetItemAtIndex(int InSlotIndex, UItemDataAsset* InItemData, int32 InQuantity);
 
+	// 같은 종류의 아이템이 있는 슬롯을 찾는 함수
+	int32 FindSlotWithItem(UItemDataAsset* InItemData, int32 InStartIndex = 0);
+	
+	// 비어있는 슬롯을 찾는 함수
 	int32 FindEmptySlot();
 };

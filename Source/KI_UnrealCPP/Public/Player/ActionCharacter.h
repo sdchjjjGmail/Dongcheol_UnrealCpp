@@ -19,6 +19,7 @@ class UInputAction;
 //class USpringArmComponent;
 class UResourceComponent;
 class UStatusComponent;
+class UInventoryComponent;
 //class UAnimNotifyState_SectionJump;
 
 UCLASS()
@@ -42,11 +43,14 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	// 아이템 추가 인터페이스 함수 구현
-	virtual void AddItem_Implementation(EItemCode Code, int32 Count) override;
+	virtual void AddItem_Implementation(UItemDataAsset* Code, int32 Count) override;
 	virtual void AddWeapon_Implementation(EWeaponCode Code, int32 UseCount) override;
 
 	UResourceComponent* GetResourceComponent() { return Resource; }
 	UStatusComponent* GetStatusComponent() { return Status; }
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Inventory")
+	virtual UInventoryComponent* GetInventoryComponent() const override { return Inventory; }
 
 	virtual void HealHealth_Implementation(float InHeal) override;
 	virtual void DamageHealth_Implementation(float InDamage) override;
@@ -154,6 +158,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Weapon")
 	TObjectPtr<class UWeaponManagerComponent> WeaponManager = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Inventory")
+	TObjectPtr<class UInventoryComponent> Inventory = nullptr;
 
 	// 인풋 액션들
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")

@@ -9,6 +9,7 @@
 #include "Player/ResourceComponent.h"
 #include "Player/StatusComponent.h"
 #include "Player/WeaponManagerComponent.h"
+#include "Player/InventoryComponent.h"
 #include "Weapon/WeaponActor.h"
 #include "Weapon/ConsumableWeapon.h"
 #include "Weapon/ReinforcedWeaponActor.h"
@@ -19,6 +20,8 @@
 #include "Data/CameraShakeAttackEffect.h"
 #include <Framework/PickupFactorySubsystem.h>
 #include <Item/PickupWeapon.h>
+#include "Framework/PickupFactory.h"
+#include <Item/PickupItem.h>
 
 // Sets default values
 AActionCharacter::AActionCharacter()
@@ -43,6 +46,7 @@ AActionCharacter::AActionCharacter()
 	Resource = CreateDefaultSubobject<UResourceComponent>(TEXT("PlayerResource"));
 	Status = CreateDefaultSubobject<UStatusComponent>(TEXT("PlayerStatus"));
 	WeaponManager = CreateDefaultSubobject<UWeaponManagerComponent>(TEXT("WeaponManager"));
+	Inventory = CreateDefaultSubobject<UInventoryComponent>(TEXT("Inventory"));
 
 	bUseControllerRotationYaw = false;	// 컨트롤러의 Yaw 회전 사용 안함
 	GetCharacterMovement()->bOrientRotationToMovement = true;	// 이동 방향으로 캐릭터 회전
@@ -107,23 +111,30 @@ void AActionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	}
 }
 
-void AActionCharacter::AddItem_Implementation(EItemCode Code, int32 Count)
+void AActionCharacter::AddItem_Implementation(UItemDataAsset* ItemData, int32 Count)
 {
-	//const UEnum* EnumPtr = StaticEnum<EItemCode>();
-	UE_LOG(LogTemp, Log, TEXT("아이템 추가 : %d"), Code);
-
-	switch (Code)
+	const UEnum* EnumPtr = StaticEnum<EItemCode>();
+	UE_LOG(LogTemp, Log, TEXT("아이템 추가 : %s"), *EnumPtr->GetDisplayNameTextByValue(static_cast<uint8>(ItemData->ItemCode)).ToString());
+	int32 remain = Inventory->AddItem(ItemData, Count);
+	if (remain > 0)
 	{
-	case EItemCode::Gold:
-		SetCurrentGold(GetCurrentGold() + Count);
-		UE_LOG(LogTemp, Log, TEXT("현재 골드 : %d"), GetCurrentGold());
-		break;
-	case EItemCode::Gem:
-		UE_LOG(LogTemp, Log, TEXT("보석"));
-		break;
-	default: break;
+		FVector velocity = FVector::UpVector * 500.0f;
+		velocity = velocity.RotateAngleAxis(FMath::FRandRange(-15.0f, 15.0f), FVector::RightVector);
+		velocity = velocity.RotateAngleAxis(FMath::FRandRange(0.0f, 360.0f), FVector::UpVector);
+		APickupActor* pickup = GetWorld()->GetSubsystem<UPickupFactory>()->SpawnPickup(
+			ItemData->ItemCode,
+			DropLocation->GetComponentLocation(),
+			GetActorRotation(),
+			velocity
+		);
+
+		APickupItem* pickupItem = Cast<APickupItem>(pickup);
+		if (pickupItem)
+		{
+			pickupItem->SetItemCount(remain);
+		}
 	}
-}
+}	
 
 void AActionCharacter::AddWeapon_Implementation(EWeaponCode Code, int32 UseCount)
 {
@@ -427,17 +438,31 @@ void AActionCharacter::DropCurrentWeapon(EWeaponCode WeaponCode)
 			//	GetActorRotation(),
 			//	(GetActorForwardVector() + GetActorUpVector()) * 300.0f);
 
-			APickupWeapon* pickup = GetWorld()->SpawnActor<APickupWeapon>(
-				*pickupClass,
+			FVector velocity = FVector::UpVector * 500.0f;
+			velocity = velocity.RotateAngleAxis(FMath::FRandRange(-15.0f, 15.0f), FVector::RightVector);
+			velocity = velocity.RotateAngleAxis(FMath::FRandRange(0.0f, 360.0f), FVector::UpVector);
+
+			APickupActor* pickup = GetWorld()->GetSubsystem<UPickupFactory>()->SpawnPickup(
+				WeaponManager->GetItemCode(WeaponCode),
 				DropLocation->GetComponentLocation(),
-				GetActorRotation());
+				GetActorRotation(),
+				velocity
+			);
+
+			//APickupWeapon* pickup = GetWorld()->SpawnActor<APickupWeapon>(
+			//	*pickupClass,
+			//	DropLocation->GetComponentLocation(),
+			//	GetActorRotation());
 			//
 			//// 새로 생긴 픽업에 남은 횟수 넣기
-			AConsumableWeapon* conWeapon = Cast<AConsumableWeapon>(CurrentWeapon);
-			pickup->SetWeaponUseCount(conWeapon->GetRemainingUseCount());
 
-			FVector velocity = (GetActorForwardVector() + GetActorUpVector()) * 300.0f;
-			pickup->AddImpulse(velocity);
+			APickupWeapon* pickupWeapon = Cast<APickupWeapon>(pickup);
+			AConsumableWeapon* conWeapon = Cast<AConsumableWeapon>(CurrentWeapon);
+			if (pickupWeapon && conWeapon)
+			{
+				pickupWeapon->SetWeaponUseCount(conWeapon->GetRemainingUseCount());
+			}
+
 		}
 	}
 }

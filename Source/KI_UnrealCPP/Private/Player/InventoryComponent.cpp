@@ -37,7 +37,7 @@ int32 UInventoryComponent::AddItem(UItemDataAsset* InItemData, int32 InQuantity)
 	if (InItemData && InQuantity > 0)
 	{
 		// 같은 종류의 아이템이 들어있는 슬롯을 찾아 추가하기
-		int startIndex = 0;
+		int32 startIndex = 0;
 		while (remainingCount > 0) // remainingCount가 남아있는 한 반복
 		{
 			int32 foundIndex = FindSlotWithItem(InItemData, startIndex); // 같은 종류의 아이템이 들어있고, 공간에 여유가 있는 슬롯 찾기 시도
@@ -67,7 +67,7 @@ int32 UInventoryComponent::AddItem(UItemDataAsset* InItemData, int32 InQuantity)
 			{
 				break; // 빈 슬롯이 없다.
 			}
-
+			UE_LOG(LogTemp, Log, TEXT("emptyIndex : %d"), emptyIndex);
 			int32 amountToAdd = FMath::Min(InItemData->ItemMaxStackCount, remainingCount); // 추가량 결정
 			SetItemAtIndex(emptyIndex, InItemData, amountToAdd); // 추가량만큼 추가
 			remainingCount -= amountToAdd; // remainingCount을 슬롯에 추가한 만큼 감소
@@ -148,6 +148,7 @@ int32 UInventoryComponent::FindEmptySlot()
 		if (Slots[i].IsEmpty())
 		{
 			result = i;
+			break;
 		}
 	}
 	return result;
