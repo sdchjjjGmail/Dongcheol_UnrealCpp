@@ -36,7 +36,7 @@ public:
 	void SetCount(int32 NewCount) { 
 		if (ItemData && NewCount > 0)
 		{
-			Count = FMath::Clamp(NewCount, 0, ItemData->ItemMaxStackCount);
+			Count = FMath::Min(NewCount, ItemData->ItemMaxStackCount);
 		}
 		else
 		{
