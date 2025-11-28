@@ -15,6 +15,7 @@ enum class EItemCode : uint8
 	Saw			UMETA(DisplayName = "톱"),
 	Cup			UMETA(DisplayName = "금잔"),
 	Gem			UMETA(DisplayName = "보석"),
+	Braclet		UMETA(DisplayName = "팔찌"),
 	PotionHealth UMETA(DisplayName = "힐링 포션"),
 	PotionStamina UMETA(DisplayName = "스테미너 포션"),
 	Gold		UMETA(DisplayName = "골드")

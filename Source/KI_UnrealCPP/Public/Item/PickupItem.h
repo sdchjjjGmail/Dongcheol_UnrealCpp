@@ -22,9 +22,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Database")
 	TObjectPtr<UItemDataAsset> ItemDatabase;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pickup|Consumable")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pickup|Item")
 	EItemCode PickupItem = EItemCode::Gem;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pickup|Consumable")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pickup|Item")
 	int32 Quantity = 1;
 };
