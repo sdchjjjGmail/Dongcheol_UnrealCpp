@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Data/ItemDataAsset.h"
 #include "InventoryComponent.generated.h"
 
 
@@ -13,7 +14,40 @@ struct FInvenSlot
 	GENERATED_BODY()
 
 public:
+	// 이 슬롯에 들어있는 아이템의 종류
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory|Slot")
+	TObjectPtr<UItemDataAsset> ItemData = nullptr;
 
+
+	// 헬퍼
+	bool IsEmpty() const { return ItemData == nullptr || Count < 1; }
+	bool IsStackFull() const { return ItemData && Count >= ItemData->ItemMaxStackCount; }
+	void Clear() {
+		ItemData = nullptr;
+		Count = 0;
+	}
+
+	// Getter, Setter
+	int32 GetCount()
+	{
+		return Count;
+	}
+	
+	void SetCount(int32 NewCount) { 
+		if (NewCount > 0)
+		{
+			Count = NewCount;
+		}
+		else
+		{
+			Clear();
+		}
+	}
+
+protected:
+	// 이 슬롯의 아이템의 수량
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory|Slot")
+	int32 Count = 0;
 };
 
 // 여러개의 아이템 슬롯을 가진다.
@@ -28,13 +62,54 @@ public:
 	// Sets default values for this component's properties
 	UInventoryComponent();
 
+	// 실패 상수값
+	static const int32 InventoryFail = -1;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:	
-		
+private:
+
+
+public:
+	// 아이템을 추가하는 함수
+	// 리턴: 못먹은 아이템의 수, InItemData: 추가되는 아이템의 종류, InCount: 추가되는 아이템의 개수
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	int32 AddItem(UItemDataAsset* InItemData, int32 InQuantity);
+
+	// 아이템을 특정칸에 추가하는 함수(초기화, 로딩 등에 사용)
+	// SlotIndex: 아이템의 추가될 슬롯, InItemData: 추가되는 아이템의 종류, InCount: 추가되는 아이템의 개수
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	void SetItemAtIndex(int InSlotIndex, UItemDataAsset* InItemData, int32 InQuantity);
+
+	// 특정 칸에 있는 아이템의 갯수를 조절하는 함수(증가/감소)
+	// InSlotIndex: 변경할 슬롯, InDeltaCount: 변화량
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	void UpdateSlotCount(int32 InSlotIndex, int32 InDeltaCount = -1);
+
+	// 특정칸을 비우는 함수(InSlotIndex: 비울 슬롯)
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	void ClearSlotAtIndex(int32 InSlotIndex);
+
+	// 특정 슬롯을 확인하기 위한 함수(InSlotIndex: 확인할 슬롯)
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	const FInvenSlot& GetSlotData(int32 InSlotIndex) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	inline bool IsValidIndex(int32 InSlotIndex) const {
+		return InSlotIndex < InventorySize && InSlotIndex >= 0;
+	}
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Inventory")
 	int32 InventorySize = 4;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+	TArray<FInvenSlot> Slots;
+
+private:
+	int32 FindSlotWithItem(UItemDataAsset* InItemData, int32 InStartIndex = 0);
+
+	int32 FindEmptySlot();
 };
