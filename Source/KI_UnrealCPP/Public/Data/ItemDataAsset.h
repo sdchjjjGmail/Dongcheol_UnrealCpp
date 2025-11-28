@@ -15,22 +15,24 @@ class KI_UNREALCPP_API UItemDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
 	
+	// FString(범용), FName(내부 코드용), FText(로컬라이제이션용 : 외부용)
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Type")
-	EItemCode ItemType = EItemCode::Gem;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData")
+	EItemCode ItemCode = EItemCode::Gem;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Name")
-	FName ItemName = FName(TEXT(""));
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData")
+	FText ItemName = FText::FromString(TEXT("아이템"));
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Desc")
-	FString ItemDescription = TEXT("");
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData")
+	FText ItemDescription = FText::FromString(TEXT("아이템 설명"));
 
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Icon")
-	//Icon
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData")
+	UTexture2D* ItemIcon = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Price")
-	int32 Price = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData", meta = (ClampMin = "1"))
+	int32 ItemPrice = 1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Stack")
-	int32 Stack = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData", meta = (ClampMin = "1"))
+	int32 ItemMaxStackCount = 1;
+
 };
