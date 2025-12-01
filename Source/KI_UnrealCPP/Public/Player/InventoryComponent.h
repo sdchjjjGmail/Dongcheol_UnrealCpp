@@ -28,7 +28,7 @@ public:
 	}
 
 	// Getter, Setter
-	int32 GetCount() const
+	int32 GetCount()
 	{
 		return Count;
 	}
@@ -49,9 +49,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory|Slot")
 	int32 Count = 0;
 };
-
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInventoryUpdated);
 
 // 여러개의 아이템 슬롯을 가진다.
 // 하나의 슬롯에는 한 종류의 아이템만 들어간다.
@@ -98,10 +95,6 @@ public:
 	inline bool IsValidIndex(int32 InSlotIndex) const {
 		return InSlotIndex < InventorySize && InSlotIndex >= 0;
 	}
-
-
-	UPROPERTY(BlueprintAssignable, Category = "Inventory")
-	FOnInventoryUpdated OnInventoryUpdated;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Inventory")
