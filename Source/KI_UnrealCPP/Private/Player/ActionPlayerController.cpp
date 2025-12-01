@@ -66,8 +66,19 @@ void AActionPlayerController::OpenInventoryWidget()
 		//FInputModeGameOnly : 게임 전용(입력이 플레이어 컨트롤러로 우선 전달됨, 마우스 커서가 안보임)
 		//FInputModeUIOnly : UI가 떠있을 때 사용(입력이 UI로 먼저 전달됨, 마우스 커서가 보임)
 		//FInputModeGameAndUI : 마우스를 클릭했을 때 UI가 아래에 있으면 UI로 처리, 없으면 Game으로 처리
+		
+		FInputModeGameAndUI inputMode;
+		inputMode.SetWidgetToFocus(MainHudWidget->TakeWidget()); // 위젯에 포커스 주기
+		inputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock); // 마우스 커서가 뷰포트를 벗어날 수 있게 설정
+		inputMode.SetHideCursorDuringCapture(false); // 마우스가 눌려졌을 때도 커서가 보이도록 설정
+		SetInputMode(inputMode); // InputMode를 플레이어 컨트롤러에 적용
 
 		bShowMouseCursor = true;
+
+		SetIgnoreMoveInput(true); // 이동 입력 무시
+		SetIgnoreLookInput(true); // 카메라 회전 입력 무시
+
+		//SetPause(true); // 게임 일시정지
 	}
 }
 
@@ -75,6 +86,13 @@ void AActionPlayerController::CloseInventoryWidget()
 {
 	if (MainHudWidget.IsValid())
 	{
+		//SetPause(false);
+
+		SetIgnoreMoveInput(false); // 이동 입력 무시
+		SetIgnoreLookInput(false); // 카메라 회전 입력 무시
+
+		FInputModeGameOnly inputMode;
+		SetInputMode(inputMode);
 		bShowMouseCursor = false;
 		MainHudWidget->CloseInventory();
 	}
