@@ -27,7 +27,7 @@ protected:
 public:
 	virtual void SetupInputComponent() override;
 
-	inline void SetMainHudWidget(UMainHudWidget* Widget) { MainHudWidget = Widget; }
+	void InitMainHudWidget(UMainHudWidget* Widget);
 
 	void OpenInventoryWidget();
 	UFUNCTION()

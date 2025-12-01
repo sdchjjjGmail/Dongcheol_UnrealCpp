@@ -34,6 +34,15 @@ void AActionPlayerController::SetupInputComponent()
 	}
 }
 
+void AActionPlayerController::InitMainHudWidget(UMainHudWidget* Widget)
+{
+	MainHudWidget = Widget;
+
+	FScriptDelegate delegate;
+	delegate.BindUFunction(this, "CloseInventoryWidget");
+	MainHudWidget->AddToInventoryCloseDelegate(delegate);
+}
+
 void AActionPlayerController::OnLookInput(const FInputActionValue& InValue)
 {
 	FVector2D lookAxis = InValue.Get<FVector2D>();
