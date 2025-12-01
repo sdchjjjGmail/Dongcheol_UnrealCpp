@@ -6,6 +6,8 @@
 #include "GameFramework/HUD.h"
 #include "MainHUD.generated.h"
 
+class UMainHudWidget;
+
 /**
  * 
  */
@@ -17,8 +19,13 @@ class KI_UNREALCPP_API AMainHUD : public AHUD
 protected:
 	virtual void BeginPlay() override;
 
+public:
+	inline UMainHudWidget* GetMainWidget() const { return MainWidgetInstance; }
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<UUserWidget> MainWidgetClass = nullptr;
-	
+	TSubclassOf<UMainHudWidget> MainWidgetClass = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
+	TObjectPtr<UMainHudWidget> MainWidgetInstance = nullptr;
 };
