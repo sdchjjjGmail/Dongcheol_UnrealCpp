@@ -11,7 +11,7 @@ UENUM(BlueprintType)
 enum class EOpenState : uint8
 {
 	Open	UMETA(DisplayName = "Open"),
-	Close	UMETA(DisplayName = "Open")
+	Close	UMETA(DisplayName = "Close")
 };
 
 /**
@@ -40,6 +40,7 @@ public:
 	}
 
 	inline EOpenState GetOpenState() const { return OpenState; }
+	inline UInventoryWidget* GetInventoryWidget() const { return Inventory; }
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Resource", meta = (BindWidget))

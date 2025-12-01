@@ -20,6 +20,10 @@ protected:
 	virtual void NativeConstruct() override;
 
 public:
+	void InitializeInventoryWidget(class UInventoryComponent* InventoryComponent);
+	void RefreshInventoryWidget();
+	void ClearInventoryWidget();
+
 	UFUNCTION()
 	void PlayOpen();
 
@@ -29,7 +33,7 @@ public:
 public:
 	UPROPERTY(BlueprintAssignable, Category = "UI|Inventory")
 	FOnInventoryCloseRequested OnInventoryCloseRequested;
-	
+
 private:
 	UFUNCTION()
 	void OnInventroyCloseClicked();
@@ -41,6 +45,16 @@ protected:
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> OpenAndClose = nullptr;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UUniformGridPanel> SlotGridPanel = nullptr;
+
 	//UPROPERTY(Transient, meta = (BindWidgetAnim))
 	//TObjectPtr<UWidgetAnimation> Close = nullptr;
+
+private:
+	UPROPERTY()
+	TWeakObjectPtr<UInventoryComponent> TargetInventory = nullptr;
+
+	UPROPERTY()
+	TArray <TObjectPtr<class UInventorySlotWidget>> SlotWidgets;
 };

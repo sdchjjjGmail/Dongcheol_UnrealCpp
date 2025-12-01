@@ -5,6 +5,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubSystems.h"
 #include "InputMappingContext.h"
+#include "Player/InventoryComponent.h"
+#include "Player/ActionCharacter.h"
 
 void AActionPlayerController::BeginPlay()
 {
@@ -21,6 +23,31 @@ void AActionPlayerController::BeginPlay()
 	PlayerCameraManager->ViewPitchMin = VewPitchMin;
 }
 
+void AActionPlayerController::OnPossess(APawn* aPawn)
+{
+	Super::OnPossess(aPawn);
+
+	AActionCharacter* player = Cast<AActionCharacter>(aPawn);
+	if (player)
+	{
+		InventoryComponent = player->GetInventoryComponent();
+		if (InventoryWidget.IsValid())
+		{
+			InventoryWidget->InitializeInventoryWidget(InventoryComponent.Get());
+		}
+	}
+}
+
+void AActionPlayerController::OnUnPossess()
+{
+	if (InventoryWidget.IsValid())
+	{
+		InventoryWidget->ClearInventoryWidget();
+	}
+	InventoryComponent = nullptr;
+	Super::OnUnPossess();
+}
+
 void AActionPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -34,13 +61,22 @@ void AActionPlayerController::SetupInputComponent()
 	}
 }
 
-void AActionPlayerController::InitMainHudWidget(UMainHudWidget* Widget)
+void AActionPlayerController::InitMainHudWidget(UMainHudWidget* InWidget)
 {
-	MainHudWidget = Widget;
+	if (InWidget)
+	{
+		MainHudWidget = InWidget;
 
-	FScriptDelegate delegate;
-	delegate.BindUFunction(this, "CloseInventoryWidget");
-	MainHudWidget->AddToInventoryCloseDelegate(delegate);
+		FScriptDelegate delegate;
+		delegate.BindUFunction(this, "CloseInventoryWidget");
+		MainHudWidget->AddToInventoryCloseDelegate(delegate);
+
+		InventoryWidget = MainHudWidget->GetInventoryWidget();
+		if (InventoryWidget.IsValid()) // Posess보다 타이밍이 늦다.
+		{
+			InventoryWidget->InitializeInventoryWidget(InventoryComponent.Get());
+		}
+	}
 }
 
 void AActionPlayerController::OnLookInput(const FInputActionValue& InValue)

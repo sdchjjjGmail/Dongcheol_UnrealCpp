@@ -88,17 +88,20 @@ public:
 	void ClearSlotAtIndex(int32 InSlotIndex);
 
 	// 특정 슬롯을 확인하기 위한 함수(InSlotIndex: 확인할 슬롯)
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	const FInvenSlot& GetSlotData(int32 InSlotIndex) const;
+	//UFUNCTION(BlueprintCallable, Category = "Inventory")
+	FInvenSlot* GetSlotData(int32 InSlotIndex);
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	inline bool IsValidIndex(int32 InSlotIndex) const {
 		return InSlotIndex < InventorySize && InSlotIndex >= 0;
 	}
 
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	inline int32 GetInventorySize() const { return InventorySize; }
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Inventory")
-	int32 InventorySize = 4;
+	int32 InventorySize = 10;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
 	TArray<FInvenSlot> Slots;
@@ -106,7 +109,7 @@ protected:
 private:
 	// 아이템을 특정칸에 추가하는 함수(초기화, 로딩 등에 사용)
 	// SlotIndex: 아이템의 추가될 슬롯, InItemData: 추가되는 아이템의 종류, InCount: 추가되는 아이템의 개수
-	void SetItemAtIndex(int InSlotIndex, UItemDataAsset* InItemData, int32 InQuantity);
+	void SetItemAtIndex(int32 InSlotIndex, UItemDataAsset* InItemData, int32 InQuantity);
 
 	// 같은 종류의 아이템이 있는 슬롯을 찾는 함수
 	int32 FindSlotWithItem(UItemDataAsset* InItemData, int32 InStartIndex = 0);

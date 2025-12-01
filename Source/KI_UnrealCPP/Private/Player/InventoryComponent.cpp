@@ -9,6 +9,7 @@ UInventoryComponent::UInventoryComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
+	Slots.SetNum(InventorySize);
 }
 
 
@@ -16,8 +17,6 @@ UInventoryComponent::UInventoryComponent()
 void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	Slots.SetNum(InventorySize);
 }
 
 int32 UInventoryComponent::AddItem(UItemDataAsset* InItemData, int32 InQuantity)
@@ -112,7 +111,7 @@ void UInventoryComponent::ClearSlotAtIndex(int32 InSlotIndex)
 	}
 }
 
-const FInvenSlot& UInventoryComponent::GetSlotData(int32 InSlotIndex) const
+FInvenSlot* UInventoryComponent::GetSlotData(int32 InSlotIndex)
 {
 	check(IsValidIndex(InSlotIndex));
 	/*
@@ -120,8 +119,8 @@ const FInvenSlot& UInventoryComponent::GetSlotData(int32 InSlotIndex) const
 		verify : 거짓이면 프로그램 종료. shipping 빌드에 포함(검사는 안함).
 		ensure : 거짓이면 로그 출력하고 계속. shipping 빌드에 포함
 	*/
-
-	return Slots[InSlotIndex];
+	
+	return !Slots.IsEmpty() ? &Slots[InSlotIndex] : nullptr;
 }
 
 int32 UInventoryComponent::FindSlotWithItem(UItemDataAsset* InItemData, int32 InStartIndex)
