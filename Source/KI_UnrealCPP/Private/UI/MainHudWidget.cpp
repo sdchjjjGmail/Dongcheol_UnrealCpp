@@ -38,10 +38,12 @@ void UMainHudWidget::OpenInventory()
 {
 	Inventory->SetVisibility(ESlateVisibility::Visible);
 	OpenState = EOpenState::Open;
+	Inventory->PlayOpen();
 }
 
 void UMainHudWidget::CloseInventory()
 {
+	Inventory->PlayClose();
 	OpenState = EOpenState::Close;
-	Inventory->SetVisibility(ESlateVisibility::Hidden);
+	//Inventory->SetVisibility(ESlateVisibility::Hidden);
 }

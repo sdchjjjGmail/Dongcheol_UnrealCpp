@@ -20,6 +20,13 @@ protected:
 	virtual void NativeConstruct() override;
 
 public:
+	UFUNCTION()
+	void PlayOpen();
+
+	UFUNCTION()
+	void PlayClose();
+
+public:
 	UPROPERTY(BlueprintAssignable, Category = "UI|Inventory")
 	FOnInventoryCloseRequested OnInventoryCloseRequested;
 	
@@ -31,4 +38,9 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> CloseButton = nullptr;
 
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+	TObjectPtr<UWidgetAnimation> OpenAndClose = nullptr;
+
+	//UPROPERTY(Transient, meta = (BindWidgetAnim))
+	//TObjectPtr<UWidgetAnimation> Close = nullptr;
 };
