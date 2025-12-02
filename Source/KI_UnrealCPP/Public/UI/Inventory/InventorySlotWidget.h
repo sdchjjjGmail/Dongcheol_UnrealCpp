@@ -7,6 +7,7 @@
 #include "InventorySlotWidget.generated.h"
 
 struct FInvenSlot;
+DECLARE_DYNAMIC_DELEGATE_OneParam(FOnSlotClicked, int32, InSlotIndex);
 /**
  * 
  */
@@ -22,8 +23,17 @@ public:
 	// 설정된 데이터를 기반으로 위젯에서 표시하는 내용을 갱신
 	void RefreshSlot() const;
 
+	void SetParentWidget(class UInventoryWidget* InWidget) { ParentWidget = InWidget; }
+
 protected:
 	void ClearSlotWidget() const;
+
+	virtual void NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+	virtual void NativeOnMouseLeave(const FPointerEvent& InMouseEvent) override;
+	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+
+public:
+	FOnSlotClicked OnSlotRightClicked;
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "UI|InventorySlot", meta = (BindWidget))
@@ -37,6 +47,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "UI|InventorySlot", meta = (BindWidget))
 	TObjectPtr<class UTextBlock> MaxCountText = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category = "UI|InventorySlot")
+	TObjectPtr<class UInventoryWidget> ParentWidget = nullptr;
 
 private:
 	int32 Index = -1;

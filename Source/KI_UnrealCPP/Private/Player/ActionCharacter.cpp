@@ -146,6 +146,7 @@ void AActionCharacter::HealHealth_Implementation(float InHeal)
 {
 	if (Resource)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("HealHealth_Implementation"));
 		Resource->AddHealth(InHeal);
 	}
 }
@@ -158,9 +159,18 @@ void AActionCharacter::DamageHealth_Implementation(float InDamage)
 	}
 }
 
+void AActionCharacter::ChargeStamina_Implementation(float InAmount)
+{
+	if (Resource)
+	{
+		Resource->AddStamina(InAmount);
+	}
+}
+
 void AActionCharacter::AddGold_Implementation(int32 Income)
 {
 	UE_LOG(LogTemp, Warning, TEXT("AddGold_Implementation %d"), Income);
+	Inventory->AddGold(Income);
 }
 
 void AActionCharacter::RemoveGold_Implementation(int32 Expense)

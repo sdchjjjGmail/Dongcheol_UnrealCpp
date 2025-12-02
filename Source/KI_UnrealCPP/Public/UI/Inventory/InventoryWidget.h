@@ -22,6 +22,13 @@ protected:
 public:
 	void InitializeInventoryWidget(class UInventoryComponent* InventoryComponent);
 	void RefreshInventoryWidget();
+
+	UFUNCTION()
+	void RefreshGoldWidget(int32 InCurrentGold);
+	
+	UFUNCTION()
+	void RefreshSlotWidget(int32 InIndex);
+	
 	void ClearInventoryWidget();
 
 	UFUNCTION()
@@ -30,6 +37,12 @@ public:
 	UFUNCTION()
 	void PlayClose();
 
+	UFUNCTION()
+	void ShowSlotItemDetail(FText InName, FText InDesc, int32 InPrice);
+
+	UFUNCTION()
+	void HideSlotItemDetail();
+
 public:
 	UPROPERTY(BlueprintAssignable, Category = "UI|Inventory")
 	FOnInventoryCloseRequested OnInventoryCloseRequested;
@@ -37,6 +50,11 @@ public:
 private:
 	UFUNCTION()
 	void OnInventroyCloseClicked();
+
+	UFUNCTION(BlueprintCallable, Category = "UI|Inventory")
+	inline bool IsValidIndex(int32 InSlotIndex) const {
+		return InSlotIndex < SlotWidgets.Num() && InSlotIndex >= 0;
+	}
 
 protected:
 	UPROPERTY(meta = (BindWidget))
@@ -48,6 +66,12 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UUniformGridPanel> SlotGridPanel = nullptr;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UGoldPanelWidget> InventoryGold = nullptr;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UItemInfoWidget> InventoryItemDetail = nullptr;
+
 	//UPROPERTY(Transient, meta = (BindWidgetAnim))
 	//TObjectPtr<UWidgetAnimation> Close = nullptr;
 
@@ -55,6 +79,5 @@ private:
 	UPROPERTY()
 	TWeakObjectPtr<UInventoryComponent> TargetInventory = nullptr;
 
-	UPROPERTY()
 	TArray <TObjectPtr<class UInventorySlotWidget>> SlotWidgets;
 };

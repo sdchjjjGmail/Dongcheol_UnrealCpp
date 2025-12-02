@@ -9,6 +9,7 @@
 #include "AnimNotify/AnimNotifyState_ComboPractice.h"
 #include "Interface/InventoryOwner.h"
 #include "Interface/HasHealth.h"
+#include "Interface/HasStamina.h"
 #include "ActionCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponCollisionOn);
@@ -23,7 +24,7 @@ class UInventoryComponent;
 //class UAnimNotifyState_SectionJump;
 
 UCLASS()
-class KI_UNREALCPP_API AActionCharacter : public ACharacter, public IInventoryOwner, public IHasHealth
+class KI_UNREALCPP_API AActionCharacter : public ACharacter, public IInventoryOwner, public IHasHealth, public IHasStamina
 {
 	GENERATED_BODY()
 
@@ -54,6 +55,8 @@ public:
 
 	virtual void HealHealth_Implementation(float InHeal) override;
 	virtual void DamageHealth_Implementation(float InDamage) override;
+
+	virtual void ChargeStamina_Implementation(float InAmount) override;
 
 	virtual void AddGold_Implementation(int32 Income) override;
 	virtual void RemoveGold_Implementation(int32 Expense) override;

@@ -18,7 +18,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory|Slot")
 	TObjectPtr<UItemDataAsset> ItemData = nullptr;
 
-
 	// 헬퍼
 	bool IsEmpty() const { return ItemData == nullptr || Count < 1; }
 	bool IsStackFull() const { return ItemData && Count >= ItemData->ItemMaxStackCount; }
@@ -50,6 +49,9 @@ protected:
 	int32 Count = 0;
 };
 
+DECLARE_DYNAMIC_DELEGATE_OneParam(FOnInventorySlotChanged, int32, InIndex);
+DECLARE_DYNAMIC_DELEGATE_OneParam(FOnInventoryGoldChanged, int32, CurrentGold);
+
 // 여러개의 아이템 슬롯을 가진다.
 // 하나의 슬롯에는 한 종류의 아이템만 들어간다.
 // 아이템 종류에 따라 한 슬롯에 중첩될 수 있는 아이템 갯수가 달라질 수 있다.
@@ -65,6 +67,10 @@ public:
 	// 실패 상수값
 	static const int32 InventoryFail = -1;
 
+	FOnInventorySlotChanged OnInventorySlotChanged;
+
+	FOnInventoryGoldChanged OnInventoryGoldChanged;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -73,10 +79,16 @@ private:
 
 
 public:
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	void AddGold(int32 Income);
+
 	// 아이템을 추가하는 함수
 	// 리턴: 못먹은 아이템의 수, InItemData: 추가되는 아이템의 종류, InCount: 추가되는 아이템의 개수
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	int32 AddItem(UItemDataAsset* InItemData, int32 InQuantity);
+
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	void UseItem(int32 InUseIndex);
 
 	// 특정 칸에 있는 아이템의 갯수를 조절하는 함수(증가/감소)
 	// InSlotIndex: 변경할 슬롯, InDeltaCount: 변화량
@@ -103,8 +115,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Inventory")
 	int32 InventorySize = 10;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory|Gold")
+	int32 Gold = 0;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
 	TArray<FInvenSlot> Slots;
+
 
 private:
 	// 아이템을 특정칸에 추가하는 함수(초기화, 로딩 등에 사용)

@@ -2,6 +2,7 @@
 
 
 #include "Player/InventoryComponent.h"
+#include "Interface/UsableItem.h"
 
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()
@@ -17,6 +18,13 @@ UInventoryComponent::UInventoryComponent()
 void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void UInventoryComponent::AddGold(int32 Income)
+{
+	UE_LOG(LogTemp, Log, TEXT("AddGold : %d"), Income);
+	Gold += Income;
+	OnInventoryGoldChanged.ExecuteIfBound(Gold);
 }
 
 int32 UInventoryComponent::AddItem(UItemDataAsset* InItemData, int32 InQuantity)
@@ -76,7 +84,23 @@ int32 UInventoryComponent::AddItem(UItemDataAsset* InItemData, int32 InQuantity)
 	return remainingCount;
 }
 
-void UInventoryComponent::SetItemAtIndex(int InSlotIndex, UItemDataAsset* InItemData, int32 InQuantity)
+void UInventoryComponent::UseItem(int32 InUseIndex)
+{
+	FInvenSlot* slot = GetSlotData(InUseIndex);
+	if (slot->ItemData && slot->ItemData->Implements<UUsableItem>())
+	{
+		UE_LOG(LogTemp, Log, TEXT("InUseIndex : %d used"), InUseIndex);
+		IUsableItem::Execute_UseItem(slot->ItemData, GetOwner());
+
+		UpdateSlotCount(InUseIndex, -1);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("InUseIndex : %d 슬롯은 비어있거나 사용할 수 없는 아이템"), InUseIndex);
+	}
+}
+
+void UInventoryComponent::SetItemAtIndex(int32 InSlotIndex, UItemDataAsset* InItemData, int32 InQuantity)
 {
 	if (IsValidIndex(InSlotIndex))
 	{
@@ -84,11 +108,14 @@ void UInventoryComponent::SetItemAtIndex(int InSlotIndex, UItemDataAsset* InItem
 
 		TargetSlot.ItemData = InItemData;
 		TargetSlot.SetCount(InQuantity); // InCount가 0이면 자동 Clear
+		UE_LOG(LogTemp, Log, TEXT("SetItemAtIndex %d"), InSlotIndex);
+		OnInventorySlotChanged.ExecuteIfBound(InSlotIndex);
 	}
 }
 
 void UInventoryComponent::UpdateSlotCount(int32 InSlotIndex, int32 InDeltaCount)
 {
+	UE_LOG(LogTemp, Log, TEXT("UpdateSlotCount : %d, %d"), InSlotIndex, InDeltaCount);
 	if (IsValidIndex(InSlotIndex))
 	{
 		FInvenSlot& TargetSlot = Slots[InSlotIndex];
@@ -104,11 +131,13 @@ void UInventoryComponent::UpdateSlotCount(int32 InSlotIndex, int32 InDeltaCount)
 
 void UInventoryComponent::ClearSlotAtIndex(int32 InSlotIndex)
 {
-	if (IsValidIndex(InSlotIndex))
-	{
-		FInvenSlot& TargetSlot = Slots[InSlotIndex];
-		TargetSlot.Clear();
-	}
+	//if (IsValidIndex(InSlotIndex))
+	//{
+		//FInvenSlot& TargetSlot = Slots[InSlotIndex];
+		//TargetSlot.Clear();
+		//OnInventorySlotChanged.ExecuteIfBound(InSlotIndex);
+	//}
+		SetItemAtIndex(InSlotIndex, nullptr, 0);
 }
 
 FInvenSlot* UInventoryComponent::GetSlotData(int32 InSlotIndex)

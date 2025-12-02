@@ -2,6 +2,8 @@
 
 #include "UI/Inventory/InventoryWidget.h"
 #include "UI/Inventory/InventorySlotWidget.h"
+#include "UI/Inventory/GoldPanelWidget.h"
+#include "UI/Inventory/ItemInfoWidget.h"
 #include "Components/Button.h"
 #include "Components/UniformGridPanel.h"
 #include "Player/InventoryComponent.h"
@@ -32,12 +34,18 @@ void UInventoryWidget::InitializeInventoryWidget(UInventoryComponent* InventoryC
 				return;
 			}
 
+			TargetInventory->OnInventoryGoldChanged.BindUFunction(this, "RefreshGoldWidget");
+			TargetInventory->OnInventorySlotChanged.BindUFunction(this, "RefreshSlotWidget");
+			RefreshGoldWidget(0);
 			int32 size = FMath::Min(SlotGridPanel->GetChildrenCount(), TargetInventory->GetInventorySize());
 			for (int i = 0; i < size; i++)
 			{
 				FInvenSlot* slotData = TargetInventory->GetSlotData(i);
 				UInventorySlotWidget* slotWidget = Cast<UInventorySlotWidget>(SlotGridPanel->GetChildAt(i));
 				slotWidget->InitializeSlot(i, slotData);
+				slotWidget->OnSlotRightClicked.Clear();
+				slotWidget->OnSlotRightClicked.BindUFunction(TargetInventory.Get(), "UseItem");
+				slotWidget->SetParentWidget(this);
 				SlotWidgets.Add(slotWidget);
 			}
 		}
@@ -49,6 +57,19 @@ void UInventoryWidget::RefreshInventoryWidget()
 	for (const UInventorySlotWidget* slot : SlotWidgets)
 	{
 		slot->RefreshSlot();
+	}
+}
+
+void UInventoryWidget::RefreshGoldWidget(int32 InCurrentGold)
+{
+	InventoryGold->SetGold(InCurrentGold);
+}
+
+void UInventoryWidget::RefreshSlotWidget(int32 InIndex)
+{
+	if (IsValidIndex(InIndex))
+	{
+		SlotWidgets[InIndex]->RefreshSlot();
 	}
 }
 
@@ -65,6 +86,20 @@ void UInventoryWidget::PlayOpen()
 void UInventoryWidget::PlayClose()
 {
 	if (OpenAndClose) PlayAnimation(OpenAndClose, 0.0f, 1, EUMGSequencePlayMode::Reverse, 1.0f, false);
+}
+
+void UInventoryWidget::ShowSlotItemDetail(FText InName, FText InDesc, int32 InPrice)
+{
+	if (InventoryItemDetail)
+	{
+		InventoryItemDetail->SetInfo(InName, InDesc, InPrice);
+		InventoryItemDetail->ShowDetail();
+	}
+}
+
+void UInventoryWidget::HideSlotItemDetail()
+{
+	if (InventoryItemDetail) InventoryItemDetail->HideDetail();
 }
 
 void UInventoryWidget::OnInventroyCloseClicked()
