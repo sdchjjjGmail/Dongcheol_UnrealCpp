@@ -111,6 +111,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	inline int32 GetInventorySize() const { return InventorySize; }
 
+	void EditIventorySlot(int32 PrevIndex, int32 InSlotIndex, UItemDataAsset* InItemData, int32 InQuantity);
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Inventory")
 	int32 InventorySize = 10;

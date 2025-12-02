@@ -19,12 +19,10 @@ void UItemInfoWidget::SetInfo(FText InName, FText InDesc, int32 InPrice)
 
 void UItemInfoWidget::ShowDetail()
 {
-	UE_LOG(LogTemp, Log, TEXT("ShowDetail"));
 	SetVisibility(ESlateVisibility::Visible);
 }
 
 void UItemInfoWidget::HideDetail()
 {
-	UE_LOG(LogTemp, Log, TEXT("HideDetail"));
 	SetVisibility(ESlateVisibility::Hidden);
 }

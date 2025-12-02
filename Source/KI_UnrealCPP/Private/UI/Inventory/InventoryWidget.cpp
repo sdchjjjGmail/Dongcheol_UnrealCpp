@@ -7,6 +7,8 @@
 #include "Components/Button.h"
 #include "Components/UniformGridPanel.h"
 #include "Player/InventoryComponent.h"
+#include <UI/Inventory/IventoryDragDropOperation.h>
+#include "Data/ItemDataAsset.h"
 
 void UInventoryWidget::NativeConstruct()
 {
@@ -17,6 +19,17 @@ void UInventoryWidget::NativeConstruct()
 		CloseButton->OnClicked.AddDynamic(this, &UInventoryWidget::OnInventroyCloseClicked);
 	}
 	SetVisibility(ESlateVisibility::Hidden);
+}
+
+bool UInventoryWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
+{
+	UIventoryDragDropOperation* invenOp = Cast<UIventoryDragDropOperation>(InOperation);
+	if (invenOp)
+	{
+		UE_LOG(LogTemp, Log, TEXT("인벤토리에 드랍 : 원래 슬롯(%d)으로 아이템이 돌아가야 한다."), invenOp->Index);
+		return true;
+	}
+	return false;
 }
 
 void UInventoryWidget::InitializeInventoryWidget(UInventoryComponent* InventoryComponent)
@@ -100,6 +113,15 @@ void UInventoryWidget::ShowSlotItemDetail(FText InName, FText InDesc, int32 InPr
 void UInventoryWidget::HideSlotItemDetail()
 {
 	if (InventoryItemDetail) InventoryItemDetail->HideDetail();
+}
+
+void UInventoryWidget::RequestIventoryEdit(int32 PrevIndex, int32 InSlotIndex, UItemDataAsset* InItemData, int32 InQuantity)
+{
+	UE_LOG(LogTemp, Log, TEXT("RequestIventoryEdit %d, %d개"), InSlotIndex, InQuantity);
+	if (TargetInventory.IsValid())
+	{
+		TargetInventory->EditIventorySlot(PrevIndex, InSlotIndex, InItemData, InQuantity);
+	}
 }
 
 void UInventoryWidget::OnInventroyCloseClicked()

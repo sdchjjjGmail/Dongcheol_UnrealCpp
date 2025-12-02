@@ -108,7 +108,7 @@ void UInventoryComponent::SetItemAtIndex(int32 InSlotIndex, UItemDataAsset* InIt
 
 		TargetSlot.ItemData = InItemData;
 		TargetSlot.SetCount(InQuantity); // InCount가 0이면 자동 Clear
-		UE_LOG(LogTemp, Log, TEXT("SetItemAtIndex %d"), InSlotIndex);
+		//UE_LOG(LogTemp, Log, TEXT("SetItemAtIndex %d, %s, %d개"), InSlotIndex, *InItemData->GetName(), InQuantity);
 		OnInventorySlotChanged.ExecuteIfBound(InSlotIndex);
 	}
 }
@@ -150,6 +150,22 @@ FInvenSlot* UInventoryComponent::GetSlotData(int32 InSlotIndex)
 	*/
 	
 	return !Slots.IsEmpty() ? &Slots[InSlotIndex] : nullptr;
+}
+
+void UInventoryComponent::EditIventorySlot(int32 PrevIndex, int32 InSlotIndex, UItemDataAsset* InItemData, int32 InQuantity)
+{
+	if (Slots[InSlotIndex].IsEmpty())
+	{
+		SetItemAtIndex(InSlotIndex, InItemData, InQuantity);
+		ClearSlotAtIndex(PrevIndex);
+	}
+	else
+	{
+		UItemDataAsset* tempData = Slots[InSlotIndex].ItemData;
+		int32 tempQuan = Slots[InSlotIndex].GetCount();
+		SetItemAtIndex(InSlotIndex, InItemData, InQuantity);
+		SetItemAtIndex(PrevIndex, tempData, tempQuan);
+	}
 }
 
 int32 UInventoryComponent::FindSlotWithItem(UItemDataAsset* InItemData, int32 InStartIndex)

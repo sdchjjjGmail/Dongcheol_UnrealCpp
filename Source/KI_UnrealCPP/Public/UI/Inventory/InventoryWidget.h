@@ -19,6 +19,8 @@ class KI_UNREALCPP_API UInventoryWidget : public UUserWidget
 protected:
 	virtual void NativeConstruct() override;
 
+	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
+
 public:
 	void InitializeInventoryWidget(class UInventoryComponent* InventoryComponent);
 	void RefreshInventoryWidget();
@@ -42,6 +44,8 @@ public:
 
 	UFUNCTION()
 	void HideSlotItemDetail();
+
+	void RequestIventoryEdit(int32 PrevIndex, int32 InSlotIndex, class UItemDataAsset* InItemData, int32 InQuantity);
 
 public:
 	UPROPERTY(BlueprintAssignable, Category = "UI|Inventory")
