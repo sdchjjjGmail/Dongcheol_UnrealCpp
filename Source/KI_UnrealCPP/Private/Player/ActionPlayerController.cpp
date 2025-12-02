@@ -142,3 +142,11 @@ void AActionPlayerController::CloseInventoryWidget()
 		MainHudWidget->CloseInventory();
 	}
 }
+
+void AActionPlayerController::TestChangeInventoryTarget(UInventoryComponent* NewTarget)
+{
+	if (NewTarget)
+	{
+		InventoryWidget->InitializeInventoryWidget(NewTarget);
+	}
+}
