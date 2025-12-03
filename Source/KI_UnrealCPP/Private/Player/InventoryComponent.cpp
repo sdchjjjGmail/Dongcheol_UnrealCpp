@@ -155,6 +155,11 @@ FInvenSlot* UInventoryComponent::GetSlotData(int32 InSlotIndex)
 
 void UInventoryComponent::EditIventorySlot(int32 PrevIndex, int32 InSlotIndex, UItemDataAsset* InItemData, int32 InQuantity)
 {
+	if (PrevIndex == InSlotIndex)
+	{
+		SetItemAtIndex(InSlotIndex, InItemData, InQuantity);
+		return;
+	}
 	if (Slots[InSlotIndex].IsEmpty())
 	{
 		SetItemAtIndex(InSlotIndex, InItemData, InQuantity);

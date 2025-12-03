@@ -27,6 +27,7 @@ bool UInventoryWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDrop
 	if (invenOp)
 	{
 		UE_LOG(LogTemp, Log, TEXT("인벤토리에 드랍 : 원래 슬롯(%d)으로 아이템이 돌아가야 한다."), invenOp->Index);
+		TargetInventory->EditIventorySlot(invenOp->Index, invenOp->Index, invenOp->ItemData.Get(), invenOp->ItemQuantity);
 		return true;
 	}
 	return false;
@@ -118,7 +119,10 @@ void UInventoryWidget::HideSlotItemDetail()
 void UInventoryWidget::RequestIventoryEdit(int32 PrevIndex, int32 InSlotIndex, UItemDataAsset* InItemData, int32 InQuantity)
 {
 	UE_LOG(LogTemp, Log, TEXT("RequestIventoryEdit %d, %d개"), InSlotIndex, InQuantity);
-
+	if (InQuantity == 0)
+	{
+		TargetInventory->ClearSlotAtIndex(PrevIndex);
+	}
 	TargetInventory->EditIventorySlot(PrevIndex, InSlotIndex, InItemData, InQuantity);
 }
 
