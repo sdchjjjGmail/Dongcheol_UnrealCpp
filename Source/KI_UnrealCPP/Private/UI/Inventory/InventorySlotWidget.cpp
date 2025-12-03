@@ -61,6 +61,20 @@ void UInventorySlotWidget::NativeOnDragDetected(const FGeometry& InGeometry, con
 		DragOp->ItemData = SlotData->ItemData;
 		DragOp->ItemQuantity = SlotData->GetCount();
 
+		if (DragVisualClass)
+		{
+			UInventorySlotWidget* DragVisual = CreateWidget<UInventorySlotWidget>(GetWorld(), DragVisualClass);
+			if (DragVisual)
+			{
+				// ex) DragVisual 내부에 아이템 아이콘, 수량 텍스트 등 세팅하고 싶으면
+				UInventorySlotWidget* TypedVisual = Cast<UInventorySlotWidget>(DragVisual);
+				 if (TypedVisual) { TypedVisual->InitializeSlot(DragOp->Index, SlotData); }
+				 
+				DragOp->DefaultDragVisual = DragVisual;
+				DragOp->Pivot = EDragPivot::MouseDown;  // 클릭한 지점 기준으로 따라다니게
+			}
+		}
+
 		OutOperation = DragOp;
 	}
 }
@@ -68,11 +82,16 @@ void UInventorySlotWidget::NativeOnDragDetected(const FGeometry& InGeometry, con
 bool UInventorySlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
 {
 	UIventoryDragDropOperation* invenOp = Cast<UIventoryDragDropOperation>(InOperation);
+
 	if (invenOp)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Drop : %d Slot에 %s를 옮기기"),
 			Index,
 			*(invenOp->ItemData->ItemName.ToString()));
+		if (invenOp->Index == Index)
+		{
+			return false;
+		}
 		ParentWidget->RequestIventoryEdit(invenOp->Index, Index, invenOp->ItemData.Get(), invenOp->ItemQuantity);
 		return true;
 	}
@@ -89,6 +108,7 @@ void UInventorySlotWidget::NativeOnDragCancelled(const FDragDropEvent& InDragDro
 		UE_LOG(LogTemp, Log,
 			TEXT("DragCancelled : 바닥에다가 (%s)아이템을 버려야 한다."),
 			*(invenOp->ItemData->ItemName.ToString()));
+		ParentWidget->RequestThrowItem(invenOp->ItemData.Get(), invenOp->Index, invenOp->ItemQuantity);
 	}
 }
 
@@ -127,6 +147,7 @@ FReply UInventorySlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry
 	}
 	else if (InMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton)) // 마우스 왼쪽 버튼 눌렸는지 확인
 	{
+
 		return FReply::Handled().DetectDrag(TakeWidget(), EKeys::LeftMouseButton);
 	}
 	return Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent); // 나는 처리 안했다 or 부모 or 다른 위젯이 처리

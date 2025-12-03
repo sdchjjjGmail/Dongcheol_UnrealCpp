@@ -112,6 +112,7 @@ public:
 	inline int32 GetInventorySize() const { return InventorySize; }
 
 	void EditIventorySlot(int32 PrevIndex, int32 InSlotIndex, UItemDataAsset* InItemData, int32 InQuantity);
+	void ThrowItem(UItemDataAsset* InItemData, int32 InIndex, int32 InSlotIndex);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Inventory")

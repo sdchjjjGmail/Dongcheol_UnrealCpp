@@ -118,10 +118,13 @@ void UInventoryWidget::HideSlotItemDetail()
 void UInventoryWidget::RequestIventoryEdit(int32 PrevIndex, int32 InSlotIndex, UItemDataAsset* InItemData, int32 InQuantity)
 {
 	UE_LOG(LogTemp, Log, TEXT("RequestIventoryEdit %d, %d개"), InSlotIndex, InQuantity);
-	if (TargetInventory.IsValid())
-	{
-		TargetInventory->EditIventorySlot(PrevIndex, InSlotIndex, InItemData, InQuantity);
-	}
+
+	TargetInventory->EditIventorySlot(PrevIndex, InSlotIndex, InItemData, InQuantity);
+}
+
+void UInventoryWidget::RequestThrowItem(UItemDataAsset* InItemData, int32 InIndex, int32 InQuantity)
+{
+	TargetInventory->ThrowItem(InItemData, InIndex, InQuantity);
 }
 
 void UInventoryWidget::OnInventroyCloseClicked()

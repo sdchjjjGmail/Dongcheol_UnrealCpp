@@ -46,6 +46,7 @@ public:
 	void HideSlotItemDetail();
 
 	void RequestIventoryEdit(int32 PrevIndex, int32 InSlotIndex, class UItemDataAsset* InItemData, int32 InQuantity);
+	void RequestThrowItem(UItemDataAsset* InItemData, int32 InIndex, int32 InQuantity);
 
 public:
 	UPROPERTY(BlueprintAssignable, Category = "UI|Inventory")

@@ -60,6 +60,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "UI|InventorySlot")
 	TObjectPtr<class UInventoryWidget> ParentWidget = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI|DragDrop")
+	TSubclassOf<UInventorySlotWidget> DragVisualClass;
+
 private:
 	int32 Index = -1;
 

@@ -50,6 +50,8 @@ public:
 	UResourceComponent* GetResourceComponent() { return Resource; }
 	UStatusComponent* GetStatusComponent() { return Status; }
 
+	void DropItem(UItemDataAsset* ItemData, int32 Count);
+
 	UFUNCTION(BlueprintCallable, Category = "Player|Inventory")
 	virtual UInventoryComponent* GetInventoryComponent() const override { return Inventory; }
 

@@ -3,6 +3,7 @@
 
 #include "Player/InventoryComponent.h"
 #include "Interface/UsableItem.h"
+#include <Player/ActionCharacter.h>
 
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()
@@ -159,6 +160,38 @@ void UInventoryComponent::EditIventorySlot(int32 PrevIndex, int32 InSlotIndex, U
 		SetItemAtIndex(InSlotIndex, InItemData, InQuantity);
 		ClearSlotAtIndex(PrevIndex);
 	}
+	else if (Slots[InSlotIndex].ItemData.GetName() == InItemData->GetName())
+	{
+		UE_LOG(LogTemp, Log, TEXT("Same item %s"), *InItemData->GetName());
+
+		FInvenSlot& slot = Slots[InSlotIndex];
+		int32 remainingCount = InQuantity;
+		int32 availableCount = slot.ItemData->ItemMaxStackCount - slot.GetCount(); // 추가 가능한 개수가 몇개인지 확인
+		
+		if (availableCount > 0) // 추가가 가능하면
+		{
+			int32 amountToAdd = FMath::Min(availableCount, remainingCount); // 추가량 결정
+			SetItemAtIndex(InSlotIndex, InItemData, slot.GetCount() + amountToAdd); // 추가량만큼 추가
+			remainingCount -= amountToAdd; // remainingCount을 슬롯에 추가한 만큼 감소
+		}
+		else
+		{
+			UItemDataAsset* tempData = Slots[InSlotIndex].ItemData;
+			int32 tempQuan = Slots[InSlotIndex].GetCount();
+			SetItemAtIndex(InSlotIndex, InItemData, InQuantity);
+			SetItemAtIndex(PrevIndex, tempData, tempQuan);
+			return;
+		}
+
+		if (remainingCount > 0)
+		{
+			SetItemAtIndex(PrevIndex, InItemData, remainingCount);
+		}
+		else
+		{
+			ClearSlotAtIndex(PrevIndex);
+		}
+	}
 	else
 	{
 		UItemDataAsset* tempData = Slots[InSlotIndex].ItemData;
@@ -166,6 +199,12 @@ void UInventoryComponent::EditIventorySlot(int32 PrevIndex, int32 InSlotIndex, U
 		SetItemAtIndex(InSlotIndex, InItemData, InQuantity);
 		SetItemAtIndex(PrevIndex, tempData, tempQuan);
 	}
+}
+
+void UInventoryComponent::ThrowItem(UItemDataAsset* InItemData, int32 InIndex, int32 InQuantity)
+{
+	ClearSlotAtIndex(InIndex);
+	Cast<AActionCharacter>(GetOwner())->DropItem(InItemData, InQuantity);
 }
 
 int32 UInventoryComponent::FindSlotWithItem(UItemDataAsset* InItemData, int32 InStartIndex)
