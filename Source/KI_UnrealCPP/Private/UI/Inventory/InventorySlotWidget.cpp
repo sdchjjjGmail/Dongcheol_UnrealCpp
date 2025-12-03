@@ -71,7 +71,7 @@ void UInventorySlotWidget::NativeOnDragDetected(const FGeometry& InGeometry, con
 				 if (TypedVisual) { TypedVisual->InitializeSlot(DragOp->Index, SlotData); }
 				 
 				DragOp->DefaultDragVisual = DragVisual;
-				DragOp->Pivot = EDragPivot::MouseDown;  // 클릭한 지점 기준으로 따라다니게
+				//DragOp->Pivot = EDragPivot::MouseDown;  // 클릭한 지점 기준으로 따라다니게
 			}
 		}
 
@@ -112,6 +112,8 @@ void UInventorySlotWidget::NativeOnMouseEnter(const FGeometry& InGeometry, const
 	Super::NativeOnMouseEnter(InGeometry, InMouseEvent);
 	if (ParentWidget && SlotData->ItemData)
 		ParentWidget->ShowSlotItemDetail(
+			InMouseEvent,
+			SlotData->ItemData->ItemIcon,
 			SlotData->ItemData->ItemName,
 			SlotData->ItemData->ItemDescription,
 			SlotData->ItemData->ItemPrice);

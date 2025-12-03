@@ -40,7 +40,7 @@ public:
 	void PlayClose();
 
 	UFUNCTION()
-	void ShowSlotItemDetail(FText InName, FText InDesc, int32 InPrice);
+	void ShowSlotItemDetail(const FPointerEvent& InMouseEvent, UTexture2D* InIcon, FText InName, FText InDesc, int32 InPrice);
 
 	UFUNCTION()
 	void HideSlotItemDetail();

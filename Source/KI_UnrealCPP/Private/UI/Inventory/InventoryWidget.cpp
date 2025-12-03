@@ -102,12 +102,12 @@ void UInventoryWidget::PlayClose()
 	if (OpenAndClose) PlayAnimation(OpenAndClose, 0.0f, 1, EUMGSequencePlayMode::Reverse, 1.0f, false);
 }
 
-void UInventoryWidget::ShowSlotItemDetail(FText InName, FText InDesc, int32 InPrice)
+void UInventoryWidget::ShowSlotItemDetail(const FPointerEvent& InMouseEvent, UTexture2D* InIcon, FText InName, FText InDesc, int32 InPrice)
 {
 	if (InventoryItemDetail)
 	{
-		InventoryItemDetail->SetInfo(InName, InDesc, InPrice);
-		InventoryItemDetail->ShowDetail();
+		InventoryItemDetail->SetInfo(InIcon, InName, InDesc, InPrice);
+		InventoryItemDetail->ShowDetail(InMouseEvent.GetScreenSpacePosition());
 	}
 }
 

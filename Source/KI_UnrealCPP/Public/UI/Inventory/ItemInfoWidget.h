@@ -17,13 +17,18 @@ class KI_UNREALCPP_API UItemInfoWidget : public UUserWidget
 protected:
 	virtual void NativeConstruct() override;
 
-public:
-	void SetInfo(FText InName, FText InDesc, int32 InPrice);
+	//void SetInfo( FText InName, FText InDesc, int32 InPrice);
 
-	void ShowDetail();
+public:
+	void SetInfo(UTexture2D* InIcon, FText InName, FText InDesc, int32 InPrice);
+
+	void ShowDetail(FVector2D Position);
 	void HideDetail();
 	
 protected:
+	UPROPERTY(VisibleAnywhere, Category = "UI|InventoryItemInfo", meta = (BindWidget))
+	TObjectPtr<class UImage> ItemIcon = nullptr;
+
 	UPROPERTY(VisibleAnywhere, Category = "UI|InventoryItemInfo", meta = (BindWidget))
 	TObjectPtr<class UTextBlock> ItemName = nullptr;
 
