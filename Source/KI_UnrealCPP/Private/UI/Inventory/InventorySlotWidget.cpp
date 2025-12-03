@@ -56,7 +56,6 @@ void UInventorySlotWidget::NativeOnDragDetected(const FGeometry& InGeometry, con
 	UE_LOG(LogTemp, Log, TEXT("DragDetected : %d Slot"), this->Index);
 	if (SlotData->ItemData)
 	{
-		Dragging = true;
 		UIventoryDragDropOperation* DragOp = NewObject<UIventoryDragDropOperation>();
 		DragOp->Index = this->Index;
 		DragOp->ItemData = SlotData->ItemData;
@@ -84,7 +83,6 @@ void UInventorySlotWidget::NativeOnDragDetected(const FGeometry& InGeometry, con
 bool UInventorySlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
 {
 	UIventoryDragDropOperation* invenOp = Cast<UIventoryDragDropOperation>(InOperation);
-	Dragging = false;
 	if (invenOp)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Drop : %d Slot에 %s를 옮기기"),
@@ -99,7 +97,6 @@ bool UInventorySlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDrag
 void UInventorySlotWidget::NativeOnDragCancelled(const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
 {
 	Super::NativeOnDragCancelled(InDragDropEvent, InOperation);
-	Dragging = false;
 	UIventoryDragDropOperation* invenOp = Cast<UIventoryDragDropOperation>(InOperation);
 	if (invenOp)
 	{
@@ -129,7 +126,7 @@ void UInventorySlotWidget::NativeOnMouseLeave(const FPointerEvent& InMouseEvent)
 
 FReply UInventorySlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
-	if (InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton) && !Dragging) // 마우스 오른쪽 버튼 눌렸는지 확인
+	if (InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton)) // 마우스 오른쪽 버튼 눌렸는지 확인
 	{
 		if (SlotData->ItemData)
 		{

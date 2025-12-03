@@ -68,6 +68,4 @@ private:
 
 	//UPROPERTY()
 	FInvenSlot* SlotData = nullptr;
-
-	bool Dragging = false;
 };
