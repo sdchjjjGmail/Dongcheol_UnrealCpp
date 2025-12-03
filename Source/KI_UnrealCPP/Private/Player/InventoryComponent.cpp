@@ -167,7 +167,7 @@ void UInventoryComponent::EditIventorySlot(int32 PrevIndex, int32 InSlotIndex, U
 	}
 	else if (Slots[InSlotIndex].ItemData.GetName() == InItemData->GetName())
 	{
-		UE_LOG(LogTemp, Log, TEXT("Same item %s"), *InItemData->GetName());
+		//UE_LOG(LogTemp, Log, TEXT("Same item %s"), *InItemData->GetName());
 
 		FInvenSlot& slot = Slots[InSlotIndex];
 		int32 remainingCount = InQuantity;
@@ -208,7 +208,7 @@ void UInventoryComponent::EditIventorySlot(int32 PrevIndex, int32 InSlotIndex, U
 
 void UInventoryComponent::ThrowItem(UItemDataAsset* InItemData, int32 InIndex, int32 InQuantity)
 {
-	ClearSlotAtIndex(InIndex);
+	//ClearSlotAtIndex(InIndex);
 	Cast<AActionCharacter>(GetOwner())->DropItem(InItemData, InQuantity);
 }
 

@@ -53,7 +53,7 @@ void UInventorySlotWidget::ClearSlotWidget() const
 void UInventorySlotWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation)
 {
 	Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
-	UE_LOG(LogTemp, Log, TEXT("DragDetected : %d Slot"), this->Index);
+	//UE_LOG(LogTemp, Log, TEXT("DragDetected : %d Slot"), this->Index);
 	if (SlotData->ItemData)
 	{
 		UIventoryDragDropOperation* DragOp = NewObject<UIventoryDragDropOperation>();
@@ -85,9 +85,9 @@ bool UInventorySlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDrag
 	UIventoryDragDropOperation* invenOp = Cast<UIventoryDragDropOperation>(InOperation);
 	if (invenOp)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Drop : %d Slot에 %s를 옮기기"),
-			Index,
-			*(invenOp->ItemData->ItemName.ToString()));
+		//UE_LOG(LogTemp, Log, TEXT("Drop : %d Slot에 %s를 옮기기"),
+		//	Index,
+		//	*(invenOp->ItemData->ItemName.ToString()));
 		ParentWidget->RequestIventoryEdit(invenOp->Index, Index, invenOp->ItemData.Get(), invenOp->ItemQuantity);
 		return true;
 	}
@@ -100,9 +100,9 @@ void UInventorySlotWidget::NativeOnDragCancelled(const FDragDropEvent& InDragDro
 	UIventoryDragDropOperation* invenOp = Cast<UIventoryDragDropOperation>(InOperation);
 	if (invenOp)
 	{
-		UE_LOG(LogTemp, Log,
-			TEXT("DragCancelled : 바닥에다가 (%s)아이템을 버려야 한다."),
-			*(invenOp->ItemData->ItemName.ToString()));
+		//UE_LOG(LogTemp, Log,
+		//	TEXT("DragCancelled : 바닥에다가 (%s)아이템을 버려야 한다."),
+		//	*(invenOp->ItemData->ItemName.ToString()));
 		ParentWidget->RequestThrowItem(invenOp->ItemData.Get(), invenOp->Index, invenOp->ItemQuantity);
 	}
 }
@@ -130,13 +130,13 @@ FReply UInventorySlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry
 	{
 		if (SlotData->ItemData)
 		{
-			UE_LOG(LogTemp, Log, TEXT("%d Slot : Right Click(%s)"),
-				Index, *SlotData->ItemData->ItemName.ToString());
+			//UE_LOG(LogTemp, Log, TEXT("%d Slot : Right Click(%s)"),
+			//	Index, *SlotData->ItemData->ItemName.ToString());
 			OnSlotRightClicked.ExecuteIfBound(Index);
 		}
 		else
 		{
-			UE_LOG(LogTemp, Log, TEXT("%d Slot : Right Click(empty)"), Index);
+			//UE_LOG(LogTemp, Log, TEXT("%d Slot : Right Click(empty)"), Index);
 		}
 		return FReply::Handled(); // 이 마우스 클릭은 완료되었다 라고 전달
 	}

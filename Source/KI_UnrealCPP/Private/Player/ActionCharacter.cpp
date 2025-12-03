@@ -114,25 +114,11 @@ void AActionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void AActionCharacter::AddItem_Implementation(UItemDataAsset* ItemData, int32 Count)
 {
 	const UEnum* EnumPtr = StaticEnum<EItemCode>();
-	UE_LOG(LogTemp, Log, TEXT("아이템 추가 : %s"), *EnumPtr->GetDisplayNameTextByValue(static_cast<uint8>(ItemData->ItemCode)).ToString());
+	//UE_LOG(LogTemp, Log, TEXT("아이템 추가 : %s"), *EnumPtr->GetDisplayNameTextByValue(static_cast<uint8>(ItemData->ItemCode)).ToString());
 	int32 remain = Inventory->AddItem(ItemData, Count);
 	if (remain > 0)
 	{
-		FVector velocity = FVector::UpVector * 500.0f;
-		velocity = velocity.RotateAngleAxis(FMath::FRandRange(-15.0f, 15.0f), FVector::RightVector);
-		velocity = velocity.RotateAngleAxis(FMath::FRandRange(0.0f, 360.0f), FVector::UpVector);
-		APickupActor* pickup = GetWorld()->GetSubsystem<UPickupFactory>()->SpawnPickup(
-			ItemData->ItemCode,
-			DropLocation->GetComponentLocation(),
-			GetActorRotation(),
-			velocity
-		);
-
-		APickupItem* pickupItem = Cast<APickupItem>(pickup);
-		if (pickupItem)
-		{
-			pickupItem->SetItemCount(remain);
-		}
+		DropItem(ItemData, Count);
 	}
 }	
 
@@ -144,24 +130,21 @@ void AActionCharacter::AddWeapon_Implementation(EWeaponCode Code, int32 UseCount
 
 void AActionCharacter::DropItem(UItemDataAsset* ItemData, int32 Count)
 {
-	if (Count > 0)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("버리기 : %d"), Count);
-		FVector velocity = FVector::UpVector * 500.0f;
-		velocity = velocity.RotateAngleAxis(FMath::FRandRange(-15.0f, 15.0f), FVector::RightVector);
-		velocity = velocity.RotateAngleAxis(FMath::FRandRange(0.0f, 360.0f), FVector::UpVector);
-		APickupActor* pickup = GetWorld()->GetSubsystem<UPickupFactory>()->SpawnPickup(
-			ItemData->ItemCode,
-			DropLocation->GetComponentLocation(),
-			GetActorRotation(),
-			velocity
-		);
+	//UE_LOG(LogTemp, Warning, TEXT("버리기 : %d"), Count);
+	FVector velocity = FVector::UpVector * 500.0f;
+	velocity = velocity.RotateAngleAxis(FMath::FRandRange(-15.0f, 15.0f), FVector::RightVector);
+	velocity = velocity.RotateAngleAxis(FMath::FRandRange(0.0f, 360.0f), FVector::UpVector);
+	APickupActor* pickup = GetWorld()->GetSubsystem<UPickupFactory>()->SpawnPickup(
+		ItemData->ItemCode,
+		DropLocation->GetComponentLocation(),
+		GetActorRotation(),
+		velocity
+	);
 
-		APickupItem* pickupItem = Cast<APickupItem>(pickup);
-		if (pickupItem)
-		{
-			pickupItem->SetItemCount(Count);
-		}
+	APickupItem* pickupItem = Cast<APickupItem>(pickup);
+	if (pickupItem)
+	{
+		pickupItem->SetItemCount(Count);
 	}
 }
 
