@@ -53,9 +53,4 @@ void UItemInfoWidget::UpdateLocation()
 	mousePosition = UWidgetLayoutLibrary::GetMousePositionOnViewport(GetWorld());
 
 	CanvasSlot->SetPosition(mousePosition - ParentPosition);
-
-	//if (UWidgetLayoutLibrary::GetMousePositionScaledByDPI(PlayerController, mousePosition.X, mousePosition.Y))
-	//{
-		UE_LOG(LogTemp, Log, TEXT("mouse location : %s"), *mousePosition.ToString());
-	//}
 }

@@ -19,7 +19,6 @@ void UInventorySlotWidget::InitializeSlot(int32 InIndex, FInvenSlot* InSlotData)
 
 void UInventorySlotWidget::RefreshSlot() const
 {
-	UE_LOG(LogTemp, Log, TEXT("RefreshSlot"));
 	if (SlotData && !SlotData->IsEmpty())
 	{
 		// 슬롯에 아이템이 들어있으면 들어있는 아이템 보여주기
