@@ -6,6 +6,7 @@
 #include "UI/Inventory/ItemInfoWidget.h"
 #include "Components/Button.h"
 #include "Components/UniformGridPanel.h"
+#include "Components/CanvasPanelSlot.h"
 #include "Player/InventoryComponent.h"
 #include <UI/Inventory/IventoryDragDropOperation.h>
 #include "Data/ItemDataAsset.h"
@@ -18,6 +19,8 @@ void UInventoryWidget::NativeConstruct()
 	{
 		CloseButton->OnClicked.AddDynamic(this, &UInventoryWidget::OnInventroyCloseClicked);
 	}
+
+
 	SetVisibility(ESlateVisibility::Hidden);
 }
 
@@ -63,6 +66,12 @@ void UInventoryWidget::InitializeInventoryWidget(UInventoryComponent* InventoryC
 				SlotWidgets.Add(slotWidget);
 			}
 		}
+
+		if (InventoryItemDetail)
+		{
+			UCanvasPanelSlot* canvasSlot = Cast<UCanvasPanelSlot>(Slot);
+			InventoryItemDetail->SetParentPosition(canvasSlot->GetPosition());
+		}
 	}
 }
 
@@ -106,8 +115,8 @@ void UInventoryWidget::ShowSlotItemDetail(const FPointerEvent& InMouseEvent, UTe
 {
 	if (InventoryItemDetail)
 	{
-		InventoryItemDetail->SetInfo(InIcon, InName, InDesc, InPrice);
-		InventoryItemDetail->ShowDetail(InMouseEvent.GetScreenSpacePosition());
+		//InventoryItemDetail->SetInfo(InIcon, InName, InDesc, InPrice);
+		InventoryItemDetail->ShowDetail(InIcon, InName, InDesc, InPrice);
 	}
 }
 
