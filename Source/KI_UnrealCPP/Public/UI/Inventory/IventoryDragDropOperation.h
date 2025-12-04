@@ -23,5 +23,8 @@ public:
 	int32 ItemQuantity = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory|Slot")
+	int32 Price = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory|Slot")
 	TWeakObjectPtr<UItemDataAsset> ItemData = nullptr;
 };

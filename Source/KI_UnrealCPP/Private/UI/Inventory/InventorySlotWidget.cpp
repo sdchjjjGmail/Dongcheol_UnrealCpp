@@ -60,6 +60,7 @@ void UInventorySlotWidget::NativeOnDragDetected(const FGeometry& InGeometry, con
 		DragOp->Index = this->Index;
 		DragOp->ItemData = SlotData->ItemData;
 		DragOp->ItemQuantity = SlotData->GetCount();
+		DragOp->Price = SlotData->ItemData->ItemPrice;
 
 		if (DragVisualClass)
 		{

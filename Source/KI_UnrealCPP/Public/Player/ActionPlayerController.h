@@ -64,5 +64,6 @@ private:
 
 	TWeakObjectPtr<UMainHudWidget> MainHudWidget = nullptr;
 	TWeakObjectPtr<UInventoryWidget> InventoryWidget = nullptr;
+	TWeakObjectPtr<UShopWidget> ShopWidget = nullptr;
 	TWeakObjectPtr<class UInventoryComponent> InventoryComponent = nullptr;
 };

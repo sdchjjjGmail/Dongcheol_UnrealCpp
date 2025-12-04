@@ -35,6 +35,11 @@ void AActionPlayerController::OnPossess(APawn* aPawn)
 		{
 			InventoryWidget->InitializeInventoryWidget(InventoryComponent.Get());
 		}
+
+		if (ShopWidget.IsValid())
+		{
+			ShopWidget->InitializeShopWidget(InventoryComponent.Get());
+		}
 	}
 }
 
@@ -75,6 +80,12 @@ void AActionPlayerController::InitMainHudWidget(UMainHudWidget* InWidget)
 		if (InventoryWidget.IsValid()) // Posess보다 타이밍이 늦다.
 		{
 			InventoryWidget->InitializeInventoryWidget(InventoryComponent.Get());
+		}
+
+		ShopWidget = MainHudWidget->GetShopWidget();
+		if (ShopWidget.IsValid())
+		{
+			ShopWidget->InitializeShopWidget(InventoryComponent.Get());
 		}
 	}
 }
