@@ -18,7 +18,7 @@ public:
 	void InitializeShopWidget(class UInventoryComponent* InventoryComponent);
 
 	UFUNCTION()
-	void PlayOpen();
+	void PlayOpen(class UDataTable* InTable);
 
 	UFUNCTION()
 	void PlayClose();
@@ -28,7 +28,7 @@ public:
 protected:
 	virtual void NativeConstruct() override;
 
-	void ResetShopItemListWidget();
+	void ResetShopItemListWidget(UDataTable* InTable);
 
 protected:
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
@@ -43,8 +43,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shop|Buy")
 	TWeakObjectPtr<class UDataTable> ShopItemList = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Shop")
-	TWeakObjectPtr<class UButton> Exit = nullptr;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Shop", meta = (BindWidget))
+	TWeakObjectPtr<class UButton> ExitShop = nullptr;
 
 private:
 	UPROPERTY()

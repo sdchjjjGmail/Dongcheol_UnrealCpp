@@ -6,6 +6,8 @@
 #include "UI/Shop/ShopItemListWidget.h"
 #include "Player/InventoryComponent.h"
 #include <Player/ActionCharacter.h>
+#include "Components/Button.h"
+#include "UI/MainHudWidget.h"
 
 void UShopWidget::InitializeShopWidget(UInventoryComponent* InventoryComponent)
 {
@@ -21,10 +23,10 @@ void UShopWidget::InitializeShopWidget(UInventoryComponent* InventoryComponent)
 	}
 }
 
-void UShopWidget::PlayOpen()
+void UShopWidget::PlayOpen(UDataTable* InTable)
 {
 	if (OpenAndClose) PlayAnimation(OpenAndClose, 0.0f, 1, EUMGSequencePlayMode::Forward, 1.0f, false);
-	ResetShopItemListWidget();
+	ResetShopItemListWidget(InTable);
 }
 
 void UShopWidget::PlayClose()
@@ -53,10 +55,11 @@ void UShopWidget::NativeConstruct()
 	SetVisibility(ESlateVisibility::Hidden);
 }
 
-void UShopWidget::ResetShopItemListWidget()
+void UShopWidget::ResetShopItemListWidget(UDataTable* InTable)
 {
+	UE_LOG(LogTemp, Log, TEXT("ResetShopItemListWidget"));
 	if (ShopItemList.IsValid())
 	{
-		ItemListWidget->ResetItemList(ShopItemList.Get());
+		ItemListWidget->ResetItemList(InTable);
 	}
 }

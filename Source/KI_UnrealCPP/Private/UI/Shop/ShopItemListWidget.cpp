@@ -48,6 +48,7 @@ void UShopItemListWidget::ResetItemList(UDataTable* ItemList)
 			if (hit < currentWeight)
 			{
 				//selectedRows.Add(row);
+				UE_LOG(LogTemp, Warning, TEXT("set item, %s"), *row->ItemData->GetName());
 				ShopItems[selectIndex]->SetItemData(row->ItemData, row->StockCount);
 				selectIndex++;
 				break;

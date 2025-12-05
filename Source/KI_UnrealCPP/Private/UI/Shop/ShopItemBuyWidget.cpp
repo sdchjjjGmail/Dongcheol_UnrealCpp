@@ -28,6 +28,7 @@ void UShopItemBuyWidget::NativeConstruct()
 void UShopItemBuyWidget::SetItemData(UItemDataAsset* InItemData, int32 InStockCount)
 {
 	InitShopState();
+	UE_LOG(LogTemp, Warning, TEXT("set item, %s"), *InItemData->GetName());
 
 	ItemData = InItemData;
 	StockCount = InStockCount;
