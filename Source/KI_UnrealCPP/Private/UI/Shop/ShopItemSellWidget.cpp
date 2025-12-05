@@ -15,7 +15,6 @@ bool UShopItemSellWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragD
 	if (invenOp)
 	{
 		UE_LOG(LogTemp, Log, TEXT("판매 드랍 : 슬롯 (%d) 아이템을 팝니다."), invenOp->Index);
-		//TargetInventory->EditIventorySlot(invenOp->Index, invenOp->Index, invenOp->ItemData.Get(), invenOp->ItemQuantity);
 		if (ParentWidget.IsValid())
 		{
 			ParentWidget->RequestSellItem(invenOp->ItemQuantity, invenOp->Price);

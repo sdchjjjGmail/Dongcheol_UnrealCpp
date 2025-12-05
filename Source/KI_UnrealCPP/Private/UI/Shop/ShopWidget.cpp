@@ -5,6 +5,7 @@
 #include "UI/Shop/ShopItemSellWidget.h"
 #include "UI/Shop/ShopItemListWidget.h"
 #include "Player/InventoryComponent.h"
+#include <Player/ActionCharacter.h>
 
 void UShopWidget::InitializeShopWidget(UInventoryComponent* InventoryComponent)
 {
@@ -36,7 +37,13 @@ void UShopWidget::RequestSellItem(int32 InQuantity, int32 InPrice)
 	if (TargetInventory.IsValid())
 	{
 		UE_LOG(LogTemp, Log, TEXT("아이템을 %d개 팔아 %d골드를 정산합니다."), InQuantity, InPrice * InQuantity / 2);
-		TargetInventory->AddGold(InPrice * InQuantity / 2);
+		//TargetInventory->AddGold(InPrice * InQuantity / 2);
+		APawn* player = GetOwningPlayerPawn();
+		if (player->Implements<UInventoryOwner>())
+		{
+			// 판매액만큼 돈을 추가
+			IInventoryOwner::Execute_AddGold(player, InPrice * InQuantity / 2);
+		}
 	}
 }
 

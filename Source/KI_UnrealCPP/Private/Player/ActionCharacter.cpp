@@ -175,13 +175,16 @@ void AActionCharacter::ChargeStamina_Implementation(float InAmount)
 
 void AActionCharacter::AddGold_Implementation(int32 Income)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AddGold_Implementation %d"), Income);
 	Inventory->AddGold(Income);
+	SetCurrentGold(GetCurrentGold() + Income);
+	UE_LOG(LogTemp, Warning, TEXT("Current Gold : %d"), GetCurrentGold());
 }
 
 void AActionCharacter::RemoveGold_Implementation(int32 Expense)
 {
 	UE_LOG(LogTemp, Warning, TEXT("RemoveGold_Implementation %d"), Expense);
+	Inventory->AddGold(-Expense);
+	SetCurrentGold(GetCurrentGold() - Expense);
 }
 
 void AActionCharacter::SetCollisionOn()

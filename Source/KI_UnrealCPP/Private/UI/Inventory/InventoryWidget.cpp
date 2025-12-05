@@ -85,6 +85,7 @@ void UInventoryWidget::RefreshInventoryWidget()
 
 void UInventoryWidget::RefreshGoldWidget(int32 InCurrentGold)
 {
+	if (InventoryGold)
 	InventoryGold->SetGold(InCurrentGold);
 }
 

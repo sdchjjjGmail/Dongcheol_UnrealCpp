@@ -10,7 +10,7 @@ class UImage;
 class UTextBlock;
 class UEditableTextBox;
 class UButton;
-class UOverlay;
+class USizeBox;
 /**
  * 
  */
@@ -23,14 +23,21 @@ protected:
 	virtual void NativeConstruct() override;
 
 public:
-	void SetItemData(const class UItemDataAsset* InItemData, int32 InStockCount);
+	void SetItemData(class UItemDataAsset* InItemData, int32 InStockCount);
 
 private:
+	void InitShopState();
+
 	UFUNCTION()
 	void OnBuyItemCountTextChanged(const FText& Text);
 
 	UFUNCTION()
 	void OnBuyItemCountTextCommitted(const FText& Text, ETextCommit::Type CommitMethod);
+
+	UFUNCTION()
+	void OnPlayerBuyItem();
+
+	void ShowSoldOut();
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Shop|ItemSell", meta = (BindWidget))
@@ -55,8 +62,17 @@ protected:
 	TObjectPtr<UButton> ItemBuyButton = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Shop|ItemSell", meta = (BindWidget))
-	TObjectPtr<UOverlay> Soldout = nullptr;
+	TObjectPtr<USizeBox> SoldoutPanel = nullptr;
 
 private:
 	static const int32 MinimumBuyItemCount = 1;
+
+	UPROPERTY()
+	UItemDataAsset* ItemData = nullptr;
+
+	TWeakObjectPtr<class AActionCharacter> Player = nullptr;
+
+	int32 StockCount = 0;
+	int32 BuyCount = 0;
+	//int32 Price = 0;
 };

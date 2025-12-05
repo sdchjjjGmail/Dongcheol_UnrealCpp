@@ -3,6 +3,7 @@
 
 #include "Player/InventoryComponent.h"
 #include "Interface/UsableItem.h"
+#include "Interface/InventoryOwner.h"
 #include <Player/ActionCharacter.h>
 
 // Sets default values for this component's properties
