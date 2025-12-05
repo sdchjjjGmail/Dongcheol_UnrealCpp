@@ -22,6 +22,15 @@ void UShopItemBuyWidget::NativeConstruct()
 	}
 }
 
+void UShopItemBuyWidget::SetItemData(const UItemDataAsset* InItemData, int32 InStockCount)
+{
+	BuyItemIcon->SetBrushFromTexture(InItemData->ItemIcon);
+	BuyItemName->SetText(InItemData->ItemName);
+	BuyItemPrice->SetText(FText::AsNumber(InItemData->ItemPrice));
+	BuyItemStockCount->SetText(FText::AsNumber(InStockCount));
+	BuyItemDesc->SetText(InItemData->ItemDescription);
+}
+
 void UShopItemBuyWidget::OnBuyItemCountTextChanged(const FText& Text)
 {
 	FString number = Text.ToString();

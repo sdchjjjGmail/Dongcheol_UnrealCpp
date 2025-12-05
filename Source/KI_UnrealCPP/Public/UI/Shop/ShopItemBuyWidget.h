@@ -22,6 +22,9 @@ class KI_UNREALCPP_API UShopItemBuyWidget : public UUserWidget
 protected:
 	virtual void NativeConstruct() override;
 
+public:
+	void SetItemData(const class UItemDataAsset* InItemData, int32 InStockCount);
+
 private:
 	UFUNCTION()
 	void OnBuyItemCountTextChanged(const FText& Text);

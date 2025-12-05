@@ -3,13 +3,8 @@
 
 #include "UI/Shop/ShopWidget.h"
 #include "UI/Shop/ShopItemSellWidget.h"
+#include "UI/Shop/ShopItemListWidget.h"
 #include "Player/InventoryComponent.h"
-
-void UShopWidget::NativeConstruct()
-{
-	Super::NativeConstruct();
-	SetVisibility(ESlateVisibility::Hidden);
-}
 
 void UShopWidget::InitializeShopWidget(UInventoryComponent* InventoryComponent)
 {
@@ -28,6 +23,7 @@ void UShopWidget::InitializeShopWidget(UInventoryComponent* InventoryComponent)
 void UShopWidget::PlayOpen()
 {
 	if (OpenAndClose) PlayAnimation(OpenAndClose, 0.0f, 1, EUMGSequencePlayMode::Forward, 1.0f, false);
+	ResetShopItemListWidget();
 }
 
 void UShopWidget::PlayClose()
@@ -41,5 +37,19 @@ void UShopWidget::RequestSellItem(int32 InQuantity, int32 InPrice)
 	{
 		UE_LOG(LogTemp, Log, TEXT("아이템을 %d개 팔아 %d골드를 정산합니다."), InQuantity, InPrice * InQuantity / 2);
 		TargetInventory->AddGold(InPrice * InQuantity / 2);
+	}
+}
+
+void UShopWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+	SetVisibility(ESlateVisibility::Hidden);
+}
+
+void UShopWidget::ResetShopItemListWidget()
+{
+	if (ShopItemList.IsValid())
+	{
+		ItemListWidget->ResetItemList(ShopItemList.Get());
 	}
 }
