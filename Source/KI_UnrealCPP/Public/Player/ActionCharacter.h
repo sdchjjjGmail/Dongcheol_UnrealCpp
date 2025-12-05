@@ -103,6 +103,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Consumable")
 	int32 GetCurrentGold() { return CurrentGold; }
 
+	inline void SetShopAvailable(bool InReady, UDataTable* InTable);
+
+	inline bool IsShopAvailable()
+	{
+		return bIsShopAvailable;
+	}
+
 protected:
 	// 이동 방향 입력 받기
 	void OnMoveInput(const FInputActionValue& InValue);
@@ -122,6 +129,9 @@ protected:
 
 	UFUNCTION()
 	void OnCharacterOverlap(AActor* OverlappedActor, AActor* OtherActor);
+
+	UFUNCTION()
+	void OnCharacterEndOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
 private:
 	UFUNCTION()
@@ -234,4 +244,6 @@ private:
 	// 콤보가 가능한 상황인지 확인하기 위한 플래그
 	bool bComboReady = false;
 	bool bIsAreaAttack = false;
+
+	bool bIsShopAvailable = false;
 };

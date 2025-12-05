@@ -22,6 +22,8 @@
 #include <Item/PickupWeapon.h>
 #include "Framework/PickupFactory.h"
 #include <Item/PickupItem.h>
+#include <Interface/HasShop.h>
+#include <Player/ActionPlayerController.h>
 
 // Sets default values
 AActionCharacter::AActionCharacter()
@@ -80,6 +82,7 @@ void AActionCharacter::BeginPlay()
 	// 게임 진행 중에 자주 변경되는 값은 시작 시점에서 리셋을 해주는 것이 좋다.
 	bIsSprint = false;
 	OnActorBeginOverlap.AddDynamic(this, &AActionCharacter::OnCharacterOverlap);
+	OnActorEndOverlap.AddDynamic(this, &AActionCharacter::OnCharacterEndOverlap);
 }
 
 // Called every frame
@@ -347,6 +350,18 @@ void AActionCharacter::OnCharacterOverlap(AActor* OverlappedActor, AActor* Other
 	{
 		IPickupable::Execute_OnPickup(OtherActor, this); // 구현이 되어 있으면 실행
 	}
+	else if (OtherActor->Implements<UHasShop>())
+	{
+		IHasShop::Execute_PrepareShop(OtherActor, this);
+	}
+}
+
+void AActionCharacter::OnCharacterEndOverlap(AActor* OverlappedActor, AActor* OtherActor)
+{
+	if (OtherActor->Implements<UHasShop>())
+	{
+		IHasShop::Execute_DisableShop(OtherActor);
+	}
 }
 
 void AActionCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
@@ -439,6 +454,21 @@ void AActionCharacter::ShakeCamera()
 			);
 		}
 	}*/
+}
+
+inline void AActionCharacter::SetShopAvailable(bool InReady, UDataTable* InTable)
+{
+	bIsShopAvailable = InReady;
+	Cast<AActionPlayerController>(GetController())->SetShopItemTable(InTable);
+	
+	if (!InTable) 
+	{
+		UE_LOG(LogTemp, Log, TEXT("Table is Not Ready"));
+	}
+	else 
+	{
+		UE_LOG(LogTemp, Log, TEXT("Table is Ready"));
+	}
 }
 
 void AActionCharacter::DropCurrentWeapon(EWeaponCode WeaponCode)

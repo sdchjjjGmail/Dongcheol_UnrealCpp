@@ -36,12 +36,18 @@ public:
 	UFUNCTION()
 	void CloseInventoryWidget();
 
+	void OpenShopWidget();
+	void CloseShopWidget();
+
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	void TestChangeInventoryTarget(UInventoryComponent* NewTarget);
+
+	inline void SetShopItemTable(class UDataTable* InTable) { ShopItemDataTalbe = InTable; }
 
 private:
 	void OnLookInput(const FInputActionValue& InValue);
 	void OnInventoryOnOff();
+	void OnShopOnOff();
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
@@ -52,6 +58,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputAction> IA_InventoryOnOff = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction> IA_Interact = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera|Pitch")
 	float VewPitchMin = -40;
@@ -66,4 +75,7 @@ private:
 	TWeakObjectPtr<UInventoryWidget> InventoryWidget = nullptr;
 	TWeakObjectPtr<UShopWidget> ShopWidget = nullptr;
 	TWeakObjectPtr<class UInventoryComponent> InventoryComponent = nullptr;
+
+	UPROPERTY()
+	TWeakObjectPtr<UDataTable> ShopItemDataTalbe = nullptr;
 };

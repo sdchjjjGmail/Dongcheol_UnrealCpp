@@ -29,8 +29,6 @@ public:
 public:
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "NPC|Shop")
-
 
 private:
 

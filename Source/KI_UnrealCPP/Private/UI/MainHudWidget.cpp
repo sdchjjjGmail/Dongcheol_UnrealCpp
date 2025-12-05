@@ -38,30 +38,46 @@ void UMainHudWidget::OpenInventory()
 {
 	Inventory->RefreshInventoryWidget();
 	Inventory->SetVisibility(ESlateVisibility::Visible);
+	if (OpenState == EOpenState::Close)
+	{
+		Inventory->PlayOpen();
+	}
 	OpenState = EOpenState::Open;
-	Inventory->PlayOpen();
-	OpenShop();
 }
 
 void UMainHudWidget::CloseInventory()
 {
-	Inventory->PlayClose();
+	if (OpenState == EOpenState::Open)
+	{
+		Inventory->PlayClose();
+	}
 	OpenState = EOpenState::Close;
 	CloseShop();
 	//Inventory->SetVisibility(ESlateVisibility::Hidden);
 }
 
-void UMainHudWidget::OpenShop()
+void UMainHudWidget::OpenShop(UDataTable* InTalbe)
 {
-	if (Shop)
+	if (Cast<AActionCharacter>(GetOwningPlayerPawn())->IsShopAvailable())
 	{
-		Shop->SetVisibility(ESlateVisibility::Visible);
-		Shop->PlayOpen();
+		if (Shop)
+		{
+			Shop->SetVisibility(ESlateVisibility::Visible);
+			if (ShopOpenState == EShopOpenState::Close)
+			{
+				Shop->PlayOpen(InTalbe);
+			}
+			ShopOpenState = EShopOpenState::Open;
+		}
 	}
 }
 
 void UMainHudWidget::CloseShop()
 {
 	//Shop->SetVisibility(ESlateVisibility::Hidden);
-	Shop->PlayClose();
+	if (ShopOpenState == EShopOpenState::Open)
+	{
+		Shop->PlayClose();
+	}
+	ShopOpenState = EShopOpenState::Close;
 }

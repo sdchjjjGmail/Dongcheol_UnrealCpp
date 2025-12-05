@@ -7,6 +7,7 @@
 #include "InputMappingContext.h"
 #include "Player/InventoryComponent.h"
 #include "Player/ActionCharacter.h"
+#include "Data/DataTableRows.h"
 
 void AActionPlayerController::BeginPlay()
 {
@@ -63,6 +64,7 @@ void AActionPlayerController::SetupInputComponent()
 		//UE_LOG(LogTemp, Log, TEXT("바인드 성공"));
 		enhanced->BindAction(IA_Look, ETriggerEvent::Triggered, this, &AActionPlayerController::OnLookInput);
 		enhanced->BindAction(IA_InventoryOnOff, ETriggerEvent::Started, this, &AActionPlayerController::OnInventoryOnOff);
+		enhanced->BindAction(IA_Interact, ETriggerEvent::Started, this, &AActionPlayerController::OnShopOnOff);
 	}
 }
 
@@ -113,6 +115,21 @@ void AActionPlayerController::OnInventoryOnOff()
 	}
 }
 
+void AActionPlayerController::OnShopOnOff()
+{
+	if (MainHudWidget.IsValid())
+	{
+		if (MainHudWidget->GetShopOpenState() == EShopOpenState::Open)
+		{
+			CloseShopWidget();
+		}
+		else
+		{
+			OpenShopWidget();
+		}
+	}
+}
+
 void AActionPlayerController::OpenInventoryWidget()
 {
 	if (MainHudWidget.IsValid())
@@ -140,9 +157,11 @@ void AActionPlayerController::OpenInventoryWidget()
 
 void AActionPlayerController::CloseInventoryWidget()
 {
+	UE_LOG(LogTemp, Log, TEXT("CloseInventoryWidget"));
 	if (MainHudWidget.IsValid())
 	{
 		//SetPause(false);
+		UE_LOG(LogTemp, Log, TEXT("Set Character input "));
 
 		SetIgnoreMoveInput(false); // 이동 입력 무시
 		SetIgnoreLookInput(false); // 카메라 회전 입력 무시
@@ -150,7 +169,28 @@ void AActionPlayerController::CloseInventoryWidget()
 		FInputModeGameOnly inputMode;
 		SetInputMode(inputMode);
 		bShowMouseCursor = false;
+		
 		MainHudWidget->CloseInventory();
+	}
+}
+
+void AActionPlayerController::OpenShopWidget()
+{
+	if (MainHudWidget.IsValid() && ShopItemDataTalbe.IsValid())
+	{
+		MainHudWidget->OpenShop(ShopItemDataTalbe.Get());
+		if (MainHudWidget->GetShopOpenState() == EShopOpenState::Open)
+		{
+			OpenInventoryWidget();
+		}
+	}
+}
+
+void AActionPlayerController::CloseShopWidget()
+{
+	if (MainHudWidget.IsValid())
+	{
+		MainHudWidget->CloseShop();
 	}
 }
 

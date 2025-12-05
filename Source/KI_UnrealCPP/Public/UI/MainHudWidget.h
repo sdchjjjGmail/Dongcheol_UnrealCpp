@@ -12,7 +12,14 @@ UENUM(BlueprintType)
 enum class EOpenState : uint8
 {
 	Open	UMETA(DisplayName = "Open"),
-	Close	UMETA(DisplayName = "Close")
+	Close	UMETA(DisplayName = "Close"),
+};
+
+UENUM(BlueprintType)
+enum class EShopOpenState : uint8
+{
+	Open	UMETA(DisplayName = "Open"),
+	Close	UMETA(DisplayName = "Close"),
 };
 
 /**
@@ -33,7 +40,7 @@ public:
 	void CloseInventory();
 
 	UFUNCTION(BlueprintCallable, Category = "UI|Inventory")
-	void OpenShop();
+	void OpenShop(UDataTable* InTalbe);
 
 	UFUNCTION(BlueprintCallable, Category = "UI|Inventory")
 	void CloseShop();
@@ -47,6 +54,8 @@ public:
 	}
 
 	inline EOpenState GetOpenState() const { return OpenState; }
+	inline EShopOpenState GetShopOpenState() const { return ShopOpenState; }
+
 	inline UInventoryWidget* GetInventoryWidget() const { return Inventory; }
 	inline UShopWidget* GetShopWidget() const { return Shop; }
 
@@ -68,4 +77,5 @@ protected:
 
 private:
 	EOpenState OpenState = EOpenState::Close;
+	EShopOpenState ShopOpenState = EShopOpenState::Close;
 };
