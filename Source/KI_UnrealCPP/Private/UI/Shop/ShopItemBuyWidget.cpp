@@ -79,11 +79,11 @@ void UShopItemBuyWidget::OnBuyItemCountTextCommitted(const FText& Text, ETextCom
 
 		if (Player->GetCurrentGold() < count * ItemData->ItemPrice)
 		{
-			ItemBuyButton->SetVisibility(ESlateVisibility::Hidden);
+			ItemBuyButton->SetIsEnabled(false);
 		}
 		else
 		{
-			if (StockCount > 0) ItemBuyButton->SetVisibility(ESlateVisibility::Visible);
+			if (StockCount > 0) ItemBuyButton->SetIsEnabled(true);
 		}
 	}
 	BuyCount = count;
