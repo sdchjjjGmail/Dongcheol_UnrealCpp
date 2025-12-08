@@ -3,6 +3,7 @@
 
 #include "NPC/Shop/ShopNpcCharacter.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
 #include "Player/ActionCharacter.h"
 
 // Sets default values
@@ -13,6 +14,8 @@ AShopNpcCharacter::AShopNpcCharacter()
 
 	ShopArea = CreateDefaultSubobject<UCapsuleComponent>("ShopArea");
 	ShopArea->SetupAttachment(RootComponent);
+	Interacter = CreateDefaultSubobject<UWidgetComponent>("InteracterWidget");
+	Interacter->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -20,6 +23,7 @@ void AShopNpcCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	ShopArea->OnComponentBeginOverlap.AddDynamic(this, &AShopNpcCharacter::EnableShop);
+	Interacter->SetVisibility(false);
 }
 
 void AShopNpcCharacter::EnableShop(UPrimitiveComponent* OverlappedComponent,
@@ -53,12 +57,18 @@ void AShopNpcCharacter::PrepareShop_Implementation(AActionCharacter* InPlayer)
 	if (Player.IsValid() && MyItemTable)
 	{
 		Player->SetShopAvailable(true, MyItemTable, this);
+		Interacter->SetVisibility(true);
 	}
 }
 
 void AShopNpcCharacter::DisableShop_Implementation()
 {
-	if (Player.IsValid()) Player->SetShopAvailable(false, nullptr, nullptr);
+	if (Player.IsValid()) 
+	{
+		Interacter->SetVisibility(false);
+		Player->SetShopAvailable(false, nullptr, nullptr);
+	}
+
 }
 
 void AShopNpcCharacter::OpenShop_Implementation()

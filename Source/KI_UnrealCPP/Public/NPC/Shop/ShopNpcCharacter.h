@@ -52,6 +52,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shop")
 	TObjectPtr<class UDataTable> MyItemTable = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shop")
+	TObjectPtr<class UWidgetComponent> Interacter = nullptr;
+
 private:
 
 };

@@ -135,10 +135,17 @@ FReply UInventorySlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry
 			//UE_LOG(LogTemp, Log, TEXT("%d Slot : Right Click(%s)"),
 			//	Index, *SlotData->ItemData->ItemName.ToString());
 			OnSlotRightClicked.ExecuteIfBound(Index);
+			if (SlotData->IsEmpty())
+			{
+				if (ParentWidget)
+					ParentWidget->HideSlotItemDetail();
+			}
 		}
 		else
 		{
 			//UE_LOG(LogTemp, Log, TEXT("%d Slot : Right Click(empty)"), Index);
+			if (ParentWidget)
+				ParentWidget->HideSlotItemDetail();
 		}
 		return FReply::Handled(); // 이 마우스 클릭은 완료되었다 라고 전달
 	}
