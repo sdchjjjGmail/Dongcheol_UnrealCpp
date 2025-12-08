@@ -80,4 +80,6 @@ void UMainHudWidget::CloseShop()
 		Shop->PlayClose();
 	}
 	ShopOpenState = EShopOpenState::Close;
+	AActionCharacter* player = Cast<AActionCharacter>(GetOwningPlayerPawn());
+	player->RequestCloseShop();
 }

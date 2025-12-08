@@ -456,7 +456,7 @@ void AActionCharacter::ShakeCamera()
 	}*/
 }
 
-inline void AActionCharacter::SetShopAvailable(bool InReady, UDataTable* InTable)
+inline void AActionCharacter::SetShopAvailable(bool InReady, UDataTable* InTable, ACharacter* InMerchant)
 {
 	bIsShopAvailable = InReady;
 	Cast<AActionPlayerController>(GetController())->SetShopItemTable(InTable);
@@ -464,10 +464,23 @@ inline void AActionCharacter::SetShopAvailable(bool InReady, UDataTable* InTable
 	if (!InTable) 
 	{
 		UE_LOG(LogTemp, Log, TEXT("Table is Not Ready"));
+		Merchant = nullptr;
 	}
 	else 
 	{
 		UE_LOG(LogTemp, Log, TEXT("Table is Ready"));
+		Merchant = InMerchant;
+	}
+}
+
+void AActionCharacter::RequestCloseShop()
+{
+	if (Merchant.IsValid())
+	{
+		if (Merchant->Implements<UHasShop>())
+		{
+			IHasShop::Execute_CloseShop(Merchant.Get());
+		}
 	}
 }
 

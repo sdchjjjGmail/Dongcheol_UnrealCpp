@@ -52,13 +52,13 @@ void AShopNpcCharacter::PrepareShop_Implementation(AActionCharacter* InPlayer)
 	Player = InPlayer;
 	if (Player.IsValid() && MyItemTable)
 	{
-		Player->SetShopAvailable(true, MyItemTable);
+		Player->SetShopAvailable(true, MyItemTable, this);
 	}
 }
 
 void AShopNpcCharacter::DisableShop_Implementation()
 {
-	if (Player.IsValid()) Player->SetShopAvailable(false, nullptr);
+	if (Player.IsValid()) Player->SetShopAvailable(false, nullptr, nullptr);
 }
 
 void AShopNpcCharacter::OpenShop_Implementation()
@@ -68,6 +68,5 @@ void AShopNpcCharacter::OpenShop_Implementation()
 
 void AShopNpcCharacter::CloseShop_Implementation()
 {
-
+	Destroy();
 }
-

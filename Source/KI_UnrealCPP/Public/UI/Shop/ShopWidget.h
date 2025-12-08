@@ -30,6 +30,10 @@ protected:
 
 	void ResetShopItemListWidget(UDataTable* InTable);
 
+private:
+	UFUNCTION()
+	void OnExitButtonClicked();
+
 protected:
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> OpenAndClose = nullptr;

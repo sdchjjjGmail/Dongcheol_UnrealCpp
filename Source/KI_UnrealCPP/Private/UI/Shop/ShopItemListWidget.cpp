@@ -36,8 +36,8 @@ void UShopItemListWidget::ResetItemList(UDataTable* ItemList)
 	}
 
 	int32 selectcCount = ShopItems.Num();
-	//TArray<FShopData_TableRow*> selectedRows;
-	//selectedRows.Empty(selectcCount);
+	TArray<FShopData_TableRow*> selectedRows;
+	selectedRows.Empty(selectcCount);
 	for (int32 i = 0; i < ShopItems.Num(); i++)
 	{
 		float hit = FMath::FRandRange(0.0f, totlaWeight);
@@ -48,7 +48,6 @@ void UShopItemListWidget::ResetItemList(UDataTable* ItemList)
 			if (hit < currentWeight)
 			{
 				//selectedRows.Add(row);
-				UE_LOG(LogTemp, Warning, TEXT("set item, %s"), *row->ItemData->GetName());
 				ShopItems[selectIndex]->SetItemData(row->ItemData, row->StockCount);
 				selectIndex++;
 				break;

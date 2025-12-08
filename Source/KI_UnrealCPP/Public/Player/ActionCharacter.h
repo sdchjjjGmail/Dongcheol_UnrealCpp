@@ -103,7 +103,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Consumable")
 	int32 GetCurrentGold() { return CurrentGold; }
 
-	inline void SetShopAvailable(bool InReady, UDataTable* InTable);
+	void SetShopAvailable(bool InReady, UDataTable* InTable, ACharacter* InMerchant);
+
+	void RequestCloseShop();
 
 	inline bool IsShopAvailable()
 	{
@@ -238,6 +240,9 @@ private:
 	UPROPERTY()
 	TWeakObjectPtr<UAnimNotifyState_ComboPractice> ComnoSectionJumpNotify = nullptr;
 	
+	UPROPERTY()
+	TWeakObjectPtr<class ACharacter> Merchant = nullptr;
+
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Weapon", meta = (AllowPrivateAccess = "true"))
 	//bool bWeaponUseEnded = false;
 

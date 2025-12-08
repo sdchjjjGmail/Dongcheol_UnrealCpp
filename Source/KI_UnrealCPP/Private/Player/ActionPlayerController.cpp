@@ -157,11 +157,11 @@ void AActionPlayerController::OpenInventoryWidget()
 
 void AActionPlayerController::CloseInventoryWidget()
 {
-	UE_LOG(LogTemp, Log, TEXT("CloseInventoryWidget"));
+	//UE_LOG(LogTemp, Log, TEXT("CloseInventoryWidget"));
 	if (MainHudWidget.IsValid())
 	{
 		//SetPause(false);
-		UE_LOG(LogTemp, Log, TEXT("Set Character input "));
+		//UE_LOG(LogTemp, Log, TEXT("Set Character input"));
 
 		SetIgnoreMoveInput(false); // 이동 입력 무시
 		SetIgnoreLookInput(false); // 카메라 회전 입력 무시
@@ -179,7 +179,8 @@ void AActionPlayerController::OpenShopWidget()
 	if (MainHudWidget.IsValid() && ShopItemDataTalbe.IsValid())
 	{
 		MainHudWidget->OpenShop(ShopItemDataTalbe.Get());
-		if (MainHudWidget->GetShopOpenState() == EShopOpenState::Open)
+		if (MainHudWidget->GetShopOpenState() == EShopOpenState::Open 
+			&& MainHudWidget->GetOpenState() != EOpenState::Open)
 		{
 			OpenInventoryWidget();
 		}

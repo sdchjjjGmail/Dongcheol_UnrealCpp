@@ -5,21 +5,26 @@
 #include "UI/Shop/ShopItemSellWidget.h"
 #include "UI/Shop/ShopItemListWidget.h"
 #include "Player/InventoryComponent.h"
-#include <Player/ActionCharacter.h>
 #include "Components/Button.h"
 #include "UI/MainHudWidget.h"
+#include <Player/ActionPlayerController.h>
+#include <Interface/InventoryOwner.h>
 
 void UShopWidget::InitializeShopWidget(UInventoryComponent* InventoryComponent)
 {
 	if (InventoryComponent)
 	{
-		UE_LOG(LogTemp, Log, TEXT("샵 위젯 초기화"));
+		//UE_LOG(LogTemp, Log, TEXT("샵 위젯 초기화"));
 
 		TargetInventory = InventoryComponent;
 	}
 	if (ItemSellArea)
 	{
 		ItemSellArea->SetParentWidget(this);
+	}
+	if (ExitShop.IsValid())
+	{
+		ExitShop->OnClicked.AddDynamic(this, &UShopWidget::OnExitButtonClicked);
 	}
 }
 
@@ -57,9 +62,17 @@ void UShopWidget::NativeConstruct()
 
 void UShopWidget::ResetShopItemListWidget(UDataTable* InTable)
 {
-	UE_LOG(LogTemp, Log, TEXT("ResetShopItemListWidget"));
+	//UE_LOG(LogTemp, Log, TEXT("ResetShopItemListWidget"));
+	ShopItemList = InTable;
 	if (ShopItemList.IsValid())
 	{
 		ItemListWidget->ResetItemList(InTable);
 	}
+}
+
+void UShopWidget::OnExitButtonClicked()
+{
+	//UE_LOG(LogTemp, Log, TEXT("OnExitButtonClicked"));
+	AActionPlayerController* playerController = Cast<AActionPlayerController>(GetOwningPlayer());
+	if (playerController) playerController->CloseShopWidget();
 }

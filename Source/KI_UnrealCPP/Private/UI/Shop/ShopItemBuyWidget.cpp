@@ -28,7 +28,7 @@ void UShopItemBuyWidget::NativeConstruct()
 void UShopItemBuyWidget::SetItemData(UItemDataAsset* InItemData, int32 InStockCount)
 {
 	InitShopState();
-	UE_LOG(LogTemp, Warning, TEXT("set item, %s"), *InItemData->GetName());
+	//UE_LOG(LogTemp, Log, TEXT("set item, %s"), *InItemData->GetName());
 
 	ItemData = InItemData;
 	StockCount = InStockCount;
@@ -57,7 +57,7 @@ void UShopItemBuyWidget::OnBuyItemCountTextChanged(const FText& Text)
 		BuyItemCount->SetText(FText::AsNumber(FMath::Clamp(count, MinimumBuyItemCount, StockCount)));
 	}
 }
-
+ 
 void UShopItemBuyWidget::OnBuyItemCountTextCommitted(const FText& Text, ETextCommit::Type CommitMethod)
 {
 	FString number = Text.ToString();
@@ -75,7 +75,7 @@ void UShopItemBuyWidget::OnBuyItemCountTextCommitted(const FText& Text, ETextCom
 	//AActionCharacter* player = Cast<AActionCharacter>(GetOwningPlayerPawn());
 	if (Player.IsValid())
 	{
-		UE_LOG(LogTemp, Log, TEXT("gold : %d"), Player->GetCurrentGold());
+		//UE_LOG(LogTemp, Log, TEXT("gold : %d"), Player->GetCurrentGold());
 
 		if (Player->GetCurrentGold() < count * ItemData->ItemPrice)
 		{
@@ -124,7 +124,7 @@ void UShopItemBuyWidget::OnPlayerBuyItem()
 
 void UShopItemBuyWidget::ShowSoldOut()
 {
-	UE_LOG(LogTemp, Log, TEXT("ShowSoldOut"));
+	//UE_LOG(LogTemp, Log, TEXT("ShowSoldOut"));
 	SoldoutPanel->SetVisibility(ESlateVisibility::Visible);
 	ItemBuyButton->SetVisibility(ESlateVisibility::Hidden);
 }
